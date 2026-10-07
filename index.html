@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Estructura de Datos | Hub de Monitorías Académicas</title>
+  <style>
+    /* ==========================================================================
+       ESTILO WEB RETRO / WEB 1.0 AESTHETIC
+       Diseño simple estilo página clásica de los 90s/2000s, sin emojis.
+       ========================================================================== */
+
+    :root {
+      --win-bg: #c0c0c0;
+      --win-border-light: #ffffff;
+      --win-border-dark: #808080;
+      --win-border-darkest: #000000;
+      --win-blue: #000080;
+      --win-blue-grad: #1084d0;
+      --text-main: #000000;
+      --link-blue: #0000ee;
+      --link-visited: #551a8b;
+      --retro-green: #008080;
+      --code-green: #00ff66;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #008080;
+      background-image: radial-gradient(#007373 15%, transparent 16%), radial-gradient(#006666 15%, transparent 16%);
+      background-size: 8px 8px;
+      background-position: 0 0, 4px 4px;
+      color: var(--text-main);
+      font-family: "Times New Roman", Times, Georgia, serif;
+      margin: 0;
+      padding: 12px;
+      line-height: 1.4;
+      position: relative;
+    }
+
+    /* Canvas para animaciones flotantes de Halloween sobre la pagina */
+    #halloweenCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* Contenedor Principal tipo Pagina Personal Retro */
+    .retro-container {
+      max-width: 920px;
+      margin: 0 auto;
+      background-color: #f7f7f5;
+      border: 3px outset #ffffff;
+      box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.4);
+      padding: 16px;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* Marquesina Clasica */
+    .marquee-bar {
+      background: #000080;
+      color: #ffff00;
+      font-family: "Courier New", Courier, monospace;
+      font-weight: bold;
+      font-size: 13px;
+      padding: 5px 8px;
+      border: 2px inset #808080;
+      margin-bottom: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Encabezado Principal */
+    header {
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .retro-title {
+      font-size: 2.2rem;
+      color: #000080;
+      margin: 6px 0 4px 0;
+      text-transform: uppercase;
+      font-family: "Times New Roman", serif;
+      text-shadow: 1px 1px 0px #ffffff, 2px 2px 0px #808080;
+      letter-spacing: 1px;
+    }
+
+    .retro-subtitle {
+      font-size: 1.05rem;
+      font-weight: bold;
+      color: #800000;
+      margin: 0 0 10px 0;
+    }
+
+    /* Imagen Banner */
+    .banner-wrapper {
+      text-align: center;
+      margin: 12px 0;
+      background: #000000;
+      padding: 4px;
+      border: 3px inset #808080;
+    }
+
+    .banner-img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .banner-caption {
+      background: #c0c0c0;
+      color: #000080;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 12px;
+      font-weight: bold;
+      padding: 4px;
+      border-top: 1px solid #808080;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    /* Lineas horizontales retro */
+    hr.retro-hr {
+      border: none;
+      height: 3px;
+      border-top: 2px solid #808080;
+      border-bottom: 1px solid #ffffff;
+      margin: 16px 0;
+    }
+
+    /* ASCII Header */
+    .ascii-box {
+      background: #000000;
+      color: #00ff00;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 11px;
+      line-height: 1.15;
+      padding: 8px;
+      overflow-x: auto;
+      border: 2px inset #808080;
+      margin: 12px 0;
+      text-align: center;
+      white-space: pre;
+    }
+
+    /* Barra de Navegacion Rapida */
+    .retro-nav {
+      background: #c0c0c0;
+      border: 2px outset #ffffff;
+      padding: 6px 10px;
+      text-align: center;
+      margin-bottom: 16px;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 13px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .retro-nav a {
+      color: #0000ee;
+      font-weight: bold;
+      text-decoration: underline;
+      padding: 0 4px;
+    }
+
+    .retro-nav a:hover {
+      color: #ff0000;
+      background: #ffff99;
+    }
+
+    /* Boton de control de Halloween */
+    .halloween-toggle-btn {
+      background: #331100;
+      color: #ff9900;
+      border: 1px outset #ffaa33;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 11px;
+      font-weight: bold;
+      padding: 2px 6px;
+      cursor: pointer;
+      margin-left: 8px;
+    }
+
+    .halloween-toggle-btn:hover {
+      background: #552200;
+      color: #ffffff;
+    }
+
+    /* Cuadros tipo Ventana Clasica */
+    .window-box {
+      background: #c0c0c0;
+      border: 2px outset #ffffff;
+      margin-bottom: 20px;
+      box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.3);
+    }
+
+    .window-titlebar {
+      background: linear-gradient(90deg, #000080, #1084d0);
+      color: #ffffff;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 13px;
+      font-weight: bold;
+      padding: 3px 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      letter-spacing: 0.5px;
+    }
+
+    .window-titlebar-btn {
+      background: #c0c0c0;
+      border: 1px outset #ffffff;
+      width: 16px;
+      height: 14px;
+      font-size: 9px;
+      font-family: monospace;
+      color: #000000;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      user-select: none;
+      font-weight: bold;
+    }
+
+    .window-content {
+      padding: 12px;
+      background: #ffffff;
+      border: 2px inset #808080;
+      margin: 4px;
+    }
+
+    /* Modulos de Aprendizaje */
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+      margin-top: 10px;
+    }
+
+    .module-card {
+      background: #fdfdf8;
+      border: 2px outset #ffffff;
+      box-shadow: 2px 2px 0px #808080;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    .module-card:hover {
+      background: #fffff0;
+      outline: 1px dashed #000080;
+    }
+
+    .module-tag {
+      display: inline-block;
+      background: #000080;
+      color: #ffffff;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 11px;
+      padding: 2px 6px;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    .module-title {
+      font-size: 1.15rem;
+      margin: 4px 0 8px 0;
+      color: #000080;
+      font-family: "Times New Roman", serif;
+      font-weight: bold;
+    }
+
+    .module-desc {
+      font-size: 14px;
+      color: #333333;
+      margin-bottom: 12px;
+      flex-grow: 1;
+    }
+
+    .module-topics {
+      background: #f0f0f0;
+      border: 1px dotted #808080;
+      padding: 6px 8px;
+      font-size: 12px;
+      font-family: "Courier New", Courier, monospace;
+      margin-bottom: 12px;
+    }
+
+    .module-btn {
+      display: block;
+      background: #c0c0c0;
+      color: #0000ee;
+      text-align: center;
+      padding: 8px 12px;
+      border: 2px outset #ffffff;
+      text-decoration: underline;
+      font-weight: bold;
+      font-size: 14px;
+      font-family: Arial, Helvetica, sans-serif;
+      cursor: pointer;
+    }
+
+    .module-btn:hover {
+      background: #d8d8d8;
+      color: #ff0000;
+    }
+
+    .module-btn:active {
+      border: 2px inset #808080;
+      background: #a0a0a0;
+    }
+
+    /* Tabla de Horarios */
+    .schedule-header-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .retro-share-btn {
+      background: #c0c0c0;
+      color: #000080;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 13px;
+      font-weight: bold;
+      padding: 6px 12px;
+      border: 2px outset #ffffff;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .retro-share-btn:hover {
+      background: #ffffcc;
+      color: #cc0000;
+    }
+
+    .retro-share-btn:active {
+      border: 2px inset #808080;
+    }
+
+    .share-feedback {
+      font-family: "Courier New", Courier, monospace;
+      font-size: 12px;
+      font-weight: bold;
+      color: #008000;
+      background: #e6ffe6;
+      border: 1px solid #008000;
+      padding: 4px 8px;
+      display: none;
+    }
+
+    .schedule-table-wrap {
+      overflow-x: auto;
+      margin: 10px 0;
+    }
+
+    table.retro-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 2px;
+      background: #808080;
+      font-size: 14px;
+    }
+
+    table.retro-table th {
+      background: #000080;
+      color: #ffffff;
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: bold;
+      padding: 8px 10px;
+      border: 1px outset #ffffff;
+      text-align: center;
+      letter-spacing: 0.5px;
+    }
+
+    table.retro-table td {
+      background: #ffffff;
+      padding: 7px 10px;
+      border: 1px inset #d0d0d0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    table.retro-table tr:nth-child(even) td {
+      background: #f5f5f5;
+    }
+
+    table.retro-table tr.highlight-today td {
+      background: #ffffcc !important;
+      font-weight: bold;
+      border: 2px solid #cc0000 !important;
+    }
+
+    .day-badge {
+      display: inline-block;
+      background: #004d40;
+      color: #ffffff;
+      font-weight: bold;
+      padding: 3px 8px;
+      border-radius: 2px;
+      font-size: 12px;
+      font-family: "Courier New", Courier, monospace;
+      min-width: 80px;
+      text-align: center;
+    }
+
+    .room-badge {
+      display: inline-block;
+      background: #a07840;
+      color: #ffffff;
+      font-weight: bold;
+      padding: 3px 8px;
+      border-radius: 2px;
+      font-size: 12px;
+      font-family: "Courier New", Courier, monospace;
+    }
+
+    /* Tarjeta de Informacion del Monitor */
+    .monitor-info-card {
+      background: #ffffea;
+      border: 2px dashed #808080;
+      padding: 12px;
+      margin: 10px 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .monitor-avatar {
+      background: #000080;
+      color: #00ff00;
+      font-family: monospace;
+      font-size: 11px;
+      padding: 8px;
+      border: 2px inset #808080;
+      text-align: center;
+      min-width: 110px;
+    }
+
+    .monitor-details {
+      flex: 1;
+      font-size: 14px;
+    }
+
+    .monitor-details h3 {
+      margin: 0 0 6px 0;
+      color: #000080;
+      font-size: 1.15rem;
+    }
+
+    /* Buscador Rapido de Temas */
+    .filter-box {
+      background: #e0e0e0;
+      border: 2px inset #808080;
+      padding: 10px;
+      margin-bottom: 12px;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 13px;
+    }
+
+    .filter-box input[type="text"] {
+      padding: 5px 8px;
+      border: 2px inset #808080;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 14px;
+      width: 100%;
+      max-width: 320px;
+      background: #ffffff;
+    }
+
+    /* Insignias Retro Web 1.0 */
+    .badges-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin: 16px 0 8px 0;
+    }
+
+    .retro-badge {
+      border: 1px solid #000;
+      padding: 3px 6px;
+      font-family: Arial, sans-serif;
+      font-size: 10px;
+      font-weight: bold;
+      text-transform: uppercase;
+      box-shadow: 1px 1px 0 #fff;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #c0c0c0;
+      cursor: default;
+    }
+
+    .badge-blue { background: #000080; color: #fff; }
+    .badge-yellow { background: #ffcc00; color: #000; }
+    .badge-green { background: #008000; color: #fff; }
+    .badge-red { background: #cc0000; color: #fff; }
+    .badge-black { background: #000; color: #00ff00; font-family: monospace; }
+    .badge-orange { background: #ff6600; color: #000; }
+
+    /* Pie de Pagina */
+    footer {
+      text-align: center;
+      font-size: 13px;
+      color: #444444;
+      margin-top: 20px;
+      border-top: 1px dotted #808080;
+      padding-top: 12px;
+    }
+
+    .text-center { text-align: center; }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      body { padding: 6px; }
+      .retro-title { font-size: 1.6rem; }
+      .ascii-box { font-size: 8px; }
+      .banner-caption { flex-direction: column; text-align: center; gap: 4px; }
+      .schedule-header-actions { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Capa flotante para animaciones de Halloween (murcielagos y fantasmas retro) -->
+  <canvas id="halloweenCanvas"></canvas>
+
+  <div class="retro-container" id="top">
+
+    <!-- Marquesina Superior -->
+    <div class="marquee-bar">
+      <marquee scrollamount="5" behavior="scroll" direction="left">
+        *** MONITORIAS DE ESTRUCTURA DE DATOS *** HORARIOS Y GUIAS DE ESTUDIO DISPONIBLES *** REVISA LOS MODULOS Y ASISTE A LAS SESIONES PRESENCIALES ***
+      </marquee>
+    </div>
+
+    <!-- Barra de Navegacion Rapida Web 1.0 -->
+    <div class="retro-nav">
+      <b>[ NAVEGACION ] :</b>
+      <a href="#guias">[ Guías de Estudio ]</a> |
+      <a href="#horarios">[ Horarios de Atención ]</a> |
+      <a href="#monitor">[ Datos del Monitor ]</a> |
+      <a href="#terminal">[ Terminal ]</a>
+      <button type="button" class="halloween-toggle-btn" id="halloweenToggle" onclick="toggleHalloween()">
+        [ Halloween FX: ON ]
+      </button>
+    </div>
+
+    <!-- Encabezado Principal (Unica mencion institucional oficial) -->
+    <header>
+      <div style="font-family: Arial, Helvetica, sans-serif; font-size: 12px; font-weight: bold; color: #00594e; text-transform: uppercase; letter-spacing: 1px;">
+        Universidad Internacional del Trópico Americano (Unitrópico)
+      </div>
+      <h1 class="retro-title">ESTRUCTURA DE DATOS</h1>
+      <p class="retro-subtitle">[ Hub Principal de Materiales y Tutorías ]</p>
+
+      <!-- Arte ASCII en terminal -->
+      <div class="ascii-box">
+  ___ ____ _____ ____  _   _  ____ _____ _   _ ____      _     ____  _____   ____    _  _____ ___  ____  
+ | __/ ___|_   _|  _ \| | | |/ ___|_   _| | | |  _ \    / \   |  _ \| ____| |  _ \  / \|_   _/ _ \/ ___| 
+ | _|\___ \ | | | |_) | | | | |     | | | | | | |_) |  / _ \  | | | |  _|   | | | |/ _ \ | || | | \___ \ 
+ | |_____) || | |  _ &lt;| |_| | |___  | | | |_| |  _ &lt;  / ___ \ | |_| | |___  | |_| / ___ \| || |_| |___) |
+ |___|____/ |_| |_| \_\\___/ \____| |_|  \___/|_| \_\/_/   \_\|____/|_____| |____/_/   \_|_| \___/|____/ 
+      </div>
+
+      <!-- Banner Grafico Retro -->
+      <div class="banner-wrapper">
+        <img src="./retro_banner.jpg" alt="Retro Computer Hub - Estructura de Datos" class="banner-img">
+        <div class="banner-caption">
+          <span>HOSTED ON: GITHUB PAGES [STATIC ARCHIVE]</span>
+          <span>CURSO: ESTRUCTURA DE DATOS</span>
+          <span>EDICION: 2026</span>
+        </div>
+      </div>
+
+      <p style="font-size: 15px; max-width: 750px; margin: 12px auto; color: #222;">
+        <b>Bienvenido.</b> Este espacio contiene el material de estudio interactivo y los horarios 
+        de apoyo para la asignatura de <b>Estructura de Datos</b>. Consulta cada guía temática según 
+        el avance de tu curso y asiste a las monitorías para resolver dudas de programación.
+      </p>
+    </header>
+
+    <hr class="retro-hr">
+
+    <!-- SECCION 1: HUB DE MATERIALES DE APRENDIZAJE -->
+    <section id="guias" class="window-box">
+      <div class="window-titlebar">
+        <span>[+] C:\MATERIALES\GUIAS_DE_ESTUDIO.EXE</span>
+        <div>
+          <span class="window-titlebar-btn">_</span>
+          <span class="window-titlebar-btn">[]</span>
+          <span class="window-titlebar-btn">X</span>
+        </div>
+      </div>
+      <div class="window-content">
+        <h2 style="font-size: 1.35rem; margin-top: 0; color: #000080;">
+          Módulos y Guías Interactivas de Aprendizaje
+        </h2>
+        <p style="font-size: 14px; margin-bottom: 12px;">
+          Haz clic en cualquiera de los módulos para acceder al material didáctico interactivo:
+        </p>
+
+        <!-- Buscador / Filtro Rapido de Temas -->
+        <div class="filter-box">
+          <label for="topicFilter"><b>[?] Filtro de temas:</b> </label>
+          <input type="text" id="topicFilter" placeholder="Escribe: variables, bucles, arreglos, vectores, colas..." onkeyup="filterModules()">
+          <span id="filterCount" style="margin-left: 8px; font-weight: bold; color: #000080;"></span>
+        </div>
+
+        <div class="modules-grid" id="modulesList">
+
+          <!-- GUIA 1: INTRODUCCION A C++ -->
+          <article class="module-card" data-keywords="c++ introduccion fundamentos sintaxis variables tipos cin cout iostream if else switch for while funciones ejercicios modularidad compilador">
+            <div>
+              <span class="module-tag">[ GUIA 01 ] &bull; FUNDAMENTOS DE C++</span>
+              <h3 class="module-title">1. Introducción a C++</h3>
+              <p class="module-desc">
+                Lo esencial del lenguaje: compilación, anatomía de un programa, tipos de datos primitivos, 
+                entrada/salida con cin/cout, estructuras de control condicional (if/else), ciclos iterativos 
+                (for/while), funciones modulares y una batería de 30 ejercicios prácticos de lógica.
+              </p>
+              <div class="module-topics">
+                <b>Contenido principal:</b><br>
+                - Estructura básica de un programa (.cpp)<br>
+                - Variables y tipos (int, float, char, bool, string)<br>
+                - Entrada y Salida estándar (cin / cout)<br>
+                - Condicionales y Ciclos (if, else, for, while)<br>
+                - Funciones y 30 ejercicios prácticos
+              </div>
+            </div>
+            <div>
+              <a href="./Introducci%C3%B3n%20a%20C++.html" class="module-btn" title="Abrir Introducción a C++">
+                [ ABRIR GUIA 01: INTRODUCCION A C++ ] --&gt;
+              </a>
+            </div>
+          </article>
+
+          <!-- GUIA 2: ESTRUCTURAS DE DATOS INTRODUCCION -->
+          <article class="module-card" data-keywords="estructuras de datos tad tipos abstractos vida diaria programacion clasificacion lineales no lineales arreglos pilas colas retos seleccion">
+            <div>
+              <span class="module-tag">[ GUIA 02 ] &bull; CONCEPTOS INICIALES</span>
+              <h3 class="module-title">2. Estructuras de Datos: Introducción</h3>
+              <p class="module-desc">
+                Comprensión conceptual de las estructuras de datos: qué son, aplicaciones en la vida diaria 
+                y en programación, tipos de estructuras (lineales y no lineales), práctica inicial con arreglos, 
+                primer acercamiento a pilas y colas, y retos para seleccionar la estructura correcta.
+              </p>
+              <div class="module-topics">
+                <b>Contenido principal:</b><br>
+                - ¿Qué es una estructura de datos?<br>
+                - Analogías en la vida diaria y en software<br>
+                - Clasificación: lineales vs no lineales<br>
+                - Práctica introductoria con arreglos<br>
+                - Conceptos de Pila y Cola + Retos de elección
+              </div>
+            </div>
+            <div>
+              <a href="./Estructuras%20de%20datos_%20introducci%C3%B3n.html" class="module-btn" title="Abrir Introducción a Estructuras de Datos">
+                [ ABRIR GUIA 02: CONCEPTOS INICIALES ] --&gt;
+              </a>
+            </div>
+          </article>
+
+          <!-- GUIA 3: ARRAYS Y VECTORES -->
+          <article class="module-card" data-keywords="arrays vectores arreglos unidimensionales 1d bidimensionales 2d matrices multidimensionales std::vector algorithm listas ejercicios">
+            <div>
+              <span class="module-tag">[ GUIA 03 ] &bull; ARREGLOS Y VECTORES</span>
+              <h3 class="module-title">3. Estructuras de Datos: Arrays</h3>
+              <p class="module-desc">
+                Estudio detallado de arreglos en C++: arrays unidimensionales (1D), matrices bidimensionales (2D) 
+                y multidimensionales, vectores dinámicos con std::vector, operaciones con la librería &lt;algorithm&gt;, 
+                comparación entre listas y arrays, y 30 ejercicios prácticos.
+              </p>
+              <div class="module-topics">
+                <b>Contenido principal:</b><br>
+                - Arrays Unidimensionales (1D)<br>
+                - Matrices Bidimensionales (2D) y Multidimensionales<br>
+                - Vectores dinámicos (std::vector)<br>
+                - Utilidades con &lt;algorithm&gt; (búsqueda y orden)<br>
+                - Comparación Listas vs Arrays + 30 ejercicios
+              </div>
+            </div>
+            <div>
+              <a href="./Estructuras%20de%20datos_%20arrays.html" class="module-btn" title="Abrir Arrays y Vectores">
+                [ ABRIR GUIA 03: ARRAYS Y VECTORES ] --&gt;
+              </a>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCION 2: HORARIOS DE MONITORIA (CON BOTON DE COMPARTIR Y SCROLL POR HASH) -->
+    <section id="horarios" class="window-box">
+      <div class="window-titlebar">
+        <span>[+] C:\HORARIOS\HORARIOS_MONITORIA.TAB</span>
+        <div>
+          <span class="window-titlebar-btn">_</span>
+          <span class="window-titlebar-btn">[]</span>
+          <span class="window-titlebar-btn">X</span>
+        </div>
+      </div>
+      <div class="window-content">
+        
+        <div class="schedule-header-actions">
+          <div>
+            <h2 style="font-size: 1.35rem; margin: 0; color: #000080;">
+              Horarios de Monitorías Académicas
+            </h2>
+            <div style="font-size: 13px; color: #444; margin-top: 2px;">
+              Asignatura: <b>Estructura de Datos</b>
+            </div>
+          </div>
+
+          <!-- Boton de Compartir con Enlace Hash Directo -->
+          <div>
+            <button type="button" class="retro-share-btn" id="btnCompartirHorarios" onclick="compartirHorarios()" title="Copiar enlace con ancla directa a esta sección de horarios">
+              [+] Compartir Horarios (#)
+            </button>
+            <span id="shareFeedback" class="share-feedback"></span>
+          </div>
+        </div>
+
+        <p style="font-size: 14px; margin: 8px 0;">
+          Asiste a los espacios de monitorías académicas en los siguientes días, horas y salones:
+        </p>
+
+        <!-- Indicador dinamico del dia actual -->
+        <div id="todayBanner" style="background: #ffffcc; border: 1px dashed #cc0000; padding: 6px 10px; font-size: 13px; font-weight: bold; margin-bottom: 10px;">
+          Calculando el estado de hoy...
+        </div>
+
+        <div class="schedule-table-wrap">
+          <table class="retro-table" id="scheduleTable">
+            <thead>
+              <tr>
+                <th style="width: 25%;">Día</th>
+                <th style="width: 45%;">Horario</th>
+                <th style="width: 30%;">Salón</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Lunes -->
+              <tr data-day="1">
+                <td><span class="day-badge">Lunes</span></td>
+                <td>9:00 pm - 10:00 pm</td>
+                <td><span class="room-badge">Salón 110A</span></td>
+              </tr>
+              <!-- Martes -->
+              <tr data-day="2">
+                <td><span class="day-badge">Martes</span></td>
+                <td>11:00 am - 12:00 p.m</td>
+                <td><span class="room-badge">Salón 111A</span></td>
+              </tr>
+              <!-- Miercoles mañana -->
+              <tr data-day="3">
+                <td><span class="day-badge">Miércoles</span></td>
+                <td>6:00 am - 7:00 a.m</td>
+                <td><span class="room-badge">Salón 207A</span></td>
+              </tr>
+              <!-- Miercoles medio dia -->
+              <tr data-day="3">
+                <td><span class="day-badge">Miércoles</span></td>
+                <td>11:00 am - 12:00 p.m</td>
+                <td><span class="room-badge">Salón 102A</span></td>
+              </tr>
+              <!-- Jueves -->
+              <tr data-day="4">
+                <td><span class="day-badge">Jueves</span></td>
+                <td>6:00 am - 7:00 am</td>
+                <td><span class="room-badge">Salón 101A</span></td>
+              </tr>
+              <!-- Viernes mañana -->
+              <tr data-day="5">
+                <td><span class="day-badge">Viernes</span></td>
+                <td>6:00 am - 7:00 am</td>
+                <td><span class="room-badge">Salón 107C</span></td>
+              </tr>
+              <!-- Viernes tarde -->
+              <tr data-day="5">
+                <td><span class="day-badge">Viernes</span></td>
+                <td>5:00 pm - 6:00 pm</td>
+                <td><span class="room-badge">Salón 102D</span></td>
+              </tr>
+              <!-- Viernes noche -->
+              <tr data-day="5">
+                <td><span class="day-badge">Viernes</span></td>
+                <td>8:00 pm - 10:00 pm</td>
+                <td><span class="room-badge">Salón 110A</span></td>
+              </tr>
+              <!-- Sabado -->
+              <tr data-day="6">
+                <td><span class="day-badge">Sábado</span></td>
+                <td>8:00 am - 9:00 a.m</td>
+                <td><span class="room-badge">Salón 110A</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p style="font-size: 12px; color: #555; margin: 6px 0 0 0; font-style: italic;">
+          * Asiste con tus preguntas concretas o código fuente para optimizar el tiempo de asesoría.
+        </p>
+      </div>
+    </section>
+
+    <!-- SECCION 3: INFORMACION DEL MONITOR -->
+    <section id="monitor" class="window-box">
+      <div class="window-titlebar">
+        <span>[+] C:\CONTACTO\MONITOR_INFO.TXT</span>
+        <div>
+          <span class="window-titlebar-btn">_</span>
+          <span class="window-titlebar-btn">[]</span>
+          <span class="window-titlebar-btn">X</span>
+        </div>
+      </div>
+      <div class="window-content">
+        <div class="monitor-info-card">
+          <div class="monitor-avatar">
+            <pre style="margin: 0; font-size: 10px; line-height: 1;">
+  +--------+
+  |  [o_o] |
+  |  /| |\ |
+  |  d   b |
+  +--------+
+  MONITOR_ID
+            </pre>
+          </div>
+          <div class="monitor-details">
+            <h3>Monitor: Fray Santiago Fontalvo Caballero</h3>
+            <p style="margin: 4px 0;">
+              <b>Asignatura:</b> Estructura de Datos
+            </p>
+            <p style="margin: 4px 0;">
+              <b>Correo Institucional:</b>
+              <a href="mailto:frayfontalvo.es@unitropico.edu.co"
+                style="font-weight: bold; color: #0000ee; text-decoration: underline;">
+                frayfontalvo.es@unitropico.edu.co
+              </a>
+            </p>
+            <p style="margin: 4px 0; font-size: 13px; color: #444;">
+              Atención presencial en los salones asignados durante las horas indicadas en la tabla de horarios.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCION 4: TERMINAL RETRO INTERACTIVA -->
+    <section id="terminal" class="window-box">
+      <div class="window-titlebar">
+        <span>[+] MS-DOS PROMPT &bull; CONSOLA INTERACTIVA DE CONSULTA</span>
+        <div>
+          <span class="window-titlebar-btn">_</span>
+          <span class="window-titlebar-btn">[]</span>
+          <span class="window-titlebar-btn">X</span>
+        </div>
+      </div>
+      <div class="window-content"
+        style="background: #000000; color: #00ff66; font-family: 'Courier New', Courier, monospace; font-size: 13px;">
+        <div id="terminalOutput"
+          style="min-height: 80px; max-height: 180px; overflow-y: auto; margin-bottom: 8px; line-height: 1.3;">
+          DOS Version 6.22 [ED-Kernel 2026]<br>
+          Escribe un comando: <b>ayuda</b>, <b>horarios</b>, <b>guias</b>, <b>monitor</b>, o <b>limpiar</b>.
+        </div>
+        <div style="display: flex; align-items: center; border-top: 1px solid #333; padding-top: 6px;">
+          <span style="color: #ffff00; margin-right: 6px;">C:\ED&gt;</span>
+          <input type="text" id="terminalInput"
+            style="background: transparent; border: none; color: #00ff66; font-family: 'Courier New', Courier, monospace; font-size: 13px; width: 100%; outline: none;"
+            placeholder="Escribe aqui y presiona Enter..." onkeydown="handleTerminalCommand(event)">
+        </div>
+      </div>
+    </section>
+
+    <!-- INSIGNIAS Y BADGES WEB 1.0 (SIN EMOJIS) -->
+    <div class="badges-row">
+      <span class="retro-badge badge-blue">DATA STRUCTURES</span>
+      <span class="retro-badge badge-black">C++ COMPLIANT</span>
+      <span class="retro-badge badge-yellow">GITHUB PAGES</span>
+      <span class="retro-badge badge-green">HTML PURO</span>
+      <span class="retro-badge badge-orange">HALLOWEEN EDITION</span>
+      <span class="retro-badge badge-blue">800 x 600 RES</span>
+    </div>
+
+    <!-- HORA ACTUAL (RELOJ EN VIVO) -->
+    <div class="text-center" style="margin-top: 14px;">
+      <div id="retroClock"
+        style="font-family: 'Courier New', monospace; font-size: 13px; font-weight: bold; color: #000080; background: #e0e0e0; display: inline-block; padding: 4px 10px; border: 1px inset #808080;">
+        HORA LOCAL: CARGANDO...
+      </div>
+    </div>
+
+    <!-- PIE DE PAGINA -->
+    <footer>
+      <p style="margin: 4px 0;">
+        <b>Estructura de Datos &bull; Materiales de Tutoría</b>
+      </p>
+      <p style="margin: 4px 0; font-size: 12px;">
+        Portal estático diseñado para lectura clara y rápida en cualquier navegador web.
+      </p>
+      <p style="margin: 4px 0; font-size: 11px; color: #666;">
+        Monitor: Fray Santiago Fontalvo Caballero &bull; 2026
+      </p>
+      <p style="margin-top: 8px;">
+        <a href="#top" style="color: #0000ee; font-weight: bold; font-size: 12px;">[ Volver al inicio ^ ]</a>
+      </p>
+    </footer>
+
+  </div>
+
+  <!-- SCRIPT PARA HALLOWEEN, HORARIOS, HORA Y TERMINAL -->
+  <script>
+    // 1. Reloj en tiempo real
+    function updateClock() {
+      const now = new Date();
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+      const clockEl = document.getElementById('retroClock');
+      if (clockEl) {
+        clockEl.textContent = "HORA LOCAL: " + now.toLocaleString('es-CO', options).toUpperCase();
+      }
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // 2. Deteccion y resaltado de la sesion del dia actual
+    (function highlightToday() {
+      const dayIndex = new Date().getDay(); // 0 = Domingo, 1 = Lunes, ..., 6 = Sabado
+      const daysNames = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+      const currentDayName = daysNames[dayIndex];
+      const banner = document.getElementById('todayBanner');
+      const rows = document.querySelectorAll('#scheduleTable tbody tr');
+
+      let sessionsToday = 0;
+      rows.forEach(row => {
+        const rowDay = parseInt(row.getAttribute('data-day'), 10);
+        if (rowDay === dayIndex) {
+          row.classList.add('highlight-today');
+          sessionsToday++;
+        }
+      });
+
+      if (banner) {
+        if (sessionsToday > 0) {
+          banner.innerHTML = `[!] <b>Hoy es ${currentDayName}:</b> Hay <b>${sessionsToday}</b> sesión(es) de monitoría hoy (resaltadas en amarillo en la tabla).`;
+        } else {
+          banner.innerHTML = `[i] <b>Hoy es ${currentDayName}:</b> No hay monitorías programadas para hoy. Consulta los demás días en la tabla.`;
+        }
+      }
+    })();
+
+    // 3. Boton Compartir Horarios con hash y scroll directo
+    function compartirHorarios() {
+      const shareUrl = window.location.href.split('#')[0] + '#horarios';
+      const feedbackEl = document.getElementById('shareFeedback');
+
+      // Intentar copiar al portapapeles
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(shareUrl).then(() => {
+          showShareMessage("Enlace copiado con #horarios");
+        }).catch(() => {
+          fallbackSharePrompt(shareUrl);
+        });
+      } else {
+        fallbackSharePrompt(shareUrl);
+      }
+
+      // Actualizar hash y hacer scroll suave al horario
+      if (window.location.hash !== '#horarios') {
+        history.pushState(null, null, '#horarios');
+      }
+      const target = document.getElementById('horarios');
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    function fallbackSharePrompt(url) {
+      prompt("Copia este enlace directo a la sección de horarios:", url);
+      showShareMessage("Enlace listo para compartir");
+    }
+
+    function showShareMessage(msg) {
+      const fb = document.getElementById('shareFeedback');
+      if (fb) {
+        fb.textContent = "[+] " + msg;
+        fb.style.display = "inline-block";
+        setTimeout(() => {
+          fb.style.display = "none";
+        }, 4000);
+      }
+    }
+
+    // Scroll automatico al cargar si la URL ya contiene #horarios
+    window.addEventListener('DOMContentLoaded', () => {
+      if (window.location.hash === '#horarios') {
+        setTimeout(() => {
+          const el = document.getElementById('horarios');
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 200);
+      }
+    });
+
+    // 4. Filtro interactivo de temas en las guias
+    function filterModules() {
+      const input = document.getElementById('topicFilter').value.toLowerCase().trim();
+      const cards = document.querySelectorAll('#modulesList .module-card');
+      const countEl = document.getElementById('filterCount');
+      let visibleCount = 0;
+
+      cards.forEach(card => {
+        const keywords = card.getAttribute('data-keywords') || '';
+        const text = card.textContent.toLowerCase();
+        if (!input || keywords.includes(input) || text.includes(input)) {
+          card.style.display = 'flex';
+          visibleCount++;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      if (countEl) {
+        if (input) {
+          countEl.textContent = `(${visibleCount} de ${cards.length} guías coincidentes)`;
+        } else {
+          countEl.textContent = '';
+        }
+      }
+    }
+
+    // 5. Mini Terminal Interactiva
+    function handleTerminalCommand(e) {
+      if (e.key === 'Enter') {
+        const input = document.getElementById('terminalInput');
+        const output = document.getElementById('terminalOutput');
+        const cmd = input.value.trim().toLowerCase();
+        if (!cmd) return;
+
+        let response = '';
+        switch (cmd) {
+          case 'ayuda':
+          case 'help':
+            response = 'Comandos disponibles:<br>- <b>guias</b>: Lista las 3 guías de estudio.<br>- <b>horarios</b>: Muestra los días de atención.<br>- <b>monitor</b>: Datos del monitor.<br>- <b>limpiar</b> o <b>cls</b>: Limpia la terminal.';
+            break;
+          case 'guias':
+          case 'modulos':
+            response = 'Guías:<br>1. Introducción a C++ (Variables, I/O, Ciclos, Funciones)<br>2. Estructuras de Datos (Conceptos, Arreglos, Pilas, Colas)<br>3. Arrays y Vectores (1D, 2D, std::vector, &lt;algorithm&gt;)';
+            break;
+          case 'horarios':
+            response = 'Horarios: Lun (9pm), Mar (11am), Mié (6am & 11am), Jue (6am), Vie (6am, 5pm & 8pm), Sáb (8am).';
+            break;
+          case 'monitor':
+            response = 'Monitor: Fray Santiago Fontalvo Caballero | Correo: frayfontalvo.es@unitropico.edu.co';
+            break;
+          case 'limpiar':
+          case 'cls':
+          case 'clear':
+            output.innerHTML = '';
+            input.value = '';
+            return;
+          default:
+            response = `Comando no reconocido: "${cmd}". Escribe <b>ayuda</b> para ver los comandos válidos.`;
+        }
+
+        output.innerHTML += `<div><span style="color:#ffff00;">C:\\ED&gt;</span> ${input.value}</div>`;
+        output.innerHTML += `<div style="margin-bottom:6px; color:#ffffff;">${response}</div>`;
+        output.scrollTop = output.scrollHeight;
+        input.value = '';
+      }
+    }
+
+    // =========================================================================
+    // 6. ANIMACIONES DE HALLOWEEN (Pixel Art Retro: Murcielagos y Fantasmas)
+    // =========================================================================
+    let halloweenActive = true;
+    const canvas = document.getElementById('halloweenCanvas');
+    const ctx = canvas.getContext('2d');
+    let animationFrameId = null;
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    // Entidades de Halloween con velocidad lenta, cadencia fija y menor intensidad
+    class Bat {
+      constructor(initialX, fixedY, fixedSpeed = 0.65) {
+        this.fixedSpeed = fixedSpeed;
+        this.fixedY = fixedY;
+        this.size = 14; // Tamano pixelado discreto
+        this.reset(initialX);
+      }
+      reset(xPos = -60) {
+        this.x = xPos;
+        this.y = this.fixedY;
+        this.vx = this.fixedSpeed;
+        this.step = Math.random() * 50;
+        this.wingState = 0;
+        this.wingTimer = 0;
+      }
+      update() {
+        this.step += 0.02;
+        this.x += this.vx;
+        this.y = this.fixedY + Math.sin(this.step) * 12; // Ondulacion suave y constante
+        this.wingTimer++;
+        if (this.wingTimer % 16 === 0) { // Aleteo pausado y tranquilo
+          this.wingState = (this.wingState + 1) % 2;
+        }
+        if (this.x > canvas.width + 70) {
+          this.reset(-70);
+        }
+      }
+      draw(c) {
+        c.save();
+        c.translate(this.x, this.y);
+        c.fillStyle = '#1a0526'; // Morado oscuro/negro retro
+
+        const s = this.size / 10;
+        // Cuerpo pixelado
+        c.fillRect(-2 * s, -3 * s, 4 * s, 6 * s);
+        // Orejitas
+        c.fillRect(-2 * s, -5 * s, 1.5 * s, 2 * s);
+        c.fillRect(0.5 * s, -5 * s, 1.5 * s, 2 * s);
+        // Ojos rojos retro
+        c.fillStyle = '#ff0033';
+        c.fillRect(-1.5 * s, -2.5 * s, 1 * s, 1 * s);
+        c.fillRect(0.5 * s, -2.5 * s, 1 * s, 1 * s);
+
+        c.fillStyle = '#1a0526';
+        if (this.wingState === 0) {
+          // Alas arriba
+          c.fillRect(-8 * s, -6 * s, 6 * s, 4 * s);
+          c.fillRect(-12 * s, -4 * s, 5 * s, 3 * s);
+          c.fillRect(2 * s, -6 * s, 6 * s, 4 * s);
+          c.fillRect(7 * s, -4 * s, 5 * s, 3 * s);
+        } else {
+          // Alas abajo
+          c.fillRect(-8 * s, 0, 6 * s, 4 * s);
+          c.fillRect(-12 * s, -2 * s, 5 * s, 3 * s);
+          c.fillRect(2 * s, 0, 6 * s, 4 * s);
+          c.fillRect(7 * s, -2 * s, 5 * s, 3 * s);
+        }
+        c.restore();
+      }
+    }
+
+    class Ghost {
+      constructor(xRatio, startYOffset = 0) {
+        this.xRatio = xRatio; // Posicion relativa horizontal (ej. bordes)
+        this.startYOffset = startYOffset;
+        this.reset(true);
+      }
+      reset(initial = false) {
+        const lateralMargin = Math.min(120, canvas.width * 0.15);
+        this.baseX = this.xRatio < 0.5 ? lateralMargin : canvas.width - lateralMargin;
+        this.x = this.baseX;
+        this.y = initial ? (canvas.height * 0.5 + this.startYOffset) : canvas.height + 50;
+        this.vy = -0.35; // Ascenso lento, constante y relajado
+        this.amplitude = 12; // Oscilacion lateral discreta
+        this.frequency = 0.015;
+        this.step = this.startYOffset;
+        this.alpha = 0.55; // Semi-transparente para no obstaculizar texto
+      }
+      update() {
+        this.step += 1;
+        this.y += this.vy;
+        this.x = this.baseX + Math.sin(this.step * this.frequency) * this.amplitude;
+        if (this.y < -60) {
+          this.reset(false);
+        }
+      }
+      draw(c) {
+        c.save();
+        c.translate(this.x, this.y);
+        c.globalAlpha = this.alpha;
+
+        // Fantasmita blanco pixelado / sombreado
+        c.fillStyle = '#ffffff';
+        // Cabeza redondeada pixel
+        c.fillRect(-10, -16, 20, 24);
+        c.fillRect(-8, -20, 16, 4);
+        c.fillRect(-6, -22, 12, 2);
+
+        // Faldón ondulante
+        const wobble = Math.sin(this.step * 0.1) > 0 ? 0 : 2;
+        c.fillRect(-10, 8, 4, 4 + wobble);
+        c.fillRect(-4, 8, 4, 6 - wobble);
+        c.fillRect(2, 8, 4, 4 + wobble);
+        c.fillRect(8, 8, 4, 5 - wobble);
+
+        // Ojos negros huecos
+        c.fillStyle = '#000000';
+        c.fillRect(-6, -12, 3, 5);
+        c.fillRect(3, -12, 3, 5);
+        // Boca redondeada
+        c.fillRect(-2, -4, 4, 4);
+
+        c.restore();
+      }
+    }
+
+    // Instancias con cadencia fija y espaciada (solo 2 murcielagos y 2 fantasmitas)
+    const bats = [
+      new Bat(canvas.width * 0.2, 70, 0.65),            // Murcielago 1: parte superior, cadencia fija
+      new Bat(-canvas.width * 0.4, 210, 0.58)           // Murcielago 2: espaciado con retraso constante
+    ];
+    const ghosts = [
+      new Ghost(0.08, 0),    // Fantasmita lateral izquierdo (borde)
+      new Ghost(0.92, 180)   // Fantasmita lateral derecho (borde) con desfase
+    ];
+
+    function drawWebCorners(c) {
+      // Telaraña retro en esquina superior izquierda
+      c.save();
+      c.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+      c.lineWidth = 1;
+      c.beginPath();
+      c.moveTo(0, 0); c.lineTo(70, 0);
+      c.moveTo(0, 0); c.lineTo(55, 45);
+      c.moveTo(0, 0); c.lineTo(0, 70);
+      // Arcos concéntricos
+      c.moveTo(25, 0); c.quadraticCurveTo(18, 18, 0, 25);
+      c.moveTo(48, 0); c.quadraticCurveTo(36, 36, 0, 48);
+      c.moveTo(70, 0); c.quadraticCurveTo(55, 55, 0, 70);
+      c.stroke();
+
+      // Telaraña retro en esquina superior derecha
+      const w = canvas.width;
+      c.beginPath();
+      c.moveTo(w, 0); c.lineTo(w - 70, 0);
+      c.moveTo(w, 0); c.lineTo(w - 55, 45);
+      c.moveTo(w, 0); c.lineTo(w, 70);
+      c.moveTo(w - 25, 0); c.quadraticCurveTo(w - 18, 18, w, 25);
+      c.moveTo(w - 48, 0); c.quadraticCurveTo(w - 36, 36, w, 48);
+      c.moveTo(w - 70, 0); c.quadraticCurveTo(w - 55, 55, w, 70);
+      c.stroke();
+      c.restore();
+    }
+
+    function animateHalloween() {
+      if (!halloweenActive) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        return;
+      }
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      drawWebCorners(ctx);
+
+      ghosts.forEach(g => {
+        g.update();
+        g.draw(ctx);
+      });
+
+      bats.forEach(b => {
+        b.update();
+        b.draw(ctx);
+      });
+
+      animationFrameId = requestAnimationFrame(animateHalloween);
+    }
+
+    // Iniciar animacion
+    animateHalloween();
+
+    function toggleHalloween() {
+      halloweenActive = !halloweenActive;
+      const btn = document.getElementById('halloweenToggle');
+      if (btn) {
+        btn.textContent = halloweenActive ? '[ Halloween FX: ON ]' : '[ Halloween FX: OFF ]';
+      }
+      if (halloweenActive) {
+        animateHalloween();
+      } else {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if (animationFrameId) cancelAnimationFrame(animationFrameId);
+      }
+    }
+  </script>
+</body>
+
+</html>

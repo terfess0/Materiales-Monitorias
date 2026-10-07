@@ -1,0 +1,1934 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Arrays y Vectores en C++: De 1D a Multidimensionales</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=JetBrains+Mono:wght@400;600&family=Public+Sans:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    /* Estilos Base (Plantilla original) */
+    :root {
+      color-scheme: light;
+      --bg: #FFFFFF;
+      --surface: #FFFFFF;
+      --ink: #141414;
+      --muted: #505856;
+      --line: #D6DDDB;
+      --title: #00594E;
+      --accent: #00594E;
+      --accent-soft: #E4F0ED;
+      --on-accent: #FFFFFF;
+      --hot: #B5A160;
+      --hot-soft: #F6F1E0;
+      --ok: #00594E;
+      --ok-soft: #DCEEE9;
+      --bad: #B3412F;
+      --bad-soft: #F8E1DC;
+      --code-bg: #F6F7F7;
+      --f-head: 'Bricolage Grotesque', 'Segoe UI', system-ui, sans-serif;
+      --f-body: 'Public Sans', 'Segoe UI', system-ui, sans-serif;
+      --f-mono: 'JetBrains Mono', ui-monospace, Consolas, monospace;
+    }
+
+    :root {
+      box-sizing: border-box;
+      padding-top: env(safe-area-inset-top, 0px);
+      padding-bottom: env(safe-area-inset-bottom, 0px)
+    }
+
+    html {
+      height: 100%;
+      scroll-padding-top: env(safe-area-inset-top, 0px)
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: inherit
+    }
+
+    body {
+      margin: 0;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--f-body);
+      font-size: 18px;
+      line-height: 1.55
+    }
+
+    [hidden] {
+      display: none !important
+    }
+
+    [tabindex="-1"]:focus {
+      outline: none
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-family: var(--f-head);
+      line-height: 1.1;
+      margin: 0 0 .35em;
+      letter-spacing: -.015em;
+      font-weight: 700;
+      color: var(--title)
+    }
+
+    h1 {
+      font-size: clamp(2.1rem, 6vw, 3.8rem);
+      letter-spacing: -.03em;
+      font-weight: 800
+    }
+
+    h2 {
+      font-size: clamp(1.6rem, 3.4vw, 2.3rem)
+    }
+
+    h3 {
+      font-size: 1.25rem;
+      letter-spacing: -.005em
+    }
+
+    p {
+      margin: 0 0 .8em
+    }
+
+    .lead {
+      font-size: clamp(1.1rem, 2vw, 1.35rem);
+      color: var(--muted)
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: .95rem
+    }
+
+    code,
+    .mono {
+      font-family: var(--f-mono)
+    }
+
+    /* Contenedores de Diapositivas */
+    .deck {
+      flex: 1;
+      min-height: 0;
+      position: relative
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      overflow-y: auto;
+      display: none;
+      flex-direction: column;
+      padding: clamp(10px, 1.6vw, 16px) clamp(14px, 3vw, 36px) clamp(14px, 2.4vw, 24px)
+    }
+
+    .slide.active {
+      display: flex;
+      animation: enter .22s ease-out
+    }
+
+    .wrap {
+      width: 100%;
+      margin: 0 auto;
+      max-width: 1200px;
+    }
+
+    @keyframes enter {
+      from {
+        opacity: 0;
+        transform: translateY(8px)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
+    }
+
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(6px)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
+    }
+
+    .rise {
+      animation: rise .25s ease-out
+    }
+
+    /* Navegación */
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px clamp(14px, 4vw, 40px);
+      border-top: 3px solid var(--hot);
+      background: var(--surface)
+    }
+
+    .track {
+      flex: 1;
+      height: 4px;
+      background: var(--line);
+      border-radius: 2px;
+      overflow: hidden
+    }
+
+    .bar {
+      height: 100%;
+      width: 0;
+      background: var(--accent);
+      transition: width .25s ease
+    }
+
+    .count {
+      font: 600 .9rem var(--f-mono);
+      color: var(--muted);
+      min-width: 4.5em;
+      text-align: center
+    }
+
+    .navname {
+      color: var(--muted);
+      font-size: .9rem;
+      white-space: nowrap
+    }
+
+    @media (max-width:640px) {
+      .navname {
+        display: none
+      }
+    }
+
+    /* Controles y Botones */
+    .btn {
+      font: 600 1rem var(--f-body);
+      padding: .55em 1em;
+      border-radius: 8px;
+      border: 2px solid var(--ink);
+      background: var(--surface);
+      color: var(--ink);
+      cursor: pointer;
+      line-height: 1.2;
+      transition: all 0.2s;
+    }
+
+    .btn:hover {
+      background: var(--accent-soft)
+    }
+
+    .btn:active {
+      transform: translateY(1px)
+    }
+
+    .btn.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--on-accent)
+    }
+
+    .btn.primary:hover {
+      filter: brightness(1.08)
+    }
+
+    .btn.action {
+      background: var(--hot);
+      border-color: var(--hot);
+      color: var(--ink)
+    }
+
+    .btn:disabled {
+      opacity: .45;
+      cursor: not-allowed
+    }
+
+    .btn.link {
+      background: none;
+      border: none;
+      color: var(--accent);
+      padding: .15em 0;
+      text-align: left;
+      text-decoration: underline;
+      text-underline-offset: 3px
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center
+    }
+
+    .row.top {
+      margin-top: 16px
+    }
+
+    /* Paneles y Código */
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: clamp(14px, 2.4vw, 24px)
+    }
+
+    .code {
+      font: .95rem/1.5 var(--f-mono);
+      background: var(--code-bg);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px 14px;
+      min-height: 2.8em;
+      white-space: pre-wrap;
+      overflow-x: auto
+    }
+
+    .status {
+      min-height: 3em;
+      margin: 14px 0 8px
+    }
+
+    /* Celdas Visuales (1D) */
+    .cells {
+      display: flex;
+      gap: 6px;
+      margin: 10px 0;
+    }
+
+    .cell {
+      flex: 1 1 0;
+      max-width: 80px;
+      min-width: 0;
+      display: flex;
+      flex-direction: column
+    }
+
+    .box {
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+      border: 2px dashed var(--line);
+      border-radius: 6px;
+      font: 600 clamp(.85rem, 2.8vw, 1.4rem) var(--f-mono);
+      color: var(--ink);
+      background: var(--surface);
+      transition: all 0.3s;
+    }
+
+    .box.filled {
+      border: 2px solid var(--accent);
+      background: var(--accent-soft)
+    }
+
+    .idx {
+      text-align: center;
+      font: .8rem var(--f-mono);
+      color: var(--muted);
+      margin-top: 4px
+    }
+
+    @keyframes pop {
+      0% {
+        transform: scale(.5);
+        background: var(--hot)
+      }
+
+      55% {
+        transform: scale(1.12)
+      }
+
+      100% {
+        transform: scale(1);
+        background: var(--accent-soft)
+      }
+    }
+
+    .box.pop {
+      animation: pop .45s ease-out
+    }
+
+    @keyframes swap {
+      0% {
+        transform: translateY(0)
+      }
+
+      50% {
+        transform: translateY(-15px);
+        background: var(--hot-soft)
+      }
+
+      100% {
+        transform: translateY(0)
+      }
+    }
+
+    .box.swap {
+      animation: swap .5s ease-out
+    }
+
+    /* Cuadrículas 2D (Matrices) */
+    .grid2d {
+      display: grid;
+      gap: 4px;
+      margin: 15px 0;
+      justify-content: start;
+    }
+
+    .grid-row {
+      display: contents;
+    }
+
+    .box2d {
+      width: 50px;
+      height: 50px;
+      display: grid;
+      place-items: center;
+      border: 2px solid var(--accent);
+      border-radius: 6px;
+      background: var(--accent-soft);
+      font: 600 1.1rem var(--f-mono);
+    }
+
+    .box2d.header {
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    .box2d.highlight {
+      background: var(--hot);
+      color: var(--ink);
+      transform: scale(1.05);
+    }
+
+    /* Layouts */
+    .two {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 28px
+    }
+
+    @media (max-width:760px) {
+      .two {
+        grid-template-columns: 1fr
+      }
+    }
+
+    .def {
+      color: var(--title);
+      font: 500 clamp(1.15rem, 2.4vw, 1.5rem)/1.4 var(--f-head);
+      border-left: 4px solid var(--hot);
+      padding-left: 18px;
+      margin: 0 0 18px
+    }
+
+    .facts {
+      display: grid;
+      grid-template-columns: minmax(120px, 190px) minmax(0, 1fr);
+      gap: 0 28px;
+      margin: 0 0 28px
+    }
+
+    .facts dt {
+      color: var(--title);
+      font: 700 1.05rem var(--f-head);
+      padding: 14px 0;
+      border-top: 1px solid var(--line)
+    }
+
+    .facts dd {
+      margin: 0;
+      padding: 14px 0;
+      border-top: 1px solid var(--line)
+    }
+
+    /* Tarjetas de Ejercicios */
+    .exercise-card {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      margin-bottom: 16px;
+      background: var(--surface);
+      padding: 16px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    }
+
+    .exercise-card h4 {
+      margin: 0 0 8px 0;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .ex-desc {
+      margin-bottom: 12px;
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    .exercise-level {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .level-easy {
+      background: var(--ok-soft);
+      color: var(--ok);
+    }
+
+    .level-med {
+      background: var(--hot-soft);
+      color: #8A7222;
+    }
+
+    .level-hard {
+      background: var(--bad-soft);
+      color: var(--bad);
+    }
+
+    /* Botón Revelar Solución */
+    details.ex-solution {
+      margin-top: 10px;
+    }
+
+    details.ex-solution summary {
+      font-weight: 600;
+      padding: 8px 14px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-radius: 6px;
+      cursor: pointer;
+      list-style: none;
+      display: inline-flex;
+      align-items: center;
+      font-size: 0.9rem;
+      transition: background 0.2s;
+    }
+
+    details.ex-solution summary:hover {
+      background: #d0e7e1;
+    }
+
+    details.ex-solution summary::-webkit-details-marker {
+      display: none;
+    }
+
+    details.ex-solution summary::before {
+      content: '👀 Ver solución';
+      margin-right: 6px;
+    }
+
+    details.ex-solution[open] summary::before {
+      content: '🙈 Ocultar solución';
+    }
+
+    details.ex-solution .code {
+      margin-top: 12px;
+    }
+
+    details.exercise summary {
+      font-weight: 600;
+      padding: 12px 16px;
+      background: var(--code-bg);
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    details.exercise summary::-webkit-details-marker {
+      display: none;
+    }
+
+    details.exercise summary::after {
+      content: '▼';
+      color: var(--muted);
+      font-size: 0.8em;
+      transition: transform 0.2s;
+    }
+
+    details.exercise[open] summary::after {
+      transform: rotate(180deg);
+    }
+
+    .exercise-content {
+      padding: 16px;
+    }
+
+    .exercise-level {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-left: 10px;
+      text-transform: uppercase;
+    }
+
+    .level-easy {
+      background: var(--ok-soft);
+      color: var(--ok);
+    }
+
+    .level-med {
+      background: var(--hot-soft);
+      color: #8A7222;
+    }
+
+    .level-hard {
+      background: var(--bad-soft);
+      color: var(--bad);
+    }
+
+    /* Filtros de ejercicios */
+    .filters {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      font-size: 0.9rem;
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid var(--line);
+      cursor: pointer;
+      background: var(--surface);
+    }
+
+    .filter-btn.active {
+      background: var(--accent);
+      color: var(--on-accent);
+      border-color: var(--accent);
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="deck" id="deck">
+
+    <!-- 1 Portada -->
+    <section class="slide active" data-name="Inicio" aria-label="Portada">
+      <div class="wrap hero">
+        <h1 tabindex="-1">Arrays en C++</h1>
+        <p class="lead">De cero a experto: Unidimensionales, Bidimensionales, Multidimensionales, Vectores y Algoritmos
+          estándar.</p>
+
+        <div class="panel" style="margin-top: 30px; text-align: center;">
+          <h3 style="color: var(--muted);">¿Qué es un Array?</h3>
+          <div class="cells" style="justify-content: center;">
+            <div class="cell">
+              <div class="box filled">10</div>
+              <div class="idx">arr[0]</div>
+            </div>
+            <div class="cell">
+              <div class="box filled">25</div>
+              <div class="idx">arr[1]</div>
+            </div>
+            <div class="cell">
+              <div class="box filled">8</div>
+              <div class="idx">arr[2]</div>
+            </div>
+            <div class="cell">
+              <div class="box filled">99</div>
+              <div class="idx">arr[3]</div>
+            </div>
+          </div>
+          <p class="hint" style="margin-top:12px">Es una colección de variables del mismo tipo, almacenadas en memoria
+            contigua.</p>
+        </div>
+        <p class="hint row top">Avanza con las flechas del teclado o los botones inferiores.</p>
+      </div>
+    </section>
+
+    <!-- 2 Objetivos -->
+    <section class="slide" data-name="Objetivos" aria-label="Qué vas a repasar">
+      <div class="wrap">
+        <h2 tabindex="-1">Ruta de Aprendizaje</h2>
+        <dl class="facts">
+          <dt>1D: Arrays Unidimensionales</dt>
+          <dd>Análisis mediante analogías y demostración en C++ (declaración, tipos y acceso). Para reforzar bases de
+            entrada al tema.</dd>
+          <dt>2D: Arrays Bidimensionales</dt>
+          <dd>Matrices. Estudiantes que comprendan 1D y deseen dominar las 2 dimensiones.</dd>
+          <dt>N-D: Multidimensionales</dt>
+          <dd>Llevando la lógica a 3 o más dimensiones (Tensores).</dd>
+          <dt>Vectores y Algoritmos</dt>
+          <dd>Arrays dinámicos con <code>std::vector</code> y uso de <code>&lt;algorithm&gt;</code>.</dd>
+          <dt>Listas vs Arrays</dt>
+          <dd>Diferencias clave en memoria y uso (std::list).</dd>
+          <dt>20 Ejercicios Prácticos</dt>
+          <dd>Batería de ejercicios graduados por dificultad para afianzar todo lo aprendido (sin abusar de punteros).
+          </dd>
+        </dl>
+      </div>
+    </section>
+
+    <!-- 3 Unidimensionales -->
+    <section class="slide" data-name="1D" aria-label="Arrays Unidimensionales">
+      <div class="wrap">
+        <h2 tabindex="-1">Arrays Unidimensionales (1D)</h2>
+        <p class="def">Imagina una calle con casas numeradas o un pastillero semanal. Todos los espacios están en línea
+          recta, uno al lado del otro.</p>
+
+        <div class="two">
+          <div>
+            <h3>Concepto</h3>
+            <p>Un array 1D es una lista finita y ordenada de elementos del <strong>mismo tipo</strong> (por ejemplo,
+              todos enteros o todos textos).</p>
+            <ul>
+              <li><strong>Tamaño fijo:</strong> En los arrays estáticos de C++, debes definir su tamaño al crearlo.</li>
+              <li><strong>Índices:</strong> En C++, siempre empezamos a contar desde <strong>0</strong>.</li>
+            </ul>
+            <div class="cells" id="array1D">
+              <div class="cell">
+                <div class="box filled">15</div>
+                <div class="idx">0</div>
+              </div>
+              <div class="cell">
+                <div class="box filled">22</div>
+                <div class="idx">1</div>
+              </div>
+              <div class="cell">
+                <div class="box filled">8</div>
+                <div class="idx">2</div>
+              </div>
+              <div class="cell">
+                <div class="box filled">42</div>
+                <div class="idx">3</div>
+              </div>
+              <div class="cell">
+                <div class="box filled">19</div>
+                <div class="idx">4</div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <h3>En C++</h3>
+            <pre class="code">
+// 1. Declaración (con basura en memoria)
+int edades[5];
+
+// 2. Declaración e Inicialización
+int notas[5] = {15, 22, 8, 42, 19};
+
+// 3. Acceder y Modificar (Índice 2)
+notas[2] = 10; 
+
+// 4. Recorrer con un bucle for
+for(int i = 0; i < 5; i++) {
+    cout &lt;&lt; notas[i] &lt;&lt; " ";
+}
+</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 Bidimensionales -->
+    <section class="slide" data-name="2D" aria-label="Arrays Bidimensionales">
+      <div class="wrap">
+        <h2 tabindex="-1">Arrays Bidimensionales (2D)</h2>
+        <p class="def">Imagina una hoja de Excel, un tablero de ajedrez o las sillas del cine. Usamos Filas y Columnas.
+        </p>
+
+        <div class="two">
+          <div>
+            <h3>Concepto (Matrices)</h3>
+            <p>Es un "array de arrays". Para acceder a un dato necesitas dos coordenadas:
+              <code>matriz[fila][columna]</code>.
+            </p>
+
+            <!-- Grid 3x4 visual -->
+            <div class="grid2d" style="grid-template-columns: 30px repeat(4, 50px);">
+              <!-- Header cols -->
+              <div class="box2d header"></div>
+              <div class="box2d header">c0</div>
+              <div class="box2d header">c1</div>
+              <div class="box2d header">c2</div>
+              <div class="box2d header">c3</div>
+              <!-- Fila 0 -->
+              <div class="box2d header">f0</div>
+              <div class="box2d" id="m00">1</div>
+              <div class="box2d" id="m01">5</div>
+              <div class="box2d" id="m02">9</div>
+              <div class="box2d" id="m03">3</div>
+              <!-- Fila 1 -->
+              <div class="box2d header">f1</div>
+              <div class="box2d" id="m10">7</div>
+              <div class="box2d" id="m11">2</div>
+              <div class="box2d" id="m12">8</div>
+              <div class="box2d" id="m13">4</div>
+              <!-- Fila 2 -->
+              <div class="box2d header">f2</div>
+              <div class="box2d" id="m20">6</div>
+              <div class="box2d" id="m21">0</div>
+              <div class="box2d" id="m22">1</div>
+              <div class="box2d" id="m23">5</div>
+            </div>
+            <div class="row">
+              <button class="btn" id="btn2d-1">Ver matriz[1][2]</button>
+              <button class="btn" id="btn2d-2">Ver matriz[2][0]</button>
+            </div>
+          </div>
+          <div>
+            <h3>En C++</h3>
+            <pre class="code">
+// Declaración: 3 filas y 4 columnas
+int matriz[3][4] = {
+    {1, 5, 9, 3}, // Fila 0
+    {7, 2, 8, 4}, // Fila 1
+    {6, 0, 1, 5}  // Fila 2
+};
+
+// Recorrer una matriz 2D (Bucles anidados)
+for(int f = 0; f < 3; f++) {
+    for(int c = 0; c < 4; c++) {
+        cout &lt;&lt; matriz[f][c] &lt;&lt; " ";
+    }
+    cout &lt;&lt; endl; // Salto al terminar fila
+}
+</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5 Multidimensionales -->
+    <section class="slide" data-name="N-D" aria-label="Multidimensionales">
+      <div class="wrap">
+        <h2 tabindex="-1">Arrays Multidimensionales (3D o más)</h2>
+        <p class="def">Imagina un Cubo de Rubik, o un edificio: Piso (z), Fila de apartamentos (y), Número de cuarto
+          (x).</p>
+
+        <div class="two">
+          <div>
+            <h3>De la Teoría a la Práctica</h3>
+            <p>A nivel de hardware, la memoria del computador sigue siendo una línea recta (1D). C++ hace la matemática
+              internamente para traducir <code>cubo[piso][fila][col]</code> a una posición lineal.</p>
+            <p>Puedes crear arrays de 3, 4 o más dimensiones, pero ten cuidado: <strong>la memoria requerida crece
+                exponencialmente</strong>.</p>
+            <ul>
+              <li><code>int datos[10]</code> = 10 enteros</li>
+              <li><code>int datos[10][10]</code> = 100 enteros</li>
+              <li><code>int datos[10][10][10]</code> = 1,000 enteros</li>
+            </ul>
+          </div>
+          <div>
+            <h3>En C++</h3>
+            <pre class="code">
+// 3 Dimensiones (ej: 2 páginas, 3 filas, 4 columnas)
+int cubo[2][3][4];
+
+// Acceso específico
+cubo[1][2][3] = 99;
+
+// Recorrido requiere 3 for anidados
+for(int p = 0; p < 2; p++) {
+    for(int f = 0; f < 3; f++) {
+        for(int c = 0; c < 4; c++) {
+            cubo[p][f][c] = 0; // Limpiar cubo
+        }
+    }
+}
+</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6 Vectores -->
+    <section class="slide" data-name="Vectores" aria-label="Vectores std">
+      <div class="wrap">
+        <h2 tabindex="-1">Vectores (Arrays Dinámicos)</h2>
+        <p class="def">El problema del Array tradicional en C++ es que su tamaño no puede cambiar. Para solucionarlo,
+          existe <code>std::vector</code>.</p>
+
+        <div class="two">
+          <div>
+            <h3>Beneficios del <code>std::vector</code></h3>
+            <ul class="uses">
+              <li><span>Puede crecer o encogerse en tiempo de ejecución.</span><b>Dinámico</b></li>
+              <li><span>Lleva la cuenta automática de su tamaño (<code>v.size()</code>).</span><b>Inteligente</b></li>
+              <li><span>Se pasa fácilmente a funciones.</span><b>Práctico</b></li>
+            </ul>
+            <p class="hint">Requiere incluir la librería: <code>#include &lt;vector&gt;</code></p>
+          </div>
+          <div>
+            <h3>En C++</h3>
+            <pre class="code">
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+vector&lt;int&gt; v = {10, 20}; // Inicia con 2 datos
+
+// Agregar un dato al final (crece automáticamente)
+v.push_back(30); 
+
+// Eliminar el último dato
+v.pop_back();
+
+// Saber cuántos elementos tiene
+int cant = v.size(); 
+</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7 Librería Algorithm -->
+    <section class="slide" data-name="Algorithm" aria-label="Librería Algorithm">
+      <div class="wrap">
+        <h2 tabindex="-1">Magia con <code>&lt;algorithm&gt;</code></h2>
+        <p>C++ tiene una librería estándar súper poderosa que te ahorra escribir cientos de líneas de código para tareas
+          comunes en arrays y vectores.</p>
+
+        <div class="panel">
+          <div class="cells" id="algoVec" style="justify-content: center; margin-bottom: 20px;">
+            <div class="cell">
+              <div class="box filled">55</div>
+            </div>
+            <div class="cell">
+              <div class="box filled">12</div>
+            </div>
+            <div class="cell">
+              <div class="box filled">89</div>
+            </div>
+            <div class="cell">
+              <div class="box filled">34</div>
+            </div>
+            <div class="cell">
+              <div class="box filled">7</div>
+            </div>
+          </div>
+
+          <div class="row top" style="justify-content: center;">
+            <button class="btn action" id="btnSort"><code>sort()</code> Ordenar</button>
+            <button class="btn action" id="btnReverse"><code>reverse()</code> Invertir</button>
+            <button class="btn action" id="btnShuffle">Desordenar</button>
+          </div>
+
+          <div class="two" style="margin-top: 25px;">
+            <div>
+              <pre class="code" id="algoCode">
+// Código equivalente en C++
+#include &lt;algorithm&gt;
+
+// ...
+</pre>
+            </div>
+            <div>
+              <p id="algoMsg" class="hint">Presiona un botón para ver la función en acción.</p>
+              <ul style="font-size: 0.9rem;">
+                <li><code>sort(v.begin(), v.end())</code>: Ordena de menor a mayor.</li>
+                <li><code>reverse(v.begin(), v.end())</code>: Voltea el orden actual.</li>
+                <li>Para usar arrays clásicos: <code>sort(arr, arr + 5)</code>.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8 Listas vs Arrays -->
+    <section class="slide" data-name="Listas" aria-label="Listas vs Arrays">
+      <div class="wrap">
+        <h2 tabindex="-1">Listas vs. Arrays</h2>
+        <p class="lead">¿Cuándo usar un Array/Vector y cuándo usar una Lista (<code>std::list</code>)?</p>
+
+        <div class="two">
+          <div class="panel">
+            <h3 style="color: var(--accent);">Array / <code>std::vector</code></h3>
+            <p><strong>Memoria:</strong> Contigua (bloque único).</p>
+            <p><strong>Ventaja:</strong> Acceso instantáneo. Si quieres la posición 1000, vas directo con
+              <code>v[1000]</code>.
+            </p>
+            <p><strong>Desventaja:</strong> Insertar o borrar en el medio es lento (hay que empujar todos los demás
+              elementos).</p>
+          </div>
+          <div class="panel">
+            <h3 style="color: var(--hot);">Lista Doblemente Enlazada (<code>std::list</code>)</h3>
+            <p><strong>Memoria:</strong> Nodos esparcidos unidos por punteros.</p>
+            <p><strong>Ventaja:</strong> Insertar o borrar datos en el medio es rapidísimo.</p>
+            <p><strong>Desventaja:</strong> Acceso secuencial. No puedes hacer <code>lista[1000]</code>, debes
+              recorrerla desde el principio.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9 Ejercicios -->
+    <section class="slide" data-name="30 Ejercicios" aria-label="Ejercicios de Programación">
+      <div class="wrap">
+        <h2 tabindex="-1">30 Ejercicios Prácticos (Énfasis en Vectores)</h2>
+        <p class="lead">Lee el planteamiento, intenta resolverlo en tu mente o en papel, y luego descubre la solución.
+        </p>
+
+        <!-- ========================================== -->
+        <!-- CATEGORÍA 1: ARRAYS 1D ESTÁTICOS (REPASO)  -->
+        <!-- ========================================== -->
+        <h3 style="margin-top:20px; color:var(--accent); border-bottom: 2px solid var(--line); padding-bottom: 5px;">1.
+          Arrays 1D Estáticos</h3>
+
+        <div class="exercise-card">
+          <h4>1. Declarar e imprimir <span class="exercise-level level-easy">Básico</span></h4>
+          <p class="ex-desc"><strong>Planteamiento:</strong> Crea un array estático de 5 números enteros predefinidos e
+            imprímelos en pantalla usando un bucle <code>for</code>.</p>
+          <details class="ex-solution">
+            <summary></summary>
+            <pre class="code">
+#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    int arr[5] = {10, 20, 30, 40, 50};
+    for(int i = 0; i < 5; i++) {
+        cout &lt;&lt; arr[i] &lt;&lt; " ";
+    }
+    return 0;
+}
+</pre>
+          </details>
+        </div>
+
+        <div class="exercise-card">
+          <h4>2. Sumatoria de elementos <span class="exercise-level level-easy">Básico</span></h4>
+          <p class="ex-desc"><strong>Planteamiento:</strong> Dado un array de 4 números enteros, calcula y muestra la
+            suma total de todos sus elementos.</p>
+          <details class="ex-solution">
+            <summary></summary>
+            <pre class="code">
+#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    int nums[] = {5, 10, 15, 20};
+    int suma = 0;
+    for(int i = 0; i < 4; i++) {
+        suma += nums[i];
+    }
+    cout &lt;&lt; "La suma es: " &lt;&lt; suma;
+    return 0;
+}
+</pre>
+          </details>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- CATEGORÍA 2: VECTORES - FUNDAMENTOS        -->
+        <!-- ========================================== -->
+        <h3 style="margin-top:30px; color:var(--accent); border-bottom: 2px solid var(--line); padding-bottom: 5px;">2.
+          Vectores: Creación y Acceso Básico</h3>
+
+        <div class="exercise-card">
+          <h4>3. Tu primer Vector y push_back() <span class="exercise-level level-easy">Básico</span></h4>
+          <p class="ex-desc"><strong>Planteamiento:</strong> Incluye la librería <code>&lt;vector&gt;</code>. Crea un
+            vector de enteros vacío. Usa la función <code>push_back()</code> para añadir los números 7, 14 y 21 uno por
+            uno. Imprime el primer elemento usando el índice <code>[0]</code>.</p>
+          <details class="ex-solution">
+            <summary></summary>
+            <pre class="code">
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+int main() {
+    vector&lt;int&gt; v;
+    v.push_back(7);
+    v.push_back(14);
+    v.push_back(21);
+    
+    cout &lt;&lt; "El primer numero es: " &lt;&lt; v[0];
+    return 0;
+}
+</pre>
+          </details>
+        </div>
+
+        <div class="exercise-card">
+          <h4>4. Conocer el tamaño con size() <span class="exercise-level level-easy">Básico</span></h4>
+          <p class="ex-desc"><strong>Planteamiento:</strong> Inicializa un vector con 4 números directamente en su
+            declaración (ej: <code>{1, 2, 3, 4}</code>). Usa la función <code>size()</code> en un bucle <code>for</code>
+            para recorrerlo e imprimir todos sus elementos.</p>
+          <details class="ex-solution">
+            <summary></summary>
+            <pre class="code">
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+int main() {
+    vector&lt;int&gt; numeros = {10, 20, 30, 40};
+    
+    for(int i = 0; i < numeros.size(); i++) {
+        cout &lt;&lt; numeros[i] &lt;&lt; " ";
+    }
+    return 0;
+}
+</pre>
+          </details>
+        </div>
+
+        <div class="exercise-card">
+          <h4>5. Acceso seguro con .at() <span class="exercise-level level-easy">Básico</span></h4>
+          <p class="ex-desc"><strong>Planteamiento:</strong> Acceder con <code>[]</code> no verifica si te sales del
+            límite, pero <code>.at()</code> sí (lanza un error seguro). Crea un vector con 3 datos. Imprime el dato en
+            la posición 2 usando <code>.at(2)</code>.</p>
+          <details class="ex-solution">
+            <summary></summary>
+            <pre class="code">
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+int main() {
+    vector&lt;int&gt; v = {100, 200, 300};
+    
+    // Es mas seguro que usar v[2]
+    cout &lt;&lt; "Valor en indice 2: " &lt;&lt; v.at(2) &lt;&lt; endl;
+    return 0;
+}
+</pre>
+          </details>
+        </div>
+
+        <div class="exercise-card">
+          <h4>6. Funciones front() y back() <span class="exercise-level level-easy">Básico</span></h4>
+          <p class="ex-desc"><strong>Planteamiento:</strong> Crea un vector con 5 números. Usa las funciones
+            <code>front()</code> para imprimir el primer elemento y <code>back()</code> para imprimir el último, sin
+            usar números de índice.</p>
+          <details class="ex-solution">
+            <summary></summary>
+            <pre class="code">
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+int main() {
+    vector&lt;int&gt; v = {5, 10, 15, 20, 25};
+    
+    cout &lt;&lt; "Primero: " &lt;&lt; v.front() &lt;&lt; endl;
+    cout &lt;&lt; "Ultimo: " &lt;&lt; v.back() &lt;&lt; endl;
+    return 0;
+}
+</pre>
+          </details>
+        </div>
+
+        <div class="exercise-card">
+          <h4>7. ¿Está vacío? con empty() <span class="exercise-level level-easy">Básico</span></h4>
+          <p class="ex-desc"><strong>Planteamiento:</strong> Crea un vector sin elementos. Usa un condicional
+            <code>if</code> junto con la función <code>empty()</code> para verificar si está vacío. Si lo está, añade un
+            dato e imprime "Vector inicializado".</p>
+          <details class="ex-solution">
+            <summary></summary>
+            <pre class="code">
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+int main() {
+    vector&lt;int&gt; v;
+    
+    if(v.empty()) {
+        cout &lt;&lt; "El vector estaba vacio." &lt;&lt; endl;
+        v.push_back(99);
+        cout &lt;&lt; "Vector inicializado con: " &lt;&lt; v[0];
+    }
+    return 0;
+}
+</pre>
+          </details>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- CATEGORÍA 3: VECTORES - DINAMISMO          -->
+        <!-- ========================================== -->
+        <h3 style="margin-top:30px; color:var(--accent); border-bottom: 2px solid var(--line); padding-bottom: 5px;">3.
+          Vectores: Comportamiento Dinámico</h3>
+
+        <div class="exercise-card">
+          <h4>8. Eliminar el último con pop_back() <span class="exercise-level level-med">Intermedio</span></h4>
+          <p class="ex-desc"><strong>Planteamiento:</strong> Crea un vector con 3 números. Elimina el último elemento
+            usando <code>pop_back()</code>. Luego, imprime el nuevo tamaño del vector para confirmar que se redujo.</p>
+          <details class="ex-solution">
+            <summary></summary>
+            <pre class="code">
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+int main() {
+    vector&lt;int&gt; v = {10, 20, 30};
+    cout &lt;&lt; "Tamano original: " &lt;&lt; v.size() &lt;&lt; endl;
+    
+    v.pop_back(); // Elimina el 30
+    
+    cout &lt;&lt; "Nuevo tamano: " &lt;&lt; v.size() &lt;&lt; endl;
+    cout &lt;&lt; "El ultimo ahora es: " &lt;&lt; v.back(); // Sera 20
+    return 0;
+}
+</pre>
+          </details>
+        </div>
+
+        <div class="exercise-card">
+          <h4>9. Limpiar todo con clear() <span class="exercise-level level-med">Intermedio</span></h4>
+          <p class="ex-desc"><strong>Planteamiento:</strong> Inicializa un vector con 5 valores. Usa la función
+            <code>clear()</code> para vaciarlo por completo. Comprueba e imprime si quedó vacío usando
+            <code>empty()</code>.</p>
+          <details class="ex-solution">
+            <summary></summary>
+            <pre class="code">
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+int main() {
+    vector&lt;int&gt; v = {1, 2, 3, 4, 5};
+    v.clear(); // Borra todos los elementos
+    
+    if(v.empty()) {
+        cout &lt;&lt; "El vector ha sido vaciado completamente.";
+    }
+    return 0;
+}
+</pre>
+          </details>
+        </div>
+
+        <div class="exercise-card">
+          <h4>10. Llenado dinámico por el usuario <span class="exercise-level level-med">Intermedio</span></h4>
+          <p class="ex-desc"><strong>Planteamiento:</strong> Pide al usuario que ingrese números sin parar. Agrega cada
+            número al vector con <code>push_back()</code>. Detén el ciclo cuando el usuario ingrese un número negativo.
+          </p>
+          <details class="ex-solution">
+            <summary></summary>
+            <pre class="code">
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+int main() {
+    vector&lt;int&gt; v;
+    int num = 0;
+    
+    cout &lt;&lt; "Ingresa numeros (negativo para salir):\n";
+    while(true) {
+        cin >> num;
+        if(num < 0) break;
+        v.push_back(num);
+    }
+    cout &lt;&lt; "Guardaste " &lt;&lt; v.size() &lt;&lt; " numeros.";
+    return 0;
+}
+</pre>
+          </details>
+        </div>
+
+        <div class="exercise-card">
+          <h4>11. Insertar en el medio con insert() <span class="exercise-level level-hard">Avanzado</span></h4>
+          <p class="ex-desc"><strong>Planteamiento:</strong> Crea un vector <code>{10, 30, 40}</code>. Usa
+            <code>insert()</code> y el iterador <code>begin()</code> para insertar el número 20 exactamente en la
+            segunda posición (índice 1).</p>
+          <details class="ex-solution">
+            <summary></summary>
+            <pre class="code">
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+int main() {
+    vector&lt;int&gt; v = {10, 30, 40};
+    
+    // v.begin() es la posicion 0. v.begin() + 1 es el indice 1.
+    v.insert(v.begin() + 1, 20);
+    
+    for(int n : v) cout &lt;&lt; n &lt;&lt; " "; // Resultado: 10 20 30 40
+    return 0;
+}
+</pre>
+          </details>
+        </div>
+
+        <div class="exercise-card">
+          <h4>12. Borrar en el medio con erase() <span class="exercise-level level-hard">Avanzado</span></h4>
+          <p class="ex-desc"><strong>Planteamiento:</strong> Crea un vector <code>{100, 999, 200, 300}</code>. Usa la
+            función <code>erase()</code> para eliminar el elemento "intruso" (999) ubicado en el índice 1.</p>
+          <details class="ex-solution">
+            <summary></summary>
+            <pre class="code">
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+int main() {
+    vector&lt;int&gt; v = {100, 999, 200, 300};
+    
+    // Borrar el elemento en el indice 1
+    v.erase(v.begin() + 1);
+    
+    for(int n : v) cout &lt;&lt; n &lt;&lt; " "; // Resultado: 100 200 300
+    return 0;
+}
+</pre>
+          </details>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- CATEGORÍA 4: VECTORES DE STRINGS           -->
+        <!-- ========================================== -->
+        <h3 style="margin-top:30px; color:var(--accent); border-bottom: 2px solid var(--line); padding-bottom: 5px;">4.
+          Vectores de Textos (Strings)</h3>
+
+        <div class="exercise-card">
+          <h4>13. Vector de strings de marcas de autos <span class="exercise-level level-easy">Básico</span></h4>
+          <p class="ex-desc"><strong>Planteamiento:</strong> Crea un <code>vector&lt;string&gt; cars;</code>. Añade las
+            marcas "Volvo", "BMW" y "Ford" usando <code>push_back()</code>. Imprime la marca que está en la posición 1.
+          </p>
+          <details class="ex-solution">
+            <summary></summary>
+            <pre class="code">
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+using namespace std;
+
+int main() {
+    vector&lt;string&gt; cars;
+    cars.push_back("Volvo");
+    cars.push_back("BMW");
+    cars.push_back("Ford");
+    
+    cout &lt;&lt; "El auto en el indice 1 es: " &lt;&lt; cars.at(1);
+    return 0;
+}
+</pre>
+          </details>
+        </div>
+
+        <div class="exercise-card">
+          <h4>14. Reemplazar un string <span class="exercise-level level-easy">Básico</span></h4>
+          <p class="ex-desc"><strong>Planteamiento:</strong> Declara
+            <code>vector&lt;string&gt; cars = {"Volvo", "BMW", "Ford"};</code>. Cambia el valor del primer elemento
+            ("Volvo") por "Tesla" accediendo por su índice y reasignando el valor. Imprímelo.</p>
+          <details class="ex-solution">
+            <summary></summary>
+            <pre class="code">
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+using namespace std;
+
+int main() {
+    vector&lt;string&gt; cars = {"Volvo", "BMW", "Ford"};
+    
+    // Modificar el dato
+    cars[0] = "Tesla";
+    
+    cout &lt;&lt; "El primer auto ahora es: " &lt;&lt; cars[0];
+    return 0;
+}
+</pre>
+          </details>
+        </div>
+
+        <div class="exercise-card">
+          <h4>15. Bucle for-each con strings <span class="exercise-level level-med">Intermedio</span></h4>
+          <p class="ex-desc"><strong>Planteamiento:</strong> Crea un vector con 4 nombres de colores. Usa un bucle
+            basado en rango (for-each) de C++ (<code>for(string color : colores)</code>) para imprimirlos todos en
+            líneas separadas.</p>
+          <details class="ex-solution">
+            <summary></summary>
+            <pre class="code">
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+using namespace std;
+
+int main() {
+    vector&lt;string&gt; colores = {"Rojo", "Azul", "Verde", "Amarillo"};
+    
+    // Bucle moderno de C++
+    for(string color : colores) {
+        cout &lt;&lt; "- " &lt;&lt; color &lt;&lt; endl;
+    }
+    return 0;
+}
+</pre>
+          </details>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- CATEGORÍA 5: MATRICES 2D Y MULTIDIMENSIONAL-->
+        <!-- ========================================== -->
+        <h3 style="margin-top:30px; color:var(--accent); border-bottom: 2px solid var(--line); padding-bottom: 5px;">5.
+          Arrays Bidimensionales y Multidimensionales</h3>
+
+        <div class="exercise-card">
+          <h4>16. Recorrer Matriz 2x2 <span class="exercise-level level-med">Intermedio</span></h4>
+          <p class="ex-desc"><strong>Planteamiento:</strong> Declara una matriz estática de 2 filas y 2 columnas.
+            Imprímela en consola respetando el formato de cuadrícula usando bucles anidados.</p>
+          <details class="ex-solution">
+            <summary></summary>
+            <pre class="code">
+#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    int m[2][2] = {{1, 2}, {3, 4}};
+    for(int f = 0; f < 2; f++) {
+        for(int c = 0; c < 2; c++) {
+            cout &lt;&lt; m[f][c] &lt;&lt; " ";
+        }
+        cout &lt;&lt; endl;
+    }
+    return 0;
+}
+</pre>
+          </details>
+        </div>
+
+        <div class="exercise-card">
+          <h4>17. Suma de dos Matrices <span class="exercise-level level-med">Intermedio</span></h4>
+          <p class="ex-desc"><strong>Planteamiento:</strong> Dadas dos matrices 2x2, crea una tercera matriz que
+            almacene y muestre la suma de los elementos en las mismas posiciones.</p>
+          <details class="ex-solution">
+            <summary></summary>
+            <pre class="code">
+#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    int A[2][2] = {{1,2}, {3,4}};
+    int B[2][2] = {{5,6}, {7,8}};
+    int C[2][2]; 
+    
+    for(int i = 0; i < 2; i++) {
+        for(int j = 0; j < 2; j++) {
+            C[i][j] = A[i][j] + B[i][j];
+            cout &lt;&lt; C[i][j] &lt;&lt; " ";
+        }
+        cout &lt;&lt; endl;
+    }
+    return 0;
+}
+</pre>
+          </details>
+        </div>
+
+        <div class="exercise-card">
+          <h4>18. Diagonal Principal <span class="exercise-level level-med">Intermedio</span></h4>
+          <p class="ex-desc"><strong>Planteamiento:</strong> En una matriz cuadrada de 3x3, suma exclusivamente los
+            números donde el índice de la fila es igual al de la columna.</p>
+          <details class="ex-solution">
+            <summary></summary>
+            <pre class="code">
+#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    int m[3][3] = {{1,0,0}, {0,5,0}, {0,0,9}};
+    int suma = 0;
+    
+    for(int i = 0; i < 3; i++) {
+        suma += m[i][i]; 
+    }
+    cout &lt;&lt; "Suma de diagonal: " &lt;&lt; suma;
+    return 0;
+}
+</pre>
+          </details>
+        </div>
+
+        <div class="exercise-card">
+          <h4>19. Matriz 3D Básica <span class="exercise-level level-hard">Avanzado</span></h4>
+          <p class="ex-desc"><strong>Planteamiento:</strong> Declara un array 3D de dimensiones `[2][2][2]`. Modifica e
+            imprime el valor que está en la segunda capa, primera fila, segunda columna (índices `[1][0][1]`).</p>
+          <details class="ex-solution">
+            <summary></summary>
+            <pre class="code">
+#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    int cubo[2][2][2] = {0}; // Todo en cero
+    
+    // Asignando valor a capa 1, fila 0, col 1
+    cubo[1][0][1] = 99;
+    
+    cout &lt;&lt; "Valor: " &lt;&lt; cubo[1][0][1];
+    return 0;
+}
+</pre>
+          </details>
+        </div>
+
+        <div class="exercise-card">
+          <h4>20. Sistema de Reservas de Cine <span class="exercise-level level-hard">Avanzado</span></h4>
+          <p class="ex-desc"><strong>Planteamiento:</strong> Matriz 3x3 de ceros. El programa reserva el asiento
+            <code>[1][2]</code> cambiándolo a 1. Si intenta reservar el mismo asiento de nuevo, lanza un aviso.</p>
+          <details class="ex-solution">
+            <summary></summary>
+            <pre class="code">
+#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    int sala[3][3] = {0}; 
+    int f = 1, c = 2; 
+    
+    sala[f][c] = 1; // Primera reserva
+    
+    // Intento de segunda reserva
+    if(sala[f][c] == 0) {
+        sala[f][c] = 1;
+        cout &lt;&lt; "Exito";
+    } else {
+        cout &lt;&lt; "Asiento ocupado!";
+    }
+    return 0;
+}
+</pre>
+          </details>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- CATEGORÍA 6: VECTORES Y <ALGORITHM>        -->
+        <!-- ========================================== -->
+        <h3 style="margin-top:30px; color:var(--accent); border-bottom: 2px solid var(--line); padding-bottom: 5px;">6.
+          Vectores y Librería &lt;algorithm&gt;</h3>
+
+        <div class="exercise-card">
+          <h4>21. Ordenar Vector con sort() <span class="exercise-level level-easy">Básico</span></h4>
+          <p class="ex-desc"><strong>Planteamiento:</strong> Usa la librería <code>&lt;algorithm&gt;</code>. Crea un
+            vector desordenado y ordenalo de menor a mayor usando <code>sort(v.begin(), v.end())</code>.</p>
+          <details class="ex-solution">
+            <summary></summary>
+            <pre class="code">
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+
+int main() {
+    vector&lt;int&gt; v = {99, 10, 45, 2};
+    
+    sort(v.begin(), v.end());
+    
+    for(int n : v) cout &lt;&lt; n &lt;&lt; " "; // 2 10 45 99
+    return 0;
+}
+</pre>
+          </details>
+        </div>
+
+        <div class="exercise-card">
+          <h4>22. Invertir con reverse() <span class="exercise-level level-med">Intermedio</span></h4>
+          <p class="ex-desc"><strong>Planteamiento:</strong> Crea un <code>vector&lt;string&gt;</code> con {"A", "B",
+            "C"}. Usa <code>reverse()</code> para voltear la lista sin usar variables temporales y luego imprímelo.</p>
+          <details class="ex-solution">
+            <summary></summary>
+            <pre class="code">
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+
+int main() {
+    vector&lt;string&gt; letras = {"A", "B", "C"};
+    
+    reverse(letras.begin(), letras.end());
+    
+    for(string L : letras) cout &lt;&lt; L &lt;&lt; " "; // C B A
+    return 0;
+}
+</pre>
+          </details>
+        </div>
+
+        <div class="exercise-card">
+          <h4>23. Contar repeticiones con count() <span class="exercise-level level-med">Intermedio</span></h4>
+          <p class="ex-desc"><strong>Planteamiento:</strong> En un vector con datos repetidos
+            <code>{1, 5, 5, 2, 5}</code>, usa <code>count()</code> para averiguar e imprimir cuántas veces aparece el
+            número 5.</p>
+          <details class="ex-solution">
+            <summary></summary>
+            <pre class="code">
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+
+int main() {
+    vector&lt;int&gt; v = {1, 5, 5, 2, 5};
+    
+    int veces = count(v.begin(), v.end(), 5);
+    
+    cout &lt;&lt; "El 5 aparece " &lt;&lt; veces &lt;&lt; " veces.";
+    return 0;
+}
+</pre>
+          </details>
+        </div>
+
+        <div class="exercise-card">
+          <h4>24. Buscar un elemento con find() <span class="exercise-level level-hard">Avanzado</span></h4>
+          <p class="ex-desc"><strong>Planteamiento:</strong> Usa <code>find()</code> para buscar el número "8" en un
+            vector. Esta función devuelve un iterador. Si el iterador es igual a <code>v.end()</code>, significa que no
+            lo encontró.</p>
+          <details class="ex-solution">
+            <summary></summary>
+            <pre class="code">
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+
+int main() {
+    vector&lt;int&gt; v = {2, 4, 6, 8, 10};
+    
+    // auto deduce el tipo (iterador)
+    auto it = find(v.begin(), v.end(), 8);
+    
+    if(it != v.end()) {
+        cout &lt;&lt; "Numero 8 encontrado!";
+    } else {
+        cout &lt;&lt; "No se encontro.";
+    }
+    return 0;
+}
+</pre>
+          </details>
+        </div>
+
+        <div class="exercise-card">
+          <h4>25. Máximo y Mínimo automático <span class="exercise-level level-hard">Avanzado</span></h4>
+          <p class="ex-desc"><strong>Planteamiento:</strong> No necesitas hacer un bucle para buscar el mayor o el
+            menor. Usa <code>max_element()</code> y <code>min_element()</code> de la librería algorithm en un vector.
+            (Nota: devuelven un iterador, añade un <code>*</code> al principio para obtener el valor).</p>
+          <details class="ex-solution">
+            <summary></summary>
+            <pre class="code">
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+
+int main() {
+    vector&lt;int&gt; v = {45, 2, 88, 12};
+    
+    // Se usa el asterisco (*) para leer el valor del iterador
+    int maximo = *max_element(v.begin(), v.end());
+    int minimo = *min_element(v.begin(), v.end());
+    
+    cout &lt;&lt; "Max: " &lt;&lt; maximo &lt;&lt; " | Min: " &lt;&lt; minimo;
+    return 0;
+}
+</pre>
+          </details>
+        </div>
+
+        <!-- Relleno adicional de Vectores para consolidación -->
+        <div class="exercise-card">
+          <h4>26. Rellenar vector con ceros: assign() <span class="exercise-level level-med">Intermedio</span></h4>
+          <p class="ex-desc"><strong>Planteamiento:</strong> Inicializa un vector con datos aleatorios. Luego, usa la
+            función <code>assign(5, 0)</code> para borrar lo que tenía y reasignarle exactamente 5 elementos, todos con
+            valor 0.</p>
+          <details class="ex-solution">
+            <summary></summary>
+            <pre class="code">
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+int main() {
+    vector&lt;int&gt; v = {10, 20, 30};
+    
+    v.assign(5, 0); // Reemplaza todo por cinco 0s
+    
+    for(int n : v) cout &lt;&lt; n &lt;&lt; " ";
+    return 0;
+}
+</pre>
+          </details>
+        </div>
+
+        <div class="exercise-card">
+          <h4>27. Intercambiar dos vectores: swap() <span class="exercise-level level-med">Intermedio</span></h4>
+          <p class="ex-desc"><strong>Planteamiento:</strong> Crea <code>v1 = {1, 2}</code> y <code>v2 = {9, 8}</code>.
+            Llama a <code>v1.swap(v2)</code>. Imprime v1 para demostrar que ahora tiene los datos de v2 de forma
+            instantánea.</p>
+          <details class="ex-solution">
+            <summary></summary>
+            <pre class="code">
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+int main() {
+    vector&lt;int&gt; v1 = {1, 2};
+    vector&lt;int&gt; v2 = {9, 8};
+    
+    v1.swap(v2); // Intercambio super rapido
+    
+    cout &lt;&lt; "v1 ahora tiene: " &lt;&lt; v1[0] &lt;&lt; " y " &lt;&lt; v1[1];
+    return 0;
+}
+</pre>
+          </details>
+        </div>
+
+        <div class="exercise-card">
+          <h4>28. Matriz Dinámica (Vector de Vectores) <span class="exercise-level level-hard">Avanzado</span></h4>
+          <p class="ex-desc"><strong>Planteamiento:</strong> En lugar de <code>int m[2][2]</code>, declara
+            <code>vector&lt;vector&lt;int&gt;&gt; matriz;</code>. Inyecta dos vectores (filas) dentro de ella y accede
+            al elemento [0][1].</p>
+          <details class="ex-solution">
+            <summary></summary>
+            <pre class="code">
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+int main() {
+    // Declaracion de una matriz dinamica
+    vector&lt;vector&lt;int&gt;&gt; matriz = {
+        {10, 20},
+        {30, 40}
+    };
+    
+    // Acceso identico a los arrays estaticos
+    cout &lt;&lt; "Fila 0, Col 1 es: " &lt;&lt; matriz[0][1]; // Imprime 20
+    return 0;
+}
+</pre>
+          </details>
+        </div>
+
+        <div class="exercise-card">
+          <h4>29. Eliminar múltiples elementos <span class="exercise-level level-hard">Avanzado</span></h4>
+          <p class="ex-desc"><strong>Planteamiento:</strong> En un vector del 1 al 5, usa la función
+            <code>erase()</code> indicando un rango: desde <code>v.begin()</code> hasta <code>v.begin() + 3</code> para
+            borrar los primeros 3 números de golpe.</p>
+          <details class="ex-solution">
+            <summary></summary>
+            <pre class="code">
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+int main() {
+    vector&lt;int&gt; v = {1, 2, 3, 4, 5};
+    
+    // Borra desde el indice 0, hasta justo antes del indice 3
+    v.erase(v.begin(), v.begin() + 3);
+    
+    for(int n : v) cout &lt;&lt; n &lt;&lt; " "; // Imprime solo: 4 5
+    return 0;
+}
+</pre>
+          </details>
+        </div>
+
+        <div class="exercise-card">
+          <h4>30. Reto Final: Vector de Notas Dinámico <span class="exercise-level level-hard">Avanzado</span></h4>
+          <p class="ex-desc"><strong>Planteamiento:</strong> Pide al usuario meter calificaciones hasta ingresar -1.
+            Guarda en un vector. Ordena el vector de menor a mayor. Elimina la nota más baja usando
+            <code>erase()</code>. Imprime el promedio de las notas restantes.</p>
+          <details class="ex-solution">
+            <summary></summary>
+            <pre class="code">
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+
+int main() {
+    vector&lt;float&gt; notas;
+    float nota;
+    
+    cout &lt;&lt; "Ingresa notas (-1 para fin):\n";
+    while(cin >> nota && nota != -1) {
+        notas.push_back(nota);
+    }
+    
+    if(!notas.empty()) {
+        sort(notas.begin(), notas.end());
+        notas.erase(notas.begin()); // Elimina la mas baja
+        
+        float suma = 0;
+        for(float n : notas) suma += n;
+        
+        cout &lt;&lt; "Promedio sin la peor nota: " &lt;&lt; suma / notas.size();
+    }
+    return 0;
+}
+</pre>
+          </details>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 10 Resumen -->
+    <section class="slide" data-name="Resumen" aria-label="Resumen">
+      <div class="wrap">
+        <h2 tabindex="-1">Resumen</h2>
+        <ul class="sum">
+          <li><strong>Arrays 1D:</strong> Conjunto ordenado y finito de variables en una sola línea (estáticos).</li>
+          <li><strong>Arrays 2D (Matrices):</strong> "Array de arrays", ideal para cuadriculas, tableros o sistemas de
+            coordenadas. Requiere dos índices.</li>
+          <li><strong>Multidimensionales (3D+):</strong> Útiles para modelar el espacio, pero el consumo de memoria
+            crece muy rápido.</li>
+          <li><strong>std::vector:</strong> La versión moderna y dinámica del array en C++. Crece según lo necesites y
+            conoce su propio tamaño.</li>
+          <li><strong>&lt;algorithm&gt;:</strong> Utiliza siempre esta librería para no reinventar la rueda (sort,
+            reverse, count).</li>
+        </ul>
+        <div class="row top">
+          <button class="btn primary" type="button" data-go="1">Volver al inicio</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <nav class="nav" aria-label="Navegación de diapositivas">
+    <button class="btn" id="prev" type="button" aria-label="Diapositiva anterior">Anterior</button>
+    <div class="track" aria-hidden="true">
+      <div class="bar" id="bar"></div>
+    </div>
+    <span class="count" id="count" aria-live="polite">1 / 10</span>
+    <span class="navname" id="navName">Inicio</span>
+    <button class="btn primary" id="next" type="button" aria-label="Diapositiva siguiente">Siguiente</button>
+  </nav>
+
+  <script>
+    (function () {
+      'use strict';
+      var $ = function (s) { return document.querySelector(s) };
+      var $$ = function (s) { return Array.prototype.slice.call(document.querySelectorAll(s)) };
+
+      /* ---------- Navegación ---------- */
+      var slides = $$('.slide'), N = slides.length, cur = 0;
+      function go(i, focus) {
+        i = Math.max(0, Math.min(N - 1, i));
+        slides[cur].classList.remove('active');
+        cur = i;
+        var s = slides[cur];
+        s.classList.add('active');
+        s.scrollTop = 0;
+        $('#bar').style.width = ((cur + 1) / N * 100) + '%';
+        $('#count').textContent = (cur + 1) + ' / ' + N;
+        $('#navName').textContent = s.getAttribute('data-name') || '';
+        $('#prev').disabled = cur === 0;
+        $('#next').disabled = cur === N - 1;
+        if (focus) { var h = s.querySelector('h1,h2'); if (h) h.focus({ preventScroll: true }); }
+      }
+      $('#prev').onclick = function () { go(cur - 1, true) };
+      $('#next').onclick = function () { go(cur + 1, true) };
+      document.addEventListener('click', function (e) {
+        var b = e.target.closest && e.target.closest('[data-go]');
+        if (b) go(parseInt(b.getAttribute('data-go'), 10) - 1, true);
+      });
+      document.addEventListener('keydown', function (e) {
+        var t = e.target;
+        if (t.closest && t.closest('input,select,textarea')) return;
+        if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); go(cur + 1, true); }
+        else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); go(cur - 1, true); }
+        else if (e.key === 'Home') { go(0, true); }
+        else if (e.key === 'End') { go(N - 1, true); }
+      });
+      go(0, false);
+
+      /* ---------- Interactividad Diapositiva 4 (Matriz 2D) ---------- */
+      function clearGrid() {
+        $$('.box2d').forEach(function (b) {
+          b.classList.remove('highlight');
+        });
+      }
+      if ($('#btn2d-1')) {
+        $('#btn2d-1').onclick = function () {
+          clearGrid();
+          $('#m12').classList.add('highlight');
+        };
+      }
+      if ($('#btn2d-2')) {
+        $('#btn2d-2').onclick = function () {
+          clearGrid();
+          $('#m20').classList.add('highlight');
+        };
+      }
+
+      /* ---------- Interactividad Diapositiva 7 (Algorithm) ---------- */
+      var arrData = [55, 12, 89, 34, 7];
+      var algoVec = $('#algoVec');
+      var algoMsg = $('#algoMsg');
+      var algoCode = $('#algoCode');
+
+      function renderAlgo(animateClass) {
+        if (!algoVec) return;
+        algoVec.innerHTML = '';
+        arrData.forEach(function (val) {
+          var cell = document.createElement('div');
+          cell.className = 'cell';
+          cell.innerHTML = '<div class="box filled ' + (animateClass || '') + '">' + val + '</div>';
+          algoVec.appendChild(cell);
+        });
+      }
+
+      if ($('#btnSort')) {
+        $('#btnSort').onclick = function () {
+          arrData.sort(function (a, b) { return a - b });
+          renderAlgo('swap');
+          algoMsg.textContent = "sort(v.begin(), v.end()) ordenó los elementos de menor a mayor.";
+          algoCode.innerHTML = "#include &lt;algorithm&gt;\n#include &lt;vector&gt;\n//...\nsort(v.begin(), v.end());";
+        };
+        $('#btnReverse').onclick = function () {
+          arrData.reverse();
+          renderAlgo('swap');
+          algoMsg.textContent = "reverse(v.begin(), v.end()) invirtió la posición de los elementos.";
+          algoCode.innerHTML = "#include &lt;algorithm&gt;\n#include &lt;vector&gt;\n//...\nreverse(v.begin(), v.end());";
+        };
+        $('#btnShuffle').onclick = function () {
+          for (let i = arrData.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arrData[i], arrData[j]] = [arrData[j], arrData[i]];
+          }
+          renderAlgo('pop');
+          algoMsg.textContent = "random_shuffle(v.begin(), v.end()) desordenó los elementos al azar.";
+          algoCode.innerHTML = "#include &lt;algorithm&gt;\n#include &lt;vector&gt;\n//...\nrandom_shuffle(v.begin(), v.end());";
+        };
+      }
+    })();
+  </script>
+</body>
+
+</html>

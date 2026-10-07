@@ -1,0 +1,1635 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Introducción a C++: Fundamentos</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=JetBrains+Mono:wght@400;600&family=Public+Sans:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        /* Estilos Base */
+        :root {
+            color-scheme: light;
+            --bg: #FFFFFF;
+            --surface: #FFFFFF;
+            --ink: #141414;
+            --muted: #505856;
+            --line: #D6DDDB;
+            --title: #00594E;
+            --accent: #00594E;
+            --accent-soft: #E4F0ED;
+            --on-accent: #FFFFFF;
+            --hot: #B5A160;
+            --hot-soft: #F6F1E0;
+            --ok: #00594E;
+            --ok-soft: #DCEEE9;
+            --bad: #B3412F;
+            --bad-soft: #F8E1DC;
+            --code-bg: #F6F7F7;
+            --f-head: 'Bricolage Grotesque', 'Segoe UI', system-ui, sans-serif;
+            --f-body: 'Public Sans', 'Segoe UI', system-ui, sans-serif;
+            --f-mono: 'JetBrains Mono', ui-monospace, Consolas, monospace;
+        }
+
+        :root {
+            box-sizing: border-box;
+            padding-top: env(safe-area-inset-top, 0px);
+            padding-bottom: env(safe-area-inset-bottom, 0px)
+        }
+
+        html {
+            height: 100%;
+            scroll-padding-top: env(safe-area-inset-top, 0px)
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: inherit
+        }
+
+        body {
+            margin: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: var(--bg);
+            color: var(--ink);
+            font-family: var(--f-body);
+            font-size: 18px;
+            line-height: 1.55
+        }
+
+        [hidden] {
+            display: none !important
+        }
+
+        [tabindex="-1"]:focus {
+            outline: none
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: var(--f-head);
+            line-height: 1.1;
+            margin: 0 0 .35em;
+            letter-spacing: -.015em;
+            font-weight: 700;
+            color: var(--title)
+        }
+
+        h1 {
+            font-size: clamp(2.1rem, 6vw, 3.8rem);
+            letter-spacing: -.03em;
+            font-weight: 800
+        }
+
+        h2 {
+            font-size: clamp(1.6rem, 3.4vw, 2.3rem)
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            letter-spacing: -.005em
+        }
+
+        p {
+            margin: 0 0 .8em
+        }
+
+        .lead {
+            font-size: clamp(1.1rem, 2vw, 1.35rem);
+            color: var(--muted)
+        }
+
+        .hint {
+            color: var(--muted);
+            font-size: .95rem
+        }
+
+        code,
+        .mono {
+            font-family: var(--f-mono)
+        }
+
+        /* Contenedores de Diapositivas */
+        .deck {
+            flex: 1;
+            min-height: 0;
+            position: relative
+        }
+
+        .slide {
+            position: absolute;
+            inset: 0;
+            overflow-y: auto;
+            display: none;
+            flex-direction: column;
+            padding: clamp(10px, 1.6vw, 16px) clamp(14px, 3vw, 36px) clamp(14px, 2.4vw, 24px)
+        }
+
+        .slide.active {
+            display: flex;
+            animation: enter .22s ease-out
+        }
+
+        .wrap {
+            width: 100%;
+            margin: 0 auto;
+            max-width: 1200px;
+        }
+
+        @keyframes enter {
+            from {
+                opacity: 0;
+                transform: translateY(8px)
+            }
+
+            to {
+                opacity: 1;
+                transform: none
+            }
+        }
+
+        /* Navegación */
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px clamp(14px, 4vw, 40px);
+            border-top: 3px solid var(--hot);
+            background: var(--surface)
+        }
+
+        .track {
+            flex: 1;
+            height: 4px;
+            background: var(--line);
+            border-radius: 2px;
+            overflow: hidden
+        }
+
+        .bar {
+            height: 100%;
+            width: 0;
+            background: var(--accent);
+            transition: width .25s ease
+        }
+
+        .count {
+            font: 600 .9rem var(--f-mono);
+            color: var(--muted);
+            min-width: 4.5em;
+            text-align: center
+        }
+
+        .navname {
+            color: var(--muted);
+            font-size: .9rem;
+            white-space: nowrap
+        }
+
+        @media (max-width:640px) {
+            .navname {
+                display: none
+            }
+        }
+
+        /* Controles y Botones */
+        .btn {
+            font: 600 1rem var(--f-body);
+            padding: .55em 1em;
+            border-radius: 8px;
+            border: 2px solid var(--ink);
+            background: var(--surface);
+            color: var(--ink);
+            cursor: pointer;
+            line-height: 1.2;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: var(--accent-soft)
+        }
+
+        .btn.primary {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: var(--on-accent)
+        }
+
+        .btn.primary:hover {
+            filter: brightness(1.08)
+        }
+
+        .btn:disabled {
+            opacity: .45;
+            cursor: not-allowed
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center
+        }
+
+        .row.top {
+            margin-top: 16px
+        }
+
+        /* Paneles y Código */
+        .panel {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: clamp(14px, 2.4vw, 24px)
+        }
+
+        .code {
+            font: .95rem/1.5 var(--f-mono);
+            background: var(--code-bg);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 10px 14px;
+            min-height: 2.8em;
+            white-space: pre-wrap;
+            overflow-x: auto
+        }
+
+        .two {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 28px
+        }
+
+        @media (max-width:760px) {
+            .two {
+                grid-template-columns: 1fr
+            }
+        }
+
+        .def {
+            color: var(--title);
+            font: 500 clamp(1.15rem, 2.4vw, 1.5rem)/1.4 var(--f-head);
+            border-left: 4px solid var(--hot);
+            padding-left: 18px;
+            margin: 0 0 18px
+        }
+
+        .facts {
+            display: grid;
+            grid-template-columns: minmax(120px, 190px) minmax(0, 1fr);
+            gap: 0 28px;
+            margin: 0 0 28px
+        }
+
+        .facts dt {
+            color: var(--title);
+            font: 700 1.05rem var(--f-head);
+            padding: 14px 0;
+            border-top: 1px solid var(--line)
+        }
+
+        .facts dd {
+            margin: 0;
+            padding: 14px 0;
+            border-top: 1px solid var(--line)
+        }
+
+        /* Tarjetas de Ejercicios (Actualizadas) */
+        .exercise-card {
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            margin-bottom: 16px;
+            background: var(--surface);
+            padding: 16px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+        }
+
+        .exercise-card h4 {
+            margin: 0 0 8px 0;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .ex-desc {
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+            color: var(--muted);
+        }
+
+        .exercise-level {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .level-easy {
+            background: var(--ok-soft);
+            color: var(--ok);
+        }
+
+        .level-med {
+            background: var(--hot-soft);
+            color: #8A7222;
+        }
+
+        .level-hard {
+            background: var(--bad-soft);
+            color: var(--bad);
+        }
+
+        /* Botón Revelar Solución */
+        details.ex-solution {
+            margin-top: 10px;
+        }
+
+        details.ex-solution summary {
+            font-weight: 600;
+            padding: 8px 14px;
+            background: var(--accent-soft);
+            color: var(--accent);
+            border-radius: 6px;
+            cursor: pointer;
+            list-style: none;
+            display: inline-flex;
+            align-items: center;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+
+        details.ex-solution summary:hover {
+            background: #d0e7e1;
+        }
+
+        details.ex-solution summary::-webkit-details-marker {
+            display: none;
+        }
+
+        details.ex-solution summary::before {
+            content: '👀 Ver solución';
+            margin-right: 6px;
+        }
+
+        details.ex-solution[open] summary::before {
+            content: '🙈 Ocultar solución';
+        }
+
+        details.ex-solution .code {
+            margin-top: 12px;
+        }
+
+        /* Diagramas simples */
+        .diagram-box {
+            border: 2px dashed var(--line);
+            padding: 10px;
+            text-align: center;
+            border-radius: 8px;
+            background: var(--surface);
+            font-family: var(--f-mono);
+            font-size: 0.9rem;
+            color: var(--accent);
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="deck" id="deck">
+
+        <!-- 1 Portada -->
+        <section class="slide active" data-name="Inicio" aria-label="Portada">
+            <div class="wrap hero">
+                <h1 tabindex="-1">Introducción a C++</h1>
+                <p class="lead">Lo esencial del lenguaje: desde su historia y estructura básica, hasta variables,
+                    estructuras de control y funciones. La preparación ideal antes de ver Estructuras de Datos.</p>
+
+                <div class="panel" style="margin-top: 30px; text-align: center;">
+                    <h3 style="color: var(--muted);">El punto de partida</h3>
+                    <pre class="code" style="text-align: left; display: inline-block;">
+#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    cout &lt;&lt; "Hola, estructuras de datos!";
+    return 0;
+}
+</pre>
+                </div>
+                <p class="hint row top">Avanza con las flechas del teclado o los botones inferiores.</p>
+            </div>
+        </section>
+
+        <!-- 2 Historia y Conceptos -->
+        <section class="slide" data-name="Conceptos" aria-label="Qué es C++">
+            <div class="wrap">
+                <h2 tabindex="-1">¿Qué es C++ y de dónde viene?</h2>
+                <p class="def">Creado por Bjarne Stroustrup en 1979 como una extensión del lenguaje C para incluir
+                    Programación Orientada a Objetos.</p>
+
+                <dl class="facts">
+                    <dt>Lenguaje Compilado</dt>
+                    <dd>El código que escribes (.cpp) no lo entiende directamente la computadora. Necesita un
+                        <strong>Compilador</strong> (como GCC o MinGW) que traduzca tu código a lenguaje máquina (.exe)
+                        de una sola vez antes de ejecutarse. Esto lo hace rapidísimo.</dd>
+
+                    <dt>Tipado Estático</dt>
+                    <dd>A diferencia de lenguajes dinámicos (como Python o JavaScript), en C++ <strong>debes declarar
+                            obligatoriamente el tipo de dato</strong> de una variable antes de usarla, y no puedes
+                        cambiar ese tipo después.</dd>
+
+                    <dt>¿Para qué se usa?</dt>
+                    <dd>Desarrollo de videojuegos (Unreal Engine), sistemas operativos, navegadores web, motores de
+                        bases de datos y, por supuesto, para aprender y construir Estructuras de Datos, gracias a su
+                        alto control sobre la memoria.</dd>
+                </dl>
+            </div>
+        </section>
+
+        <!-- 3 Anatomía del código -->
+        <section class="slide" data-name="Estructura" aria-label="Anatomía de un programa">
+            <div class="wrap">
+                <h2 tabindex="-1">Estructura de un Programa Simple</h2>
+                <p class="lead">Todo programa en C++ tiene piezas fundamentales que siempre deben estar presentes.</p>
+
+                <div class="two">
+                    <div>
+                        <pre class="code">
+// 1. Librerias
+#include &lt;iostream&gt;
+
+// 2. Espacio de nombres
+using namespace std;
+
+// 3. Funcion principal
+int main() {
+    
+    // 4. Instrucciones
+    cout &lt;&lt; "Iniciando...";
+    
+    // 5. Retorno
+    return 0;
+}
+</pre>
+                    </div>
+                    <div>
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="margin-bottom: 12px;"><strong>1.
+                                    <code>#include &lt;iostream&gt;</code></strong><br>Le dice al compilador que incluya
+                                herramientas de entrada y salida (input/output stream) para leer del teclado e imprimir
+                                en pantalla.</li>
+                            <li style="margin-bottom: 12px;"><strong>2.
+                                    <code>using namespace std;</code></strong><br>Nos ahorra escribir <code>std::</code>
+                                antes de comandos comunes como cout o cin.</li>
+                            <li style="margin-bottom: 12px;"><strong>3. <code>int main() { ... }</code></strong><br>Es
+                                el punto de arranque de TODO programa en C++. El sistema operativo busca esta función
+                                para empezar a ejecutar.</li>
+                            <li style="margin-bottom: 12px;"><strong>5. <code>return 0;</code></strong><br>Avisa al
+                                sistema operativo que el programa terminó con éxito (cero errores).</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4 Tipos de datos -->
+        <section class="slide" data-name="Tipos y Variables" aria-label="Tipos de datos y Variables">
+            <div class="wrap">
+                <h2 tabindex="-1">Variables y Tipos de Datos</h2>
+                <p class="def">Al ser de tipado estático, C++ necesita saber qué vas a guardar en la caja (variable)
+                    antes de crearla.</p>
+
+                <div class="two">
+                    <div class="panel">
+                        <h3 style="color: var(--accent);">Tipos Básicos</h3>
+                        <ul>
+                            <li><code>int</code>: Números enteros (10, -5, 0).</li>
+                            <li><code>float</code> / <code>double</code>: Números con decimales (3.14, -0.5).</li>
+                            <li><code>char</code>: Un solo carácter ('A', 'z', '8'). Va entre comillas simples.</li>
+                            <li><code>bool</code>: Lógico, verdadero (<code>true</code> / 1) o falso (<code>false</code>
+                                / 0).</li>
+                            <li><code>string</code>: Texto ("Hola Mundo"). Requiere <code>#include &lt;string&gt;</code>
+                                y va en comillas dobles.</li>
+                        </ul>
+                    </div>
+                    <div class="panel">
+                        <h3 style="color: var(--accent);">Declaración en Código</h3>
+                        <pre class="code">
+// Sintaxis: TipoDeDato NombreVariable = Valor;
+
+int numero1 = 25;
+float decimal1 = 9.99;
+char letraEntrada = 'S';
+bool estadoActivo = true;
+string nombreUsuario = "Juan";
+
+// Declaracion sin inicializar
+int numero2; 
+numero2 = 50; // Asignacion posterior
+</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5 Entrada y Salida -->
+        <section class="slide" data-name="I/O" aria-label="Entrada y Salida">
+            <div class="wrap">
+                <h2 tabindex="-1">Entrada y Salida (I/O)</h2>
+                <p>Para que el programa sea interactivo, necesitamos comunicarnos con el usuario. C++ usa "flujos"
+                    (streams).</p>
+
+                <div class="two">
+                    <div>
+                        <h3>Salida de datos: <code>cout</code></h3>
+                        <p>Significa <em>Character Output</em>. Usa el operador de inserción <code>&lt;&lt;</code> para
+                            enviar datos a la pantalla.</p>
+                        <pre class="code">
+int numero1 = 10;
+// Imprime texto y variables combinadas
+cout &lt;&lt; "El valor es: " &lt;&lt; numero1 &lt;&lt; endl;
+// 'endl' genera un salto de linea (Enter)
+</pre>
+                    </div>
+                    <div>
+                        <h3>Entrada de datos: <code>cin</code></h3>
+                        <p>Significa <em>Character Input</em>. Usa el operador de extracción <code>&gt;&gt;</code> para
+                            leer datos del teclado y guardarlos en variables.</p>
+                        <pre class="code">
+int entrada1;
+cout &lt;&lt; "Escribe un numero: ";
+cin >> entrada1; // El programa se pausa y espera
+cout &lt;&lt; "Escribiste: " &lt;&lt; entrada1;
+</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6 Condicionales -->
+        <section class="slide" data-name="Condicionales" aria-label="Estructuras if else">
+            <div class="wrap">
+                <h2 tabindex="-1">Control: Condicionales (if / else)</h2>
+                <p class="lead">Permiten que el programa tome decisiones basándose en operaciones lógicas (==, !=, <,>,
+                        <=,>=, &&, ||).</p>
+
+                <div class="two">
+                    <div class="panel">
+                        <h3 style="color: var(--accent);">Sintaxis Básica</h3>
+                        <pre class="code">
+int numero1 = 15;
+
+if (numero1 > 10) {
+    cout &lt;&lt; "Es mayor que 10";
+} else if (numero1 == 10) {
+    cout &lt;&lt; "Es igual a 10";
+} else {
+    cout &lt;&lt; "Es menor que 10";
+}
+</pre>
+                    </div>
+                    <div class="panel">
+                        <h3 style="color: var(--accent);">Operadores Lógicos</h3>
+                        <p>Se usan para combinar varias condiciones en un solo <code>if</code>:</p>
+                        <ul>
+                            <li><strong>AND lógico (<code>&&</code>):</strong> Todas deben ser verdaderas.</li>
+                            <li><strong>OR lógico (<code>||</code>):</strong> Al menos una debe ser verdadera.</li>
+                        </ul>
+                        <pre class="code">
+int edadEntrada = 20;
+bool tieneBoleto = true;
+
+if (edadEntrada >= 18 && tieneBoleto == true) {
+    cout &lt;&lt; "Puede pasar.";
+}
+</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7 Ciclos -->
+        <section class="slide" data-name="Ciclos" aria-label="Estructuras de Repeticion">
+            <div class="wrap">
+                <h2 tabindex="-1">Control: Ciclos (for / while)</h2>
+                <p class="def">Sirven para repetir un bloque de código. Son la base fundamental para poder recorrer
+                    Estructuras de Datos como Arrays y Listas.</p>
+
+                <div class="two">
+                    <div>
+                        <h3>Bucle <code>for</code></h3>
+                        <p>Úsalo cuando sepas **exactamente** cuántas veces quieres repetir algo (ej: recorrer 10
+                            casillas de un arreglo).</p>
+                        <pre class="code">
+// Estructura: for(inicio; condicion; incremento)
+
+for (int iterador1 = 0; iterador1 < 5; iterador1++) {
+    cout &lt;&lt; "Vuelta numero: " &lt;&lt; iterador1 &lt;&lt; endl;
+}
+// El iterador1 va de 0 a 4. 
+// iterador1++ significa "sumar 1 cada vez".
+</pre>
+                    </div>
+                    <div>
+                        <h3>Bucle <code>while</code></h3>
+                        <p>Úsalo cuando la repetición dependa de una condición dinámica (ej: seguir pidiendo datos
+                            "mientras" el usuario no escriba 0).</p>
+                        <pre class="code">
+int entrada1 = 1;
+
+while (entrada1 != 0) {
+    cout &lt;&lt; "Ingresa 0 para salir: ";
+    cin >> entrada1;
+}
+cout &lt;&lt; "Terminado.";
+</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 8 Funciones -->
+        <section class="slide" data-name="Funciones" aria-label="Funciones en C++">
+            <div class="wrap">
+                <h2 tabindex="-1">Funciones (Modularidad)</h2>
+                <p>Para no escribir todo el código de un tirón dentro del <code>main</code>, creamos funciones
+                    separadas. Reciben <strong>parámetros</strong> y pueden o no <strong>retornar</strong> un resultado.
+                </p>
+
+                <div class="two">
+                    <div class="panel">
+                        <h3 style="color: var(--accent);">Función que Retorna valor</h3>
+                        <pre class="code">
+// 1. Tipo de retorno: int
+// 2. Nombre: sumarNumeros
+// 3. Parametros: parametro1, parametro2
+
+int sumarNumeros(int parametro1, int parametro2) {
+    int resultado1 = parametro1 + parametro2;
+    return resultado1; // Devuelve el dato
+}
+
+int main() {
+    int suma = sumarNumeros(5, 10);
+    cout &lt;&lt; suma; // Imprime 15
+    return 0;
+}
+</pre>
+                    </div>
+                    <div class="panel">
+                        <h3 style="color: var(--accent);">Función sin Retorno (void)</h3>
+                        <pre class="code">
+// "void" significa vacio/nada. 
+// Hace una accion pero no devuelve un valor matematico.
+
+void mostrarSaludo(string parametroNombre) {
+    cout &lt;&lt; "Hola, " &lt;&lt; parametroNombre &lt;&lt; endl;
+}
+
+int main() {
+    mostrarSaludo("Estudiante");
+    // No usamos variables para atrapar un "return"
+    return 0;
+}
+</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 9 Ejercicios -->
+        <section class="slide" data-name="30 Ejercicios" aria-label="Ejercicios de Programación">
+            <div class="wrap">
+                <h2 tabindex="-1">30 Ejercicios Prácticos (Fundamentos)</h2>
+                <p class="lead">Intenta deducir la respuesta antes de revelar el código. ¡Fíjate bien en el nombre de
+                    las variables!</p>
+
+                <!-- ========================================== -->
+                <!-- CATEGORÍA 1: ENTRADA Y SALIDA BÁSICA       -->
+                <!-- ========================================== -->
+                <h3
+                    style="margin-top:20px; color:var(--accent); border-bottom: 2px solid var(--line); padding-bottom: 5px;">
+                    1. Variables, Entrada y Salida</h3>
+
+                <div class="exercise-card">
+                    <h4>1. Hola, C++ <span class="exercise-level level-easy">Básico</span></h4>
+                    <p class="ex-desc"><strong>Planteamiento:</strong> Escribe un programa que imprima el texto "Hola,
+                        Mundo de C++" en pantalla.</p>
+                    <details class="ex-solution">
+                        <summary></summary>
+                        <pre class="code">
+#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    cout &lt;&lt; "Hola, Mundo de C++" &lt;&lt; endl;
+    return 0;
+}
+</pre>
+                    </details>
+                </div>
+
+                <div class="exercise-card">
+                    <h4>2. Leer un número <span class="exercise-level level-easy">Básico</span></h4>
+                    <p class="ex-desc"><strong>Planteamiento:</strong> Declara una variable llamada
+                        <code>entrada1</code>. Pide al usuario que ingrese un número, guárdalo y luego imprímelo.</p>
+                    <details class="ex-solution">
+                        <summary></summary>
+                        <pre class="code">
+#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    int entrada1;
+    cout &lt;&lt; "Ingresa un numero: ";
+    cin >> entrada1;
+    cout &lt;&lt; "Ingresaste el numero " &lt;&lt; entrada1 &lt;&lt; endl;
+    return 0;
+}
+</pre>
+                    </details>
+                </div>
+
+                <div class="exercise-card">
+                    <h4>3. Suma de dos números <span class="exercise-level level-easy">Básico</span></h4>
+                    <p class="ex-desc"><strong>Planteamiento:</strong> Pide dos números: <code>numero1</code> y
+                        <code>numero2</code>. Guárdalos, suma ambos en una variable <code>resultado1</code> y muestra el
+                        total.</p>
+                    <details class="ex-solution">
+                        <summary></summary>
+                        <pre class="code">
+#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    int numero1, numero2, resultado1;
+    cout &lt;&lt; "Dame el primer numero: ";
+    cin >> numero1;
+    cout &lt;&lt; "Dame el segundo numero: ";
+    cin >> numero2;
+    
+    resultado1 = numero1 + numero2;
+    cout &lt;&lt; "La suma es: " &lt;&lt; resultado1;
+    return 0;
+}
+</pre>
+                    </details>
+                </div>
+
+                <div class="exercise-card">
+                    <h4>4. Tipos combinados <span class="exercise-level level-easy">Básico</span></h4>
+                    <p class="ex-desc"><strong>Planteamiento:</strong> Declara un <code>string</code> llamado
+                        <code>nombre1</code> y un <code>int</code> llamado <code>edad1</code>. Pide ambos datos al
+                        usuario e imprímelos en una sola línea de salida.</p>
+                    <details class="ex-solution">
+                        <summary></summary>
+                        <pre class="code">
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+int main() {
+    string nombre1;
+    int edad1;
+    
+    cout &lt;&lt; "Cual es tu nombre? ";
+    cin >> nombre1;
+    cout &lt;&lt; "Cual es tu edad? ";
+    cin >> edad1;
+    
+    cout &lt;&lt; nombre1 &lt;&lt; " tiene " &lt;&lt; edad1 &lt;&lt; " anos.";
+    return 0;
+}
+</pre>
+                    </details>
+                </div>
+
+                <div class="exercise-card">
+                    <h4>5. Operaciones matemáticas <span class="exercise-level level-easy">Básico</span></h4>
+                    <p class="ex-desc"><strong>Planteamiento:</strong> Pide un <code>numero1</code> (entero). Imprime su
+                        doble y su mitad (este último como división exacta).</p>
+                    <details class="ex-solution">
+                        <summary></summary>
+                        <pre class="code">
+#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    int numero1;
+    cout &lt;&lt; "Ingresa un numero entero: ";
+    cin >> numero1;
+    
+    cout &lt;&lt; "El doble es: " &lt;&lt; (numero1 * 2) &lt;&lt; endl;
+    cout &lt;&lt; "La mitad es: " &lt;&lt; (numero1 / 2) &lt;&lt; endl;
+    return 0;
+}
+</pre>
+                    </details>
+                </div>
+
+                <!-- ========================================== -->
+                <!-- CATEGORÍA 2: CONDICIONALES                 -->
+                <!-- ========================================== -->
+                <h3
+                    style="margin-top:30px; color:var(--accent); border-bottom: 2px solid var(--line); padding-bottom: 5px;">
+                    2. Condicionales (if / else)</h3>
+
+                <div class="exercise-card">
+                    <h4>6. Mayor de edad <span class="exercise-level level-easy">Básico</span></h4>
+                    <p class="ex-desc"><strong>Planteamiento:</strong> Pide la <code>edad1</code>. Si es mayor o igual a
+                        18, imprime "Es adulto".</p>
+                    <details class="ex-solution">
+                        <summary></summary>
+                        <pre class="code">
+#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    int edad1;
+    cout &lt;&lt; "Ingresa tu edad: ";
+    cin >> edad1;
+    
+    if (edad1 >= 18) {
+        cout &lt;&lt; "Es adulto." &lt;&lt; endl;
+    }
+    return 0;
+}
+</pre>
+                    </details>
+                </div>
+
+                <div class="exercise-card">
+                    <h4>7. Par o Impar <span class="exercise-level level-med">Intermedio</span></h4>
+                    <p class="ex-desc"><strong>Planteamiento:</strong> Pide un <code>numero1</code>. Usa el operador
+                        módulo (<code>% 2</code>). Si el residuo es 0, imprime "Es par", de lo contrario "Es impar".</p>
+                    <details class="ex-solution">
+                        <summary></summary>
+                        <pre class="code">
+#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    int numero1;
+    cout &lt;&lt; "Ingresa numero: ";
+    cin >> numero1;
+    
+    if (numero1 % 2 == 0) {
+        cout &lt;&lt; "Es par";
+    } else {
+        cout &lt;&lt; "Es impar";
+    }
+    return 0;
+}
+</pre>
+                    </details>
+                </div>
+
+                <div class="exercise-card">
+                    <h4>8. Positivo, Negativo o Cero <span class="exercise-level level-med">Intermedio</span></h4>
+                    <p class="ex-desc"><strong>Planteamiento:</strong> Pide un <code>numero1</code>. Usa
+                        <code>if</code>, <code>else if</code>, y <code>else</code> para determinar si es mayor que 0,
+                        menor que 0 o igual a cero.</p>
+                    <details class="ex-solution">
+                        <summary></summary>
+                        <pre class="code">
+#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    int numero1;
+    cout &lt;&lt; "Numero: ";
+    cin >> numero1;
+    
+    if (numero1 > 0) {
+        cout &lt;&lt; "Positivo";
+    } else if (numero1 < 0) {
+        cout &lt;&lt; "Negativo";
+    } else {
+        cout &lt;&lt; "Es Cero";
+    }
+    return 0;
+}
+</pre>
+                    </details>
+                </div>
+
+                <div class="exercise-card">
+                    <h4>9. Uso del operador lógico AND (&&) <span class="exercise-level level-med">Intermedio</span>
+                    </h4>
+                    <p class="ex-desc"><strong>Planteamiento:</strong> Pide una <code>calificacion1</code>. Si está
+                        entre 0 y 100 inclusive, imprime "Nota valida". Si no, "Nota invalida".</p>
+                    <details class="ex-solution">
+                        <summary></summary>
+                        <pre class="code">
+#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    int calificacion1;
+    cout &lt;&lt; "Calificacion: ";
+    cin >> calificacion1;
+    
+    if (calificacion1 >= 0 && calificacion1 <= 100) {
+        cout &lt;&lt; "Nota valida";
+    } else {
+        cout &lt;&lt; "Nota invalida";
+    }
+    return 0;
+}
+</pre>
+                    </details>
+                </div>
+
+                <div class="exercise-card">
+                    <h4>10. Uso del operador lógico OR (||) <span class="exercise-level level-med">Intermedio</span>
+                    </h4>
+                    <p class="ex-desc"><strong>Planteamiento:</strong> Pide un caracter llamado <code>letra1</code>. Si
+                        es 'S' mayúscula o 's' minúscula, imprime "Aceptado".</p>
+                    <details class="ex-solution">
+                        <summary></summary>
+                        <pre class="code">
+#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    char letra1;
+    cout &lt;&lt; "Deseas continuar? (S/N): ";
+    cin >> letra1;
+    
+    if (letra1 == 'S' || letra1 == 's') {
+        cout &lt;&lt; "Aceptado";
+    }
+    return 0;
+}
+</pre>
+                    </details>
+                </div>
+
+                <div class="exercise-card">
+                    <h4>11. El mayor de tres números <span class="exercise-level level-hard">Avanzado</span></h4>
+                    <p class="ex-desc"><strong>Planteamiento:</strong> Pide <code>numero1</code>, <code>numero2</code> y
+                        <code>numero3</code>. Imprime cuál de los tres es el mayor usando comparaciones combinadas con
+                        <code>&&</code>.</p>
+                    <details class="ex-solution">
+                        <summary></summary>
+                        <pre class="code">
+#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    int numero1, numero2, numero3;
+    cout &lt;&lt; "Digita 3 numeros: ";
+    cin >> numero1 >> numero2 >> numero3;
+    
+    if (numero1 >= numero2 && numero1 >= numero3) {
+        cout &lt;&lt; "El mayor es: " &lt;&lt; numero1;
+    } else if (numero2 >= numero1 && numero2 >= numero3) {
+        cout &lt;&lt; "El mayor es: " &lt;&lt; numero2;
+    } else {
+        cout &lt;&lt; "El mayor es: " &lt;&lt; numero3;
+    }
+    return 0;
+}
+</pre>
+                    </details>
+                </div>
+
+                <div class="exercise-card">
+                    <h4>12. Switch: Menú simple <span class="exercise-level level-hard">Avanzado</span></h4>
+                    <p class="ex-desc"><strong>Planteamiento:</strong> El comando <code>switch</code> es una alternativa
+                        al <code>if</code> para evaluar igualdad. Pide un <code>numeroOpcion1</code> (1 o 2). Usa
+                        <code>switch</code> para imprimir "Opcion Uno", "Opcion Dos" o "Opcion Invalida" por
+                        <code>default</code>.</p>
+                    <details class="ex-solution">
+                        <summary></summary>
+                        <pre class="code">
+#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    int numeroOpcion1;
+    cout &lt;&lt; "Elige 1 o 2: ";
+    cin >> numeroOpcion1;
+    
+    switch (numeroOpcion1) {
+        case 1:
+            cout &lt;&lt; "Opcion Uno";
+            break; // Salimos del switch
+        case 2:
+            cout &lt;&lt; "Opcion Dos";
+            break;
+        default:
+            cout &lt;&lt; "Opcion Invalida";
+            break;
+    }
+    return 0;
+}
+</pre>
+                    </details>
+                </div>
+
+                <!-- ========================================== -->
+                <!-- CATEGORÍA 3: CICLOS (FOR Y WHILE)          -->
+                <!-- ========================================== -->
+                <h3
+                    style="margin-top:30px; color:var(--accent); border-bottom: 2px solid var(--line); padding-bottom: 5px;">
+                    3. Ciclos y Repeticiones (for / while)</h3>
+
+                <div class="exercise-card">
+                    <h4>13. Ciclo FOR: Contar hasta 10 <span class="exercise-level level-easy">Básico</span></h4>
+                    <p class="ex-desc"><strong>Planteamiento:</strong> Crea un bucle <code>for</code> que use un
+                        <code>iterador1</code> desde 1 hasta 10 y lo imprima en cada vuelta.</p>
+                    <details class="ex-solution">
+                        <summary></summary>
+                        <pre class="code">
+#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    for (int iterador1 = 1; iterador1 <= 10; iterador1++) {
+        cout &lt;&lt; iterador1 &lt;&lt; " ";
+    }
+    return 0;
+}
+</pre>
+                    </details>
+                </div>
+
+                <div class="exercise-card">
+                    <h4>14. Ciclo FOR: Cuenta regresiva <span class="exercise-level level-easy">Básico</span></h4>
+                    <p class="ex-desc"><strong>Planteamiento:</strong> Crea un bucle <code>for</code> con
+                        <code>iterador1</code> que empiece en 10, termine en 1 y se vaya restando (<code>--</code>).</p>
+                    <details class="ex-solution">
+                        <summary></summary>
+                        <pre class="code">
+#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    for (int iterador1 = 10; iterador1 >= 1; iterador1--) {
+        cout &lt;&lt; iterador1 &lt;&lt; " ";
+    }
+    cout &lt;&lt; "Despegue!";
+    return 0;
+}
+</pre>
+                    </details>
+                </div>
+
+                <div class="exercise-card">
+                    <h4>15. Ciclo WHILE: Repetir hasta condición <span
+                            class="exercise-level level-med">Intermedio</span></h4>
+                    <p class="ex-desc"><strong>Planteamiento:</strong> Crea una variable <code>entrada1</code>. Usa un
+                        bucle <code>while</code> que pida repetidamente un número al usuario MIENTRAS la entrada sea
+                        diferente de cero (<code>!= 0</code>).</p>
+                    <details class="ex-solution">
+                        <summary></summary>
+                        <pre class="code">
+#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    int entrada1 = 1; // Iniciamos diferente de cero
+    
+    while (entrada1 != 0) {
+        cout &lt;&lt; "Ingresa 0 para terminar: ";
+        cin >> entrada1;
+    }
+    
+    cout &lt;&lt; "Bucle terminado.";
+    return 0;
+}
+</pre>
+                    </details>
+                </div>
+
+                <div class="exercise-card">
+                    <h4>16. Sumatoria Acumulada <span class="exercise-level level-med">Intermedio</span></h4>
+                    <p class="ex-desc"><strong>Planteamiento:</strong> Crea una variable <code>sumaTotal1 = 0</code>.
+                        Usa un <code>for</code> del 1 al 5. En cada iteración, suma el iterador a
+                        <code>sumaTotal1</code>. Imprime el resultado al final.</p>
+                    <details class="ex-solution">
+                        <summary></summary>
+                        <pre class="code">
+#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    int sumaTotal1 = 0;
+    
+    for (int iterador1 = 1; iterador1 <= 5; iterador1++) {
+        sumaTotal1 = sumaTotal1 + iterador1; 
+        // Tambien se puede escribir: sumaTotal1 += iterador1;
+    }
+    
+    cout &lt;&lt; "La suma del 1 al 5 es: " &lt;&lt; sumaTotal1;
+    return 0;
+}
+</pre>
+                    </details>
+                </div>
+
+                <div class="exercise-card">
+                    <h4>17. Bucle DO-WHILE <span class="exercise-level level-med">Intermedio</span></h4>
+                    <p class="ex-desc"><strong>Planteamiento:</strong> A diferencia de while, <code>do-while</code> se
+                        ejecuta al menos una vez antes de preguntar. Pide una <code>claveSecreta1</code> repetidamente
+                        MIENTRAS sea diferente de 1234.</p>
+                    <details class="ex-solution">
+                        <summary></summary>
+                        <pre class="code">
+#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    int claveSecreta1;
+    
+    do {
+        cout &lt;&lt; "Ingresa el PIN (1234): ";
+        cin >> claveSecreta1;
+    } while (claveSecreta1 != 1234);
+    
+    cout &lt;&lt; "Acceso concedido!";
+    return 0;
+}
+</pre>
+                    </details>
+                </div>
+
+                <div class="exercise-card">
+                    <h4>18. Tabla de multiplicar <span class="exercise-level level-hard">Avanzado</span></h4>
+                    <p class="ex-desc"><strong>Planteamiento:</strong> Pide un <code>numero1</code>. Usa un
+                        <code>for</code> del 1 al 10 para imprimir la tabla de multiplicar de ese número con el formato
+                        "numero x iterador = resultado".</p>
+                    <details class="ex-solution">
+                        <summary></summary>
+                        <pre class="code">
+#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    int numero1;
+    cout &lt;&lt; "Tabla del numero: ";
+    cin >> numero1;
+    
+    for (int iterador1 = 1; iterador1 <= 10; iterador1++) {
+        int resultadoMultiplicacion = numero1 * iterador1;
+        cout &lt;&lt; numero1 &lt;&lt; " x " &lt;&lt; iterador1 &lt;&lt; " = " &lt;&lt; resultadoMultiplicacion &lt;&lt; endl;
+    }
+    return 0;
+}
+</pre>
+                    </details>
+                </div>
+
+                <div class="exercise-card">
+                    <h4>19. Imprimir solo números pares <span class="exercise-level level-hard">Avanzado</span></h4>
+                    <p class="ex-desc"><strong>Planteamiento:</strong> Usa un <code>for</code> del 1 al 20. Adentro,
+                        coloca un <code>if</code> para comprobar si el <code>iterador1</code> es par. Si lo es,
+                        imprímelo.</p>
+                    <details class="ex-solution">
+                        <summary></summary>
+                        <pre class="code">
+#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    for (int iterador1 = 1; iterador1 <= 20; iterador1++) {
+        if (iterador1 % 2 == 0) {
+            cout &lt;&lt; iterador1 &lt;&lt; " ";
+        }
+    }
+    return 0;
+}
+</pre>
+                    </details>
+                </div>
+
+                <div class="exercise-card">
+                    <h4>20. Forzando salidas: break y continue <span class="exercise-level level-hard">Avanzado</span>
+                    </h4>
+                    <p class="ex-desc"><strong>Planteamiento:</strong> Bucle del 1 al 10. Si el
+                        <code>iterador1 == 5</code> usa la palabra <code>continue</code> para saltarlo. Si el
+                        <code>iterador1 == 8</code> usa <code>break</code> para destruir el ciclo completo.</p>
+                    <details class="ex-solution">
+                        <summary></summary>
+                        <pre class="code">
+#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    for (int iterador1 = 1; iterador1 <= 10; iterador1++) {
+        if (iterador1 == 5) {
+            continue; // Salta esta vuelta, pero el bucle sigue
+        }
+        if (iterador1 == 8) {
+            break; // Destruye el bucle por completo
+        }
+        cout &lt;&lt; iterador1 &lt;&lt; " ";
+    }
+    // Salida: 1 2 3 4 6 7
+    return 0;
+}
+</pre>
+                    </details>
+                </div>
+
+                <!-- ========================================== -->
+                <!-- CATEGORÍA 4: FUNCIONES                     -->
+                <!-- ========================================== -->
+                <h3
+                    style="margin-top:30px; color:var(--accent); border-bottom: 2px solid var(--line); padding-bottom: 5px;">
+                    4. Funciones Propias (Modularidad)</h3>
+
+                <div class="exercise-card">
+                    <h4>21. Función sin retorno (void) <span class="exercise-level level-easy">Básico</span></h4>
+                    <p class="ex-desc"><strong>Planteamiento:</strong> Crea una función llamada
+                        <code>imprimirBienvenida</code> (de tipo <code>void</code>) que solo imprima "Bienvenido al
+                        sistema". Llámala desde el <code>main</code>.</p>
+                    <details class="ex-solution">
+                        <summary></summary>
+                        <pre class="code">
+#include &lt;iostream&gt;
+using namespace std;
+
+// Declaracion de la funcion antes del main
+void imprimirBienvenida() {
+    cout &lt;&lt; "Bienvenido al sistema" &lt;&lt; endl;
+}
+
+int main() {
+    imprimirBienvenida(); // Llamado
+    return 0;
+}
+</pre>
+                    </details>
+                </div>
+
+                <div class="exercise-card">
+                    <h4>22. Función con parámetros <span class="exercise-level level-easy">Básico</span></h4>
+                    <p class="ex-desc"><strong>Planteamiento:</strong> Modifica la función anterior. Ahora se llamará
+                        <code>saludarUsuario</code>, recibirá un parámetro de tipo texto (<code>parametroNombre1</code>)
+                        y lo imprimirá junto al saludo.</p>
+                    <details class="ex-solution">
+                        <summary></summary>
+                        <pre class="code">
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+void saludarUsuario(string parametroNombre1) {
+    cout &lt;&lt; "Hola, " &lt;&lt; parametroNombre1 &lt;&lt; endl;
+}
+
+int main() {
+    saludarUsuario("Carlos");
+    saludarUsuario("Maria");
+    return 0;
+}
+</pre>
+                    </details>
+                </div>
+
+                <div class="exercise-card">
+                    <h4>23. Función con retorno numérico (int) <span class="exercise-level level-med">Intermedio</span>
+                    </h4>
+                    <p class="ex-desc"><strong>Planteamiento:</strong> Crea una función llamada
+                        <code>calcularMultiplicacion</code> que reciba dos enteros (<code>parametro1</code>,
+                        <code>parametro2</code>) y retorne su producto. Úsala en el <code>main</code>.</p>
+                    <details class="ex-solution">
+                        <summary></summary>
+                        <pre class="code">
+#include &lt;iostream&gt;
+using namespace std;
+
+int calcularMultiplicacion(int parametro1, int parametro2) {
+    int resultado1 = parametro1 * parametro2;
+    return resultado1; // Regresa el dato
+}
+
+int main() {
+    int calculoFinal = calcularMultiplicacion(5, 4);
+    cout &lt;&lt; "El producto es: " &lt;&lt; calculoFinal;
+    return 0;
+}
+</pre>
+                    </details>
+                </div>
+
+                <div class="exercise-card">
+                    <h4>24. Función con lógica (bool) <span class="exercise-level level-med">Intermedio</span></h4>
+                    <p class="ex-desc"><strong>Planteamiento:</strong> Crea una función <code>esMayorDeEdad</code> que
+                        reciba <code>parametroEdad</code>. Si es >= 18 retorne <code>true</code>, si no,
+                        <code>false</code>. Comprueba su uso en un <code>if</code> dentro de main.</p>
+                    <details class="ex-solution">
+                        <summary></summary>
+                        <pre class="code">
+#include &lt;iostream&gt;
+using namespace std;
+
+bool esMayorDeEdad(int parametroEdad) {
+    if (parametroEdad >= 18) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+int main() {
+    if (esMayorDeEdad(20) == true) {
+        cout &lt;&lt; "Aprobado";
+    }
+    return 0;
+}
+</pre>
+                    </details>
+                </div>
+
+                <div class="exercise-card">
+                    <h4>25. Identificar el mayor de dos números con Función <span
+                            class="exercise-level level-hard">Avanzado</span></h4>
+                    <p class="ex-desc"><strong>Planteamiento:</strong> Crea una función <code>obtenerMayor</code> que
+                        reciba dos parámetros. Retorna el número que sea más grande de los dos.</p>
+                    <details class="ex-solution">
+                        <summary></summary>
+                        <pre class="code">
+#include &lt;iostream&gt;
+using namespace std;
+
+int obtenerMayor(int parametro1, int parametro2) {
+    if (parametro1 > parametro2) {
+        return parametro1;
+    } else {
+        return parametro2;
+    }
+}
+
+int main() {
+    int elMayor = obtenerMayor(45, 99);
+    cout &lt;&lt; "El mas grande es: " &lt;&lt; elMayor;
+    return 0;
+}
+</pre>
+                    </details>
+                </div>
+
+                <div class="exercise-card">
+                    <h4>26. Llamar función dentro de un bucle <span class="exercise-level level-hard">Avanzado</span>
+                    </h4>
+                    <p class="ex-desc"><strong>Planteamiento:</strong> Crea una función
+                        <code>imprimirCuadrado(int numero1)</code>. En el <code>main</code>, usa un bucle
+                        <code>for</code> del 1 al 5 y en cada vuelta llama a la función pasándole el iterador.</p>
+                    <details class="ex-solution">
+                        <summary></summary>
+                        <pre class="code">
+#include &lt;iostream&gt;
+using namespace std;
+
+void imprimirCuadrado(int numero1) {
+    cout &lt;&lt; "Cuadrado de " &lt;&lt; numero1 &lt;&lt; " es: " &lt;&lt; (numero1 * numero1) &lt;&lt; endl;
+}
+
+int main() {
+    for (int iterador1 = 1; iterador1 <= 5; iterador1++) {
+        imprimirCuadrado(iterador1);
+    }
+    return 0;
+}
+</pre>
+                    </details>
+                </div>
+
+                <!-- ========================================== -->
+                <!-- CATEGORÍA 5: RETOS INTEGRADORES            -->
+                <!-- ========================================== -->
+                <h3
+                    style="margin-top:30px; color:var(--accent); border-bottom: 2px solid var(--line); padding-bottom: 5px;">
+                    5. Retos Integradores (Combina lo aprendido)</h3>
+
+                <div class="exercise-card">
+                    <h4>27. Reto: Calculadora Básica <span class="exercise-level level-hard">Avanzado</span></h4>
+                    <p class="ex-desc"><strong>Planteamiento:</strong> Pide <code>numero1</code> y <code>numero2</code>.
+                        Luego pide <code>opcionMenu1</code> (1 = Sumar, 2 = Restar). Usa condicionales para mostrar el
+                        resultado.</p>
+                    <details class="ex-solution">
+                        <summary></summary>
+                        <pre class="code">
+#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    int numero1, numero2, opcionMenu1;
+    cout &lt;&lt; "Numero 1: "; cin >> numero1;
+    cout &lt;&lt; "Numero 2: "; cin >> numero2;
+    cout &lt;&lt; "1.Sumar  2.Restar  \nElige: "; cin >> opcionMenu1;
+    
+    if (opcionMenu1 == 1) {
+        cout &lt;&lt; "Suma = " &lt;&lt; (numero1 + numero2);
+    } else if (opcionMenu1 == 2) {
+        cout &lt;&lt; "Resta = " &lt;&lt; (numero1 - numero2);
+    } else {
+        cout &lt;&lt; "Opcion invalida";
+    }
+    return 0;
+}
+</pre>
+                    </details>
+                </div>
+
+                <div class="exercise-card">
+                    <h4>28. Reto: Validador de Contraseña Iterativo <span
+                            class="exercise-level level-hard">Avanzado</span></h4>
+                    <p class="ex-desc"><strong>Planteamiento:</strong> La clave correcta es 999. Usa un bucle
+                        <code>while</code> para pedir la clave. Usa una variable <code>intentos1 = 3</code> que baje
+                        cada que falla. Si llega a 0, bloquea.</p>
+                    <details class="ex-solution">
+                        <summary></summary>
+                        <pre class="code">
+#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    int entradaClave1 = 0;
+    int intentos1 = 3;
+    
+    while (entradaClave1 != 999 && intentos1 > 0) {
+        cout &lt;&lt; "Ingresa PIN (" &lt;&lt; intentos1 &lt;&lt; " intentos restantes): ";
+        cin >> entradaClave1;
+        intentos1--; // Resta un intento
+    }
+    
+    if (entradaClave1 == 999) {
+        cout &lt;&lt; "Bienvenido";
+    } else {
+        cout &lt;&lt; "Sistema bloqueado";
+    }
+    return 0;
+}
+</pre>
+                    </details>
+                </div>
+
+                <div class="exercise-card">
+                    <h4>29. Reto: Sistema de Aprobación por Funciones <span
+                            class="exercise-level level-hard">Avanzado</span></h4>
+                    <p class="ex-desc"><strong>Planteamiento:</strong> Crea función <code>evaluarNota(int nota1)</code>.
+                        Si es >= 60 retorna <code>true</code>. En el <code>main</code> pide la nota de un estudiante y
+                        usa la función para decirle si "Aprobó" o "Reprobó".</p>
+                    <details class="ex-solution">
+                        <summary></summary>
+                        <pre class="code">
+#include &lt;iostream&gt;
+using namespace std;
+
+bool evaluarNota(int nota1) {
+    if (nota1 >= 60) return true;
+    else return false;
+}
+
+int main() {
+    int calificacionEntrada1;
+    cout &lt;&lt; "Digita tu nota final: ";
+    cin >> calificacionEntrada1;
+    
+    if (evaluarNota(calificacionEntrada1) == true) {
+        cout &lt;&lt; "Felicidades, aprobaste.";
+    } else {
+        cout &lt;&lt; "Reprobaste el curso.";
+    }
+    return 0;
+}
+</pre>
+                    </details>
+                </div>
+
+                <div class="exercise-card">
+                    <h4>30. Reto: Generador de Secuencia <span class="exercise-level level-hard">Avanzado</span></h4>
+                    <p class="ex-desc"><strong>Planteamiento:</strong> Pide al usuario cuántos números quiere generar
+                        (<code>cantidad1</code>). Usa un bucle <code>for</code> que imprima los múltiplos de 5 tantas
+                        veces como el usuario haya pedido.</p>
+                    <details class="ex-solution">
+                        <summary></summary>
+                        <pre class="code">
+#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    int cantidad1;
+    cout &lt;&lt; "Cuantos multiplos de 5 quieres ver? ";
+    cin >> cantidad1;
+    
+    for (int iterador1 = 1; iterador1 <= cantidad1; iterador1++) {
+        // Multiplicamos la vuelta actual por 5
+        cout &lt;&lt; (iterador1 * 5) &lt;&lt; " "; 
+    }
+    return 0;
+}
+</pre>
+                    </details>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 10 Resumen -->
+        <section class="slide" data-name="Resumen" aria-label="Resumen">
+            <div class="wrap">
+                <h2 tabindex="-1">Resumen del Lenguaje Base</h2>
+                <ul class="sum">
+                    <li><strong>Tipado Fuerte:</strong> En C++ toda variable necesita declarar de qué tipo es
+                        (<code>int</code>, <code>float</code>, <code>bool</code>, <code>char</code>) antes de guardar un
+                        dato.</li>
+                    <li><strong>I/O:</strong> Usamos la librería <code>&lt;iostream&gt;</code> con
+                        <code>cin &gt;&gt;</code> para capturar datos y <code>cout &lt;&lt;</code> para imprimirlos.
+                    </li>
+                    <li><strong>Control:</strong> <code>if / else</code> toma decisiones. <code>for</code> repite un
+                        número exacto de veces, y <code>while</code> repite mientras haya una condición cumplida.</li>
+                    <li><strong>Funciones:</strong> Trozos de código con un nombre específico (<code>void</code> o con
+                        <code>return</code>) que reciben parámetros, permitiendo reutilizar lógica.</li>
+                    <li><strong>El siguiente paso:</strong> Sabiendo guardar datos en variables y usar bucles, estás
+                        100% listo para almacenar grandes cantidades de datos usando <strong>Arrays y Vectores</strong>.
+                    </li>
+                </ul>
+                <div class="row top">
+                    <button class="btn primary" type="button" data-go="1">Volver al inicio</button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <nav class="nav" aria-label="Navegación de diapositivas">
+        <button class="btn" id="prev" type="button" aria-label="Diapositiva anterior">Anterior</button>
+        <div class="track" aria-hidden="true">
+            <div class="bar" id="bar"></div>
+        </div>
+        <span class="count" id="count" aria-live="polite">1 / 9</span>
+        <span class="navname" id="navName">Inicio</span>
+        <button class="btn primary" id="next" type="button" aria-label="Diapositiva siguiente">Siguiente</button>
+    </nav>
+
+    <script>
+        (function () {
+            'use strict';
+            var $ = function (s) { return document.querySelector(s) };
+            var $$ = function (s) { return Array.prototype.slice.call(document.querySelectorAll(s)) };
+
+            /* ---------- Navegación Central ---------- */
+            var slides = $$('.slide'), N = slides.length, cur = 0;
+
+            function go(i, focus) {
+                i = Math.max(0, Math.min(N - 1, i));
+                slides[cur].classList.remove('active');
+                cur = i;
+                var s = slides[cur];
+                s.classList.add('active');
+                s.scrollTop = 0;
+                $('#bar').style.width = ((cur + 1) / N * 100) + '%';
+                $('#count').textContent = (cur + 1) + ' / ' + N;
+                $('#navName').textContent = s.getAttribute('data-name') || '';
+                $('#prev').disabled = cur === 0;
+                $('#next').disabled = cur === N - 1;
+                if (focus) { var h = s.querySelector('h1,h2'); if (h) h.focus({ preventScroll: true }); }
+            }
+
+            $('#prev').onclick = function () { go(cur - 1, true) };
+            $('#next').onclick = function () { go(cur + 1, true) };
+
+            // Delegacion de clicks para botones data-go
+            document.addEventListener('click', function (e) {
+                var b = e.target.closest && e.target.closest('[data-go]');
+                if (b) go(parseInt(b.getAttribute('data-go'), 10) - 1, true);
+            });
+
+            // Navegacion por Teclado
+            document.addEventListener('keydown', function (e) {
+                var t = e.target;
+                // Prevenir que interfiera si están tecleando en un hipotetico input
+                if (t.closest && t.closest('input,select,textarea')) return;
+                if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); go(cur + 1, true); }
+                else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); go(cur - 1, true); }
+                else if (e.key === 'Home') { go(0, true); }
+                else if (e.key === 'End') { go(N - 1, true); }
+            });
+
+            // Inicialización de la vista
+            go(0, false);
+
+        })();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Estructuras de datos: introducción</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=JetBrains+Mono:wght@400;600&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:light;
+  --bg:#FFFFFF; --surface:#FFFFFF; --ink:#141414; --muted:#505856; --line:#D6DDDB;
+  --title:#00594E; --accent:#00594E; --accent-soft:#E4F0ED; --on-accent:#FFFFFF;
+  --hot:#B5A160; --hot-soft:#F6F1E0; --ok:#00594E; --ok-soft:#DCEEE9; --bad:#B3412F; --bad-soft:#F8E1DC;
+  --code-bg:#F6F7F7;
+  --f-head:'Bricolage Grotesque','Segoe UI',system-ui,sans-serif;
+  --f-body:'Public Sans','Segoe UI',system-ui,sans-serif;
+  --f-mono:'JetBrains Mono',ui-monospace,Consolas,monospace;
+}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;height:100%;display:flex;flex-direction:column;overflow:hidden;background:var(--bg);color:var(--ink);
+  font-family:var(--f-body);font-size:18px;line-height:1.55}
+[hidden]{display:none!important}
+[tabindex="-1"]:focus{outline:none}
+
+h1,h2,h3{font-family:var(--f-head);line-height:1.1;margin:0 0 .35em;letter-spacing:-.015em;font-weight:700;color:var(--title)}
+h1{font-size:clamp(2.1rem,6vw,3.8rem);letter-spacing:-.03em;font-weight:800}
+h2{font-size:clamp(1.6rem,3.4vw,2.3rem)}
+h3{font-size:1.25rem;letter-spacing:-.005em}
+p{margin:0 0 .8em}
+.lead{font-size:clamp(1.1rem,2vw,1.35rem);color:var(--muted)}
+.hint{color:var(--muted);font-size:.95rem}
+code,.mono{font-family:var(--f-mono)}
+
+/* deck */
+.deck{flex:1;min-height:0;position:relative}
+.slide{position:absolute;inset:0;overflow-y:auto;display:none;flex-direction:column;
+  padding:clamp(10px,1.6vw,16px) clamp(14px,3vw,36px) clamp(14px,2.4vw,24px)}
+.slide.active{display:flex;animation:enter .22s ease-out}
+.wrap{width:100%;margin:0 auto}
+@keyframes enter{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.rise{animation:rise .25s ease-out}
+
+/* nav */
+.nav{display:flex;align-items:center;gap:12px;padding:10px clamp(14px,4vw,40px);border-top:3px solid var(--hot);background:var(--surface)}
+.track{flex:1;height:4px;background:var(--line);border-radius:2px;overflow:hidden}
+.bar{height:100%;width:0;background:var(--accent);transition:width .25s ease}
+.count{font:600 .9rem var(--f-mono);color:var(--muted);min-width:4.5em;text-align:center}
+.navname{color:var(--muted);font-size:.9rem;white-space:nowrap}
+@media (max-width:640px){.navname{display:none}}
+
+/* controls */
+.btn{font:600 1rem var(--f-body);padding:.55em 1em;border-radius:8px;border:2px solid var(--ink);background:var(--surface);color:var(--ink);cursor:pointer;line-height:1.2}
+.btn:hover{background:var(--accent-soft)}
+.btn:active{transform:translateY(1px)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.right{background:var(--ok-soft);border-color:var(--ok)}
+.btn.wrong{background:var(--bad-soft);border-color:var(--bad)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.btn.link{background:none;border:none;color:var(--accent);padding:.15em 0;text-align:left;text-decoration:underline;text-underline-offset:3px}
+input,select{font:500 1rem var(--f-mono);padding:.5em .6em;border-radius:8px;border:2px solid var(--line);background:var(--surface);color:var(--ink);width:6.5em}
+select{width:auto}
+label{font-size:.95rem;color:var(--muted)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.row.top{margin-top:16px}
+
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:clamp(14px,2.4vw,24px)}
+.code{font:.95rem/1.5 var(--f-mono);background:var(--code-bg);border:1px solid var(--line);border-radius:8px;padding:10px 14px;min-height:2.8em;white-space:pre-wrap;overflow-x:auto}
+.status{min-height:3em;margin:14px 0 8px}
+
+/* memory cells */
+.cells{display:flex;gap:6px}
+.cell{flex:1 1 0;max-width:120px;min-width:0;display:flex;flex-direction:column}
+.cell::before{content:"";height:1.3em;font:600 .78rem/1.3em var(--f-mono);text-align:center;color:var(--accent)}
+.cell.next::before{content:"n \25BE"}
+.box{aspect-ratio:1;display:grid;place-items:center;border:2px dashed var(--line);border-radius:6px;
+  font:600 clamp(.85rem,2.8vw,1.4rem) var(--f-mono);color:var(--ink)}
+.box.filled{border:2px solid var(--accent);background:var(--accent-soft)}
+.cell.next .box{border-color:var(--accent)}
+.box.found{background:var(--ok-soft);border-color:var(--ok)}
+.idx{text-align:center;font:.8rem var(--f-mono);color:var(--muted);margin-top:4px}
+@keyframes pop{0%{transform:scale(.5);background:var(--hot)}55%{transform:scale(1.12)}100%{transform:scale(1);background:var(--accent-soft)}}
+@keyframes glow{0%{box-shadow:0 0 0 0 var(--hot)}40%{box-shadow:0 0 0 7px var(--hot)}100%{box-shadow:0 0 0 0 transparent}}
+@keyframes flash{0%{box-shadow:0 0 0 0 var(--bad)}100%{box-shadow:0 0 0 9px transparent}}
+.box.pop{animation:pop .45s ease-out}
+.box.glow{animation:glow .7s ease-out}
+.box.flash{animation:flash .5s ease-out}
+@keyframes shake{0%,100%{transform:none}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.shake{animation:shake .3s}
+
+.hero .demo{margin-top:clamp(12px,2vw,22px)}
+.hero .cells{margin-bottom:6px}
+
+/* facts + route */
+.facts{display:grid;grid-template-columns:minmax(120px,190px) minmax(0,1fr);gap:0 28px;margin:0 0 28px}
+.facts dt{color:var(--title);font:700 1.05rem var(--f-head);padding:14px 0;border-top:1px solid var(--line)}
+.facts dd{margin:0;padding:14px 0;border-top:1px solid var(--line)}
+@media (max-width:640px){.facts{grid-template-columns:1fr}.facts dt{padding-bottom:0}.facts dd{border-top:none;padding-top:4px}}
+.route{margin:0;padding-left:1.4em;columns:2;column-gap:36px}
+.route li{margin-bottom:.35em;break-inside:avoid}
+@media (max-width:640px){.route{columns:1}}
+
+/* two columns */
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px}
+@media (max-width:760px){.two{grid-template-columns:1fr}}
+.def{color:var(--title);font:500 clamp(1.15rem,2.4vw,1.5rem)/1.4 var(--f-head);border-left:4px solid var(--hot);padding-left:18px;margin:0 0 18px}
+
+/* sheets vs array */
+.sheets{display:flex;gap:6px}
+.sheet{flex:1 1 0;max-width:120px;min-width:0;border:2px solid var(--ink);border-radius:4px;background:var(--hot-soft);text-align:center;padding:6px 2px;
+  font:600 clamp(.8rem,2.4vw,1.1rem) var(--f-mono)}
+.sheet b{display:block;font-weight:500;font-size:.72em;color:var(--muted)}
+.sheet:nth-child(odd){transform:rotate(-1.6deg)}
+.sheet:nth-child(even){transform:rotate(1.3deg)}
+.sheet.look{outline:3px solid var(--accent);outline-offset:1px}
+.sheet.found{background:var(--ok-soft);border-color:var(--ok)}
+.lbl{font-weight:600;margin:16px 0 8px}
+
+/* analogies */
+.ana{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:28px;align-items:start}
+@media (max-width:760px){.ana{grid-template-columns:1fr}}
+.picks{display:flex;flex-direction:column;gap:8px}
+.pick{font:500 1rem var(--f-body);text-align:left;padding:.7em .9em;border-radius:10px;border:2px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.pick:hover{border-color:var(--accent)}
+.pick[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.dwrap{display:grid;grid-template-columns:minmax(120px,220px) minmax(0,1fr);gap:18px;align-items:center}
+@media (max-width:520px){.dwrap{grid-template-columns:1fr}}
+.dwrap p{margin:0}
+.dia{width:100%;max-width:240px;color:var(--title);fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.dia rect,.dia circle{fill:var(--surface)}
+.dia .hl{fill:var(--hot-soft);stroke:var(--hot)}
+.dia text{fill:var(--ink);stroke:none;font:11px var(--f-mono)}
+.empty{color:var(--muted);margin:0}
+
+/* uses */
+.uses{margin:0 0 20px;padding:0;list-style:none}
+.uses li{display:grid;grid-template-columns:minmax(0,1fr) 5.5em;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+.uses li b{font:600 1rem var(--f-head);color:var(--accent)}
+
+/* taxonomy */
+.seg{display:inline-flex;border:2px solid var(--accent);border-radius:10px;overflow:hidden;margin:6px 0 22px}
+.seg button{font:600 1rem var(--f-body);padding:.55em 1.1em;border:none;background:var(--surface);color:var(--ink);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent)}
+.taxcols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+@media (max-width:640px){.taxcols{grid-template-columns:1fr}}
+.taxcol{border-top:3px solid var(--hot);padding-top:12px}
+.taxcol p{font-size:.98rem;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:600 .98rem var(--f-body);padding:.45em .95em;border-radius:999px;border:2px solid var(--accent);background:var(--surface);color:var(--ink);cursor:pointer}
+.chip:hover{background:var(--accent-soft)}
+.chip.on{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.note{font-size:.9rem;color:var(--muted);margin:16px 0}
+
+/* stack + queue */
+.duo{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+@media (max-width:760px){.duo{grid-template-columns:1fr}}
+.it{height:34px;display:grid;place-items:center;border:2px solid var(--accent);border-radius:6px;background:var(--accent-soft);font:600 1rem var(--f-mono);position:relative;flex:none}
+.stack{display:flex;flex-direction:column-reverse;gap:6px;width:min(100%,180px);height:262px;border:2px solid var(--ink);border-top:none;border-radius:0 0 10px 10px;padding:8px;margin:8px 0 14px}
+.stack .it.top::after{content:"\25C2 tope";position:absolute;left:calc(100% + 12px);color:var(--accent);font:600 .8rem var(--f-mono);white-space:nowrap}
+.queue{display:flex;gap:6px;border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);padding:10px 8px;min-height:64px;margin:40px 0 44px;align-items:center}
+.queue .it{flex:1 1 0;min-width:0;max-width:56px;height:42px}
+.queue .it.front::after{content:"frente";position:absolute;top:calc(100% + 10px);left:50%;transform:translateX(-50%);color:var(--accent);font:600 .75rem var(--f-mono)}
+.queue .it.back::before{content:"final";position:absolute;bottom:calc(100% + 10px);left:50%;transform:translateX(-50%);color:var(--accent);font:600 .75rem var(--f-mono)}
+@keyframes dropin{from{transform:translateY(-44px);opacity:0}to{transform:none;opacity:1}}
+@keyframes liftout{to{transform:translateY(-44px);opacity:0}}
+@keyframes slidein{from{transform:translateX(44px);opacity:0}to{transform:none;opacity:1}}
+@keyframes slideout{to{transform:translateX(-44px);opacity:0}}
+.stack .it.in{animation:dropin .25s ease-out}
+.stack .it.out{animation:liftout .22s ease-in forwards}
+.queue .it.in{animation:slidein .25s ease-out}
+.queue .it.out{animation:slideout .22s ease-in forwards}
+.rule{font:600 .95rem var(--f-mono);color:var(--muted);margin-bottom:8px}
+
+/* quiz */
+.qtext{font:600 clamp(1.15rem,2.4vw,1.5rem)/1.35 var(--f-head);margin:6px 0 16px}
+.opts{display:flex;flex-wrap:wrap;gap:10px}
+.feed{min-height:3.2em;margin:16px 0 10px}
+
+.sum{margin:0;padding:0;list-style:none}
+.sum li{padding:12px 0;border-top:1px solid var(--line)}
+
+@media (max-width:480px){
+  body{font-size:16px}
+  .nav{gap:8px;padding:8px 10px}
+  .nav .btn{padding:.5em .75em;font-size:.95rem}
+  .count{min-width:3.6em;font-size:.8rem}
+  .panel{padding:12px}
+  .facts dt{padding-top:10px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+
+<main class="deck" id="deck">
+
+<!-- 1 Portada -->
+<section class="slide active" data-name="Inicio" aria-label="Portada">
+  <div class="wrap hero">
+    <h1 tabindex="-1">Estructuras de datos</h1>
+    <p class="lead">Repaso de conceptos: qué son, cómo las usamos en la vida diaria y en la programación, y qué tipos existen.</p>
+    <div class="demo">
+      <div id="heroVec" role="group" aria-label="Arreglo de 8 posiciones"></div>
+      <div class="row top">
+        <button class="btn primary" id="heroAdd" type="button">Agregar un dato</button>
+        <button class="btn" id="heroClear" type="button">Vaciar</button>
+      </div>
+      <p class="hint" id="heroMsg" aria-live="polite" style="margin-top:12px">Toca el botón: cada dato se guarda en la siguiente casilla libre.</p>
+    </div>
+    <p class="hint">Avanza con las flechas del teclado o con los botones de abajo.</p>
+  </div>
+</section>
+
+<!-- 2 Qué vas a repasar -->
+<section class="slide" data-name="Objetivo" aria-label="Qué vas a repasar">
+  <div class="wrap">
+    <h2 tabindex="-1">Qué vas a repasar</h2>
+    <dl class="facts">
+      <dt>Finalidad</dt>
+      <dd>Reforzar la comprensión de la temática.</dd>
+      <dt>Alcance</dt>
+      <dd>Qué es una estructura de datos, cómo se usa en la vida común y en la programación, y qué tipos existen. No incluye ejercicios de programación.</dd>
+      <dt>Resultado esperado</dt>
+      <dd>Reforzarás tu lógica de programación al organizar datos e información con estructuras de datos.</dd>
+    </dl>
+    <h3>Recorrido</h3>
+    <ol class="route">
+      <li><button class="btn link" type="button" data-go="3">Qué es una estructura de datos</button></li>
+      <li><button class="btn link" type="button" data-go="4">En la vida diaria</button></li>
+      <li><button class="btn link" type="button" data-go="5">En la programación</button></li>
+      <li><button class="btn link" type="button" data-go="6">Tipos de estructuras</button></li>
+      <li><button class="btn link" type="button" data-go="7">Práctica con un arreglo</button></li>
+      <li><button class="btn link" type="button" data-go="8">Pila y cola en acción</button></li>
+      <li><button class="btn link" type="button" data-go="9">Reto: elige la estructura</button></li>
+      <li><button class="btn link" type="button" data-go="10">Resumen</button></li>
+    </ol>
+  </div>
+</section>
+
+<!-- 3 Qué es -->
+<section class="slide" data-name="Qué es" aria-label="Qué es una estructura de datos">
+  <div class="wrap">
+    <h2 tabindex="-1">Qué es una estructura de datos</h2>
+    <p class="def">Es una forma de organizar y guardar datos en la memoria para poder usarlos de manera ordenada y eficiente.</p>
+    <div class="two">
+      <div>
+        <h3>Organización</h3>
+        <p>Cómo se guardan los datos: en fila, apilados, en casilleros numerados, en niveles o conectados entre sí.</p>
+      </div>
+      <div>
+        <h3>Operaciones</h3>
+        <p>Qué puedes hacer con ellos: agregar, buscar, recorrer, quitar u ordenar.</p>
+      </div>
+    </div>
+    <div class="panel" style="margin-top:12px">
+      <h3>Mismos datos, dos formas de guardarlos</h3>
+      <p class="hint">Ocho estudiantes (numerados del 0 al 7) con su nota. Elige uno y mira cómo lo encuentra cada forma.</p>
+      <p class="lbl">Papeles sueltos en una pila revuelta</p>
+      <div class="sheets" id="looseRow"></div>
+      <p class="lbl">Arreglo <span class="mono">notas[0..7]</span>: la posición es el número del estudiante</p>
+      <div class="cells" id="notasRow"></div>
+      <div class="row top">
+        <label for="selEst">Buscar al estudiante</label>
+        <select id="selEst"></select>
+        <button class="btn primary" id="searchBtn" type="button">Buscar nota</button>
+      </div>
+      <p class="status" id="searchRes" aria-live="polite">Con más datos, la diferencia se nota todavía más.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 4 Vida diaria -->
+<section class="slide" data-name="Vida diaria" aria-label="Estructuras en la vida diaria">
+  <div class="wrap">
+    <h2 tabindex="-1">En la vida diaria</h2>
+    <p class="lead">Organizamos cosas todo el tiempo. Toca una situación y descubre qué estructura de datos es.</p>
+    <div class="ana">
+      <div class="picks" id="anaList" role="group" aria-label="Situaciones cotidianas"></div>
+      <div class="panel" id="anaDetail" aria-live="polite">
+        <p class="empty">Toca una situación para ver su estructura, su dibujo y su regla.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5 Programación -->
+<section class="slide" data-name="Programación" aria-label="Estructuras en la programación">
+  <div class="wrap">
+    <h2 tabindex="-1">En la programación</h2>
+    <p>Un programa maneja datos todo el tiempo: notas, pedidos, mensajes, rutas. La estructura que elijas decide qué tan fácil es guardar, encontrar, agregar y quitar esos datos.</p>
+    <div class="two">
+      <div>
+        <ul class="uses">
+          <li><span>Deshacer y rehacer en un editor</span><b>Pila</b></li>
+          <li><span>Trabajos de una impresora, en orden de llegada</span><b>Cola</b></li>
+          <li><span>Tabla de notas consultada por posición</span><b>Arreglo</b></li>
+          <li><span>Carpetas y archivos de un sistema</span><b>Árbol</b></li>
+          <li><span>Redes sociales, mapas y rutas</span><b>Grafo</b></li>
+        </ul>
+        <h3>Elegir bien se nota en</h3>
+        <p><strong>Velocidad:</strong> encontrar o agregar un dato toma menos pasos.<br>
+        <strong>Memoria:</strong> se guarda solo lo necesario.<br>
+        <strong>Claridad:</strong> el código refleja cómo se piensa el problema.</p>
+      </div>
+      <div>
+        <h3>En C++ se ve así</h3>
+<pre class="code">int notas[8];            // arreglo: posiciones 0 a 7
+
+struct Estudiante {      // registro: campos de
+    string nombre;       // distinto tipo
+    int edad;
+    float promedio;
+};
+
+stack&lt;int&gt; pila;        // pila de la biblioteca estándar
+queue&lt;int&gt; cola;        // cola de la biblioteca estándar</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6 Tipos -->
+<section class="slide" data-name="Tipos" aria-label="Tipos de estructuras de datos">
+  <div class="wrap">
+    <h2 tabindex="-1">Tipos de estructuras de datos</h2>
+    <p>Los datos simples (entero, real, carácter, lógico) guardan un solo valor. Las estructuras de datos agrupan varios y se pueden clasificar de dos maneras.</p>
+    <div class="seg" role="group" aria-label="Criterio de clasificación">
+      <button type="button" id="vTamano" aria-pressed="true">Según el tamaño</button>
+      <button type="button" id="vOrg" aria-pressed="false">Según la organización</button>
+    </div>
+    <div class="taxcols" id="taxCols"></div>
+    <p class="note" id="taxNote">* Pila y cola pueden construirse sobre un arreglo (tamaño fijo) o sobre una lista enlazada (dinámica), por eso algunos textos las ubican en una u otra categoría.</p>
+    <div class="panel" id="taxDetail" aria-live="polite">
+      <p class="empty">Toca una estructura para ver su dibujo y su regla.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 7 Laboratorio -->
+<section class="slide" data-name="Arreglo" aria-label="Práctica con un arreglo">
+  <div class="wrap">
+    <h2 tabindex="-1">Práctica con un arreglo</h2>
+    <p>Este arreglo <span class="mono">v</span> tiene 8 posiciones fijas. La variable <span class="mono">n</span> cuenta cuántas están en uso; la siguiente casilla libre es siempre <span class="mono">v[n]</span>.</p>
+    <div class="panel">
+      <div id="labVec" role="group" aria-label="Arreglo v de 8 posiciones"></div>
+      <div class="row top">
+        <label for="labVal">Valor</label>
+        <input id="labVal" type="number" min="0" max="99" inputmode="numeric">
+        <button class="btn primary" id="labAdd" type="button">Agregar al final</button>
+        <button class="btn" id="labDel" type="button">Eliminar el último</button>
+      </div>
+      <div class="row top">
+        <label for="labIdx">Posición</label>
+        <input id="labIdx" type="number" value="0" inputmode="numeric">
+        <button class="btn" id="labRead" type="button">Leer posición</button>
+        <button class="btn" id="labClear" type="button">Vaciar</button>
+      </div>
+      <p class="status" id="labMsg" aria-live="polite">Agrega algunos valores y prueba leer posiciones, incluso una que no exista.</p>
+      <div class="code" id="labCode">// aquí aparece la instrucción equivalente</div>
+    </div>
+  </div>
+</section>
+
+<!-- 8 Pila y cola -->
+<section class="slide" data-name="Pila y cola" aria-label="Pila y cola en acción">
+  <div class="wrap">
+    <h2 tabindex="-1">Pila y cola en acción</h2>
+    <p>Las dos guardan datos en secuencia. Lo que cambia es por dónde entran y por dónde salen.</p>
+    <div class="duo">
+      <div class="panel">
+        <h3>Pila</h3>
+        <p class="rule">Último en entrar, primero en salir (LIFO)</p>
+        <div class="stack" id="pila" role="group" aria-label="Pila"></div>
+        <div class="row">
+          <button class="btn primary" id="push" type="button">Apilar (push)</button>
+          <button class="btn" id="pop" type="button">Desapilar (pop)</button>
+        </div>
+        <p class="status" id="pilaMsg" aria-live="polite">La pila está vacía.</p>
+      </div>
+      <div class="panel">
+        <h3>Cola</h3>
+        <p class="rule">Primero en entrar, primero en salir (FIFO)</p>
+        <div class="queue" id="cola" role="group" aria-label="Cola"></div>
+        <div class="row">
+          <button class="btn primary" id="enq" type="button">Encolar (enqueue)</button>
+          <button class="btn" id="deq" type="button">Desencolar (dequeue)</button>
+        </div>
+        <p class="status" id="colaMsg" aria-live="polite">La cola está vacía.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 9 Reto -->
+<section class="slide" data-name="Reto" aria-label="Reto: elige la estructura">
+  <div class="wrap">
+    <h2 tabindex="-1">Reto: elige la estructura</h2>
+    <div class="panel">
+      <div id="quizBody">
+        <p class="hint mono" id="qProg"></p>
+        <p class="qtext" id="qText"></p>
+        <div class="opts" id="qOpts" role="group" aria-label="Opciones"></div>
+        <p class="feed" id="qFeed" aria-live="polite"></p>
+        <button class="btn primary" id="qNext" type="button" hidden>Siguiente pregunta</button>
+      </div>
+      <div id="quizEnd" hidden>
+        <p class="qtext" id="qScore"></p>
+        <p id="qAdvice"></p>
+        <button class="btn primary" id="qRetry" type="button">Intentar de nuevo</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 10 Resumen -->
+<section class="slide" data-name="Resumen" aria-label="Resumen">
+  <div class="wrap">
+    <h2 tabindex="-1">Resumen</h2>
+    <ul class="sum">
+      <li>Una estructura de datos organiza los datos y define qué operaciones puedes hacer con ellos.</li>
+      <li>Está en la vida diaria: platos apilados, filas, casilleros, carpetas y mapas.</li>
+      <li>Se clasifican por tamaño (estáticas o dinámicas) y por organización (lineales o no lineales).</li>
+      <li>Elegir bien la estructura hace el programa más rápido y más claro.</li>
+      <li>Sigue: recursividad, y después arreglos en C++.</li>
+    </ul>
+    <div class="row top">
+      <button class="btn" type="button" data-go="1">Volver al inicio</button>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<nav class="nav" aria-label="Navegación de diapositivas">
+  <button class="btn" id="prev" type="button" aria-label="Diapositiva anterior">Anterior</button>
+  <div class="track" aria-hidden="true"><div class="bar" id="bar"></div></div>
+  <span class="count" id="count" aria-live="polite">1 / 10</span>
+  <span class="navname" id="navName">Inicio</span>
+  <button class="btn primary" id="next" type="button" aria-label="Diapositiva siguiente">Siguiente</button>
+</nav>
+
+<script>
+(function(){
+'use strict';
+var $=function(s){return document.querySelector(s)};
+var $$=function(s){return Array.prototype.slice.call(document.querySelectorAll(s))};
+function anim(el,cls){if(!el)return;el.classList.remove(cls);void el.offsetWidth;el.classList.add(cls);}
+function rnd(){return 1+Math.floor(Math.random()*99);}
+
+/* ---------- navegación ---------- */
+var slides=$$('.slide'), N=slides.length, cur=0;
+function go(i,focus){
+  i=Math.max(0,Math.min(N-1,i));
+  slides[cur].classList.remove('active');
+  cur=i;
+  var s=slides[cur];
+  s.classList.add('active');
+  s.scrollTop=0;
+  $('#bar').style.width=((cur+1)/N*100)+'%';
+  $('#count').textContent=(cur+1)+' / '+N;
+  $('#navName').textContent=s.getAttribute('data-name')||'';
+  $('#prev').disabled=cur===0;
+  $('#next').disabled=cur===N-1;
+  try{history.replaceState(null,'','#'+(cur+1));}catch(e){}
+  if(focus){var h=s.querySelector('h1,h2');if(h)h.focus({preventScroll:true});}
+}
+$('#prev').onclick=function(){go(cur-1,true)};
+$('#next').onclick=function(){go(cur+1,true)};
+document.addEventListener('click',function(e){
+  var b=e.target.closest&&e.target.closest('[data-go]');
+  if(b)go(parseInt(b.getAttribute('data-go'),10)-1,true);
+});
+document.addEventListener('keydown',function(e){
+  var t=e.target;
+  if(t.closest&&t.closest('input,select,textarea'))return;
+  if(e.key==='ArrowRight'||e.key==='PageDown'){e.preventDefault();go(cur+1,true);}
+  else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(cur-1,true);}
+  else if(e.key==='Home'){go(0,true);}
+  else if(e.key==='End'){go(N-1,true);}
+});
+var tx=null,ty=null;
+document.addEventListener('touchstart',function(e){tx=e.touches[0].clientX;ty=e.touches[0].clientY;},{passive:true});
+document.addEventListener('touchend',function(e){
+  if(tx===null)return;
+  var dx=e.changedTouches[0].clientX-tx, dy=e.changedTouches[0].clientY-ty;
+  if(Math.abs(dx)>70&&Math.abs(dy)<45){go(cur+(dx<0?1:-1),true);}
+  tx=null;
+},{passive:true});
+var start=0;
+try{var h=parseInt(location.hash.replace('#',''),10);if(h>=1&&h<=N)start=h-1;}catch(e){}
+go(start,false);
+
+/* ---------- arreglo visual reutilizable ---------- */
+function Vector(root,cap){
+  var cells=[],data=[];
+  root.classList.add('cells');
+  for(var i=0;i<cap;i++){
+    var c=document.createElement('div');
+    c.className='cell';
+    c.innerHTML='<div class="box"></div><div class="idx">'+i+'</div>';
+    root.appendChild(c);cells.push(c);
+  }
+  var api={
+    cap:cap,
+    get n(){return data.length;},
+    get:function(i){return data[i];},
+    box:function(i){return cells[i].firstChild;},
+    draw:function(){
+      cells.forEach(function(c,i){
+        var has=i<data.length;
+        c.classList.toggle('next',i===data.length&&data.length<cap);
+        c.firstChild.classList.toggle('filled',has);
+        c.firstChild.textContent=has?data[i]:'';
+      });
+    },
+    push:function(v){
+      if(data.length>=cap)return false;
+      data.push(v);api.draw();anim(cells[data.length-1].firstChild,'pop');return true;
+    },
+    pop:function(){
+      if(!data.length)return null;
+      var v=data.pop();api.draw();anim(cells[data.length].firstChild,'flash');
+      return {v:v,i:data.length};
+    },
+    clear:function(){data.length=0;api.draw();}
+  };
+  api.draw();
+  return api;
+}
+
+/* hero */
+var hero=Vector($('#heroVec'),8);
+$('#heroAdd').onclick=function(){
+  var m=$('#heroMsg');
+  if(hero.n>=hero.cap){m.textContent='El arreglo está lleno: sus 8 posiciones están ocupadas. Su tamaño es fijo.';anim($('#heroVec'),'shake');return;}
+  var v=rnd(),i=hero.n;hero.push(v);
+  m.textContent='Se guardó '+v+' en la posición '+i+'. Las posiciones empiezan en 0.';
+};
+$('#heroClear').onclick=function(){hero.clear();$('#heroMsg').textContent='Arreglo vacío. Vuelve a agregar datos.';};
+
+/* ---------- diapositiva 3: papeles sueltos vs arreglo ---------- */
+var NOTAS=[3.8,4.5,2.9,5.0,3.2,4.1,3.6,4.7];
+var ORDEN=[5,2,7,0,4,6,1,3];
+var loose=$('#looseRow'),notasRow=$('#notasRow'),sel=$('#selEst');
+ORDEN.forEach(function(id){
+  var d=document.createElement('div');d.className='sheet';
+  d.innerHTML='<b>Est. '+id+'</b>'+NOTAS[id].toFixed(1);loose.appendChild(d);
+});
+NOTAS.forEach(function(n,i){
+  var c=document.createElement('div');c.className='cell';
+  c.innerHTML='<div class="box filled">'+n.toFixed(1)+'</div><div class="idx">'+i+'</div>';
+  notasRow.appendChild(c);
+  var o=document.createElement('option');o.value=i;o.textContent=i;sel.appendChild(o);
+});
+sel.value='3';
+var scan=null;
+function clearMarks(){
+  $$('#looseRow .sheet').forEach(function(s){s.classList.remove('look','found');});
+  $$('#notasRow .box').forEach(function(b){b.classList.remove('found','glow');});
+}
+$('#searchBtn').onclick=function(){
+  clearInterval(scan);clearMarks();
+  var t=parseInt(sel.value,10),k=0,sheets=$$('#looseRow .sheet');
+  var btn=$('#searchBtn'),res=$('#searchRes');
+  btn.disabled=true;res.textContent='Buscando…';
+  var cell=notasRow.children[t].firstChild;
+  cell.classList.add('found');anim(cell,'glow');
+  function tick(){
+    if(k>0)sheets[k-1].classList.remove('look');
+    sheets[k].classList.add('look');
+    var id=ORDEN[k];k++;
+    if(id===t){
+      clearInterval(scan);
+      sheets[k-1].classList.remove('look');sheets[k-1].classList.add('found');
+      res.textContent='Estudiante '+t+', nota '+NOTAS[t].toFixed(1)+'. Papeles sueltos: '+k+(k===1?' paso':' pasos')+'. Arreglo: 1 paso, directo a notas['+t+'].';
+      btn.disabled=false;
+    }
+  }
+  tick();
+  if(btn.disabled)scan=setInterval(tick,380);
+};
+
+/* ---------- dibujos ---------- */
+function S(inner){return '<svg class="dia" viewBox="0 0 220 130" role="img" aria-hidden="true">'+inner+'</svg>';}
+var DIA={};
+DIA.pila=S('<rect x="65" y="88" width="90" height="26" rx="4"/><rect x="65" y="60" width="90" height="26" rx="4"/><rect class="hl" x="65" y="32" width="90" height="26" rx="4"/><path d="M110 6v16M103 15l7 7 7-7"/><text x="162" y="49">tope</text>');
+DIA.cola=S([0,1,2,3].map(function(i){return '<rect '+(i===0?'class="hl" ':'')+'x="'+(18+i*46)+'" y="46" width="40" height="36" rx="4"/>';}).join('')+'<text x="38" y="102" text-anchor="middle">frente</text><text x="176" y="102" text-anchor="middle">final</text>');
+DIA.arreglo=S([7,3,9,4,1].map(function(v,i){var x=20+i*36;return '<rect x="'+x+'" y="40" width="36" height="36" rx="3"/><text x="'+(x+18)+'" y="62" text-anchor="middle">'+v+'</text><text x="'+(x+18)+'" y="96" text-anchor="middle">'+i+'</text>';}).join(''));
+DIA.lista=S([8,82,156].map(function(x,i){
+  var s='<rect x="'+x+'" y="46" width="54" height="36" rx="4"/><path d="M'+(x+38)+' 46v36"/><text x="'+(x+19)+'" y="69" text-anchor="middle">'+['A','B','C'][i]+'</text>';
+  if(i<2){s+='<path d="M'+(x+46)+' 64H'+(x+72)+'M'+(x+66)+' 58l6 6-6 6"/>';}
+  else{s+='<path d="M'+(x+43)+' 76l6-24"/>';}
+  return s;}).join(''));
+DIA.arbol=S('<path d="M110 22L65 62M110 22L155 62M65 62L40 106M65 62L90 106M155 62L155 106"/><circle cx="110" cy="22" r="12"/><circle cx="65" cy="62" r="12"/><circle cx="155" cy="62" r="12"/><circle cx="40" cy="106" r="12"/><circle cx="90" cy="106" r="12"/><circle cx="155" cy="106" r="12"/>');
+DIA.grafo=S('<path d="M36 44L110 20M110 20L184 50M36 44L70 100M70 100L150 104M184 50L150 104M110 20L70 100"/>'+[[36,44,'A'],[110,20,'B'],[184,50,'C'],[70,100,'D'],[150,104,'E']].map(function(p){return '<circle cx="'+p[0]+'" cy="'+p[1]+'" r="12"/><text x="'+p[0]+'" y="'+(p[1]+4)+'" text-anchor="middle">'+p[2]+'</text>';}).join(''));
+DIA.registro=S('<rect x="45" y="14" width="130" height="102" rx="6"/><path d="M45 48H175M45 82H175"/><text x="57" y="36">nombre</text><text x="165" y="36" text-anchor="end">Ana</text><text x="57" y="70">edad</text><text x="165" y="70" text-anchor="end">20</text><text x="57" y="104">promedio</text><text x="165" y="104" text-anchor="end">4.3</text>');
+
+/* ---------- diapositiva 4: vida diaria ---------- */
+var AN=[
+ {id:'pila',sit:'Platos apilados en la cocina',est:'Pila',regla:'Solo se pone y se saca por arriba: el último plato que pusiste es el primero que sacas (LIFO).'},
+ {id:'cola',sit:'Fila para ser atendido en un banco',est:'Cola',regla:'Se entra por el final y se sale por el frente: el primero en llegar es el primero en ser atendido (FIFO).'},
+ {id:'arreglo',sit:'Casilleros numerados de un gimnasio',est:'Arreglo',regla:'Cada casillero tiene un número fijo. Vas directo al 17 sin abrir los demás.'},
+ {id:'lista',sit:'Búsqueda del tesoro con pistas',est:'Lista enlazada',regla:'Cada pista (nodo) dice dónde está la siguiente. Para llegar a la quinta, pasas por las anteriores.'},
+ {id:'arbol',sit:'Carpetas y subcarpetas del computador',est:'Árbol',regla:'Hay una raíz, y cada elemento puede tener otros debajo. Los datos quedan organizados por niveles.'},
+ {id:'grafo',sit:'Mapa de un sistema de metro',est:'Grafo',regla:'Estaciones (nodos) unidas por líneas (aristas), con varias rutas posibles entre dos puntos.'},
+ {id:'registro',sit:'Ficha de un estudiante',est:'Registro',regla:'Agrupa datos de distinto tipo (nombre, edad, promedio) bajo un mismo nombre.'}
+];
+function byId(id){return AN.filter(function(a){return a.id===id;})[0];}
+function showDetail(el,a){
+  el.innerHTML='<div class="dwrap">'+DIA[a.id]+'<div><h3>'+a.est+'</h3><p>'+a.regla+'</p></div></div>';
+  anim(el.firstChild,'rise');
+}
+var anaList=$('#anaList'),anaDetail=$('#anaDetail');
+AN.forEach(function(a){
+  var b=document.createElement('button');
+  b.type='button';b.className='pick';b.setAttribute('aria-pressed','false');b.textContent=a.sit;
+  b.onclick=function(){
+    $$('#anaList .pick').forEach(function(x){x.setAttribute('aria-pressed','false');});
+    b.setAttribute('aria-pressed','true');
+    showDetail(anaDetail,a);
+  };
+  anaList.appendChild(b);
+});
+
+/* ---------- diapositiva 6: tipos ---------- */
+var TIPOS={arreglo:['Arreglo','est','lin'],lista:['Lista enlazada','din','lin'],pila:['Pila','din','lin'],cola:['Cola','din','lin'],arbol:['Árbol','din','nol'],grafo:['Grafo','din','nol']};
+var VISTAS={
+  tamano:{idx:1,cols:[
+    {k:'est',t:'Estáticas',d:'Su tamaño se fija al declararlas y no cambia mientras el programa corre.'},
+    {k:'din',t:'Dinámicas',d:'Crecen y se reducen mientras el programa corre.'}]},
+  org:{idx:2,cols:[
+    {k:'lin',t:'Lineales',d:'Los elementos forman una sola secuencia: cada uno tiene un anterior y un siguiente.'},
+    {k:'nol',t:'No lineales',d:'Un elemento puede conectarse con varios otros: hay ramas o redes.'}]}
+};
+var vista='tamano',tipoSel=null;
+function renderTax(){
+  var v=VISTAS[vista],box=$('#taxCols');
+  box.innerHTML='';
+  v.cols.forEach(function(c){
+    var chips=Object.keys(TIPOS).filter(function(k){return TIPOS[k][v.idx]===c.k;}).map(function(k){
+      var star=(vista==='tamano'&&(k==='pila'||k==='cola'))?'*':'';
+      return '<button type="button" class="chip'+(k===tipoSel?' on':'')+'" data-id="'+k+'">'+TIPOS[k][0]+star+'</button>';
+    }).join('');
+    var col=document.createElement('div');
+    col.className='taxcol rise';
+    col.innerHTML='<h3>'+c.t+'</h3><p>'+c.d+'</p><div class="chips">'+chips+'</div>';
+    box.appendChild(col);
+  });
+  $('#taxNote').hidden=(vista!=='tamano');
+  $('#vTamano').setAttribute('aria-pressed',String(vista==='tamano'));
+  $('#vOrg').setAttribute('aria-pressed',String(vista==='org'));
+}
+$('#taxCols').addEventListener('click',function(e){
+  var b=e.target.closest('.chip');if(!b)return;
+  tipoSel=b.getAttribute('data-id');
+  $$('#taxCols .chip').forEach(function(x){x.classList.toggle('on',x===b);});
+  showDetail($('#taxDetail'),byId(tipoSel));
+});
+$('#vTamano').onclick=function(){vista='tamano';renderTax();};
+$('#vOrg').onclick=function(){vista='org';renderTax();};
+renderTax();
+
+/* ---------- diapositiva 7: laboratorio de arreglo ---------- */
+var lab=Vector($('#labVec'),8);
+var labMsg=$('#labMsg'),labCode=$('#labCode'),labVal=$('#labVal');
+labVal.value=String(rnd());
+function say(m,c){labMsg.textContent=m;labCode.textContent=c;}
+function addLab(){
+  var raw=labVal.value.trim(),v=Number(raw);
+  if(raw===''||!Number.isInteger(v)||v<0||v>99){say('Escribe un número entero entre 0 y 99.','// valor no válido');return;}
+  if(lab.n>=lab.cap){say('El arreglo está lleno. Su tamaño es fijo: no existe la posición 8.','// v[8] no existe: las posiciones van de 0 a 7');anim($('#labVec'),'shake');return;}
+  var i=lab.n;lab.push(v);
+  say('Se escribió '+v+' en la posición '+i+'. Ahora n vale '+lab.n+'.','v['+i+'] = '+v+';\nn = '+lab.n+';');
+  labVal.value=String(rnd());
+}
+$('#labAdd').onclick=addLab;
+labVal.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();addLab();}});
+$('#labDel').onclick=function(){
+  var r=lab.pop();
+  if(!r){say('No hay datos para eliminar: n vale 0.','// n == 0, el arreglo está vacío');return;}
+  say('Se eliminó el último dato ('+r.v+'). La posición '+r.i+' queda libre y n vale '+lab.n+'.','n = '+lab.n+';   // v['+r.i+'] queda libre');
+};
+$('#labRead').onclick=function(){
+  var raw=$('#labIdx').value.trim(),i=Number(raw);
+  if(raw===''||!Number.isInteger(i)){say('Escribe un número entero para la posición.','// posición no válida');return;}
+  if(i<0||i>=lab.cap){
+    say('Esa posición está fuera del arreglo: solo existen de 0 a '+(lab.cap-1)+'. En C++ leer fuera de rango es un error de programación (comportamiento indefinido).','// v['+i+'] no existe: fuera de rango');
+    anim($('#labVec'),'shake');return;
+  }
+  if(i>=lab.n){
+    say('La posición '+i+' existe, pero todavía no tiene un dato guardado (n vale '+lab.n+').','// v['+i+'] está libre: no hay dato válido');
+    anim(lab.box(i),'flash');return;
+  }
+  say('Leer la posición '+i+' da '+lab.get(i)+'.','int x = v['+i+'];   // x vale '+lab.get(i));
+  anim(lab.box(i),'glow');
+};
+$('#labClear').onclick=function(){lab.clear();say('Arreglo vacío: n vale 0.','n = 0;');};
+
+/* ---------- diapositiva 8: pila y cola ---------- */
+var pilaEl=$('#pila'),colaEl=$('#cola'),pilaMsg=$('#pilaMsg'),colaMsg=$('#colaMsg');
+var pn=1,cn=1,MAX=6;
+function live(el){return Array.prototype.filter.call(el.children,function(c){return !c.classList.contains('out');});}
+function markStack(){var k=live(pilaEl);k.forEach(function(c,i){c.classList.toggle('top',i===k.length-1);});}
+function markQueue(){var k=live(colaEl);k.forEach(function(c,i){c.classList.toggle('front',i===0);c.classList.toggle('back',i===k.length-1);});}
+$('#push').onclick=function(){
+  if(live(pilaEl).length>=MAX){pilaMsg.textContent='La pila está llena (en este ejemplo caben '+MAX+').';return;}
+  var d=document.createElement('div');d.className='it in';d.textContent=pn;
+  pilaMsg.textContent='Push: entró '+pn+' por arriba.';pn++;
+  pilaEl.appendChild(d);markStack();
+};
+$('#pop').onclick=function(){
+  var k=live(pilaEl);
+  if(!k.length){pilaMsg.textContent='La pila está vacía: no hay nada que sacar.';return;}
+  var el=k[k.length-1];el.classList.add('out');
+  pilaMsg.textContent='Pop: salió '+el.textContent+', el último que había entrado.';
+  markStack();setTimeout(function(){el.remove();},230);
+};
+$('#enq').onclick=function(){
+  if(live(colaEl).length>=MAX){colaMsg.textContent='La cola está llena (en este ejemplo caben '+MAX+').';return;}
+  var d=document.createElement('div');d.className='it in';d.textContent=cn;
+  colaMsg.textContent='Enqueue: '+cn+' se une al final de la cola.';cn++;
+  colaEl.appendChild(d);markQueue();
+};
+$('#deq').onclick=function(){
+  var k=live(colaEl);
+  if(!k.length){colaMsg.textContent='La cola está vacía: no hay a quién atender.';return;}
+  var el=k[0];el.classList.add('out');
+  colaMsg.textContent='Dequeue: salió '+el.textContent+', el que llevaba más tiempo esperando.';
+  markQueue();setTimeout(function(){el.remove();},230);
+};
+
+/* ---------- diapositiva 9: reto ---------- */
+var Q=[
+ {t:'El botón «deshacer» de un editor de texto.',a:'Pila',e:'Deshaces primero lo último que hiciste: el último en entrar es el primero en salir.'},
+ {t:'Turnos para recibir atención en una farmacia.',a:'Cola',e:'Se atiende en orden de llegada: el primero en entrar es el primero en salir.'},
+ {t:'Guardar las notas de 30 estudiantes y consultar al instante la del estudiante en la posición 17.',a:'Arreglo',e:'Cada dato tiene una posición fija, así que se llega directo a notas[17] sin recorrer los demás.'},
+ {t:'Representar quién es amigo de quién en una red social.',a:'Grafo',e:'Cualquier persona puede conectarse con muchas otras, sin una jerarquía única.'},
+ {t:'El organigrama de una empresa: un gerente, sus jefes de área y los empleados de cada área.',a:'Árbol',e:'Es una jerarquía: una raíz, con elementos que se ramifican por niveles.'}
+];
+var OPT=['Arreglo','Pila','Cola','Árbol','Grafo'];
+var qi=0,qs=0,qlock=false;
+function renderQ(){
+  var q=Q[qi],o=$('#qOpts');
+  $('#qProg').textContent='Pregunta '+(qi+1)+' de '+Q.length;
+  $('#qText').textContent=q.t;
+  $('#qFeed').textContent='';
+  $('#qNext').hidden=true;
+  o.innerHTML='';qlock=false;
+  OPT.forEach(function(name){
+    var b=document.createElement('button');
+    b.type='button';b.className='btn';b.textContent=name;
+    b.onclick=function(){
+      if(qlock)return;qlock=true;
+      var ok=(name===q.a);
+      if(ok)qs++;
+      b.classList.add(ok?'right':'wrong');
+      if(!ok){Array.prototype.forEach.call(o.children,function(x){if(x.textContent===q.a)x.classList.add('right');});}
+      $('#qFeed').textContent=(ok?'Correcto. ':'La respuesta es '+q.a+'. ')+q.e;
+      $('#qNext').hidden=false;
+      $('#qNext').textContent=(qi===Q.length-1)?'Ver resultado':'Siguiente pregunta';
+    };
+    o.appendChild(b);
+  });
+}
+$('#qNext').onclick=function(){
+  if(qi<Q.length-1){qi++;renderQ();return;}
+  $('#quizBody').hidden=true;$('#quizEnd').hidden=false;
+  $('#qScore').textContent='Acertaste '+qs+' de '+Q.length+'.';
+  $('#qAdvice').textContent=(qs===Q.length)?'Excelente: ya reconoces cuándo conviene cada estructura.':'Repasa las diapositivas 4 y 6 y vuelve a intentarlo.';
+};
+$('#qRetry').onclick=function(){qi=0;qs=0;$('#quizEnd').hidden=true;$('#quizBody').hidden=false;renderQ();};
+renderQ();
+})();
+</script>
+</body>
+</html>
