@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <title>Algoritmos de Ordenamiento en C++</title>
+    <title>3. Estructuras de datos: Ordenamiento y Búsqueda</title>
     <link
         href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=JetBrains+Mono:wght@400;600&family=Public+Sans:wght@400;500;600&display=swap"
         rel="stylesheet">
@@ -453,9 +453,93 @@
             color: #8A7222;
         }
 
-        .level-hard {
-            background: var(--bad-soft);
-            color: var(--bad);
+        /* Estilos de Búsqueda y Bases de Datos */
+        .search-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .search-flex {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 20px 0 15px;
+        }
+
+        .search-box {
+            width: 58px;
+            height: 64px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--line);
+            border-radius: 8px;
+            background: var(--surface);
+            font-family: var(--f-mono);
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: var(--ink);
+            transition: all 0.25s ease;
+            position: relative;
+        }
+
+        .search-box .search-idx {
+            font-size: 0.72rem;
+            font-weight: 500;
+            color: var(--muted);
+            margin-top: 2px;
+        }
+
+        .search-box.checking {
+            background: var(--hot-soft);
+            border-color: var(--hot);
+            color: #8A7222;
+            transform: scale(1.08);
+        }
+
+        .search-box.found {
+            background: var(--ok-soft);
+            border-color: var(--ok);
+            color: var(--ok);
+            transform: scale(1.12);
+            box-shadow: 0 0 0 4px var(--ok-soft);
+        }
+
+        .search-box.discarded {
+            opacity: 0.25;
+            background: #f1f3f3;
+            border-color: #d8dedc;
+            text-decoration: line-through;
+        }
+
+        .search-box.bound {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px var(--accent-soft);
+        }
+
+        .search-box.mid {
+            background: var(--accent-soft);
+            border-color: var(--accent);
+            color: var(--accent);
+            transform: scale(1.1);
+        }
+
+        .tech-card {
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 16px;
+            background: var(--surface);
+            margin-bottom: 14px;
+        }
+
+        .tech-card h4 {
+            margin: 0 0 6px 0;
+            color: var(--title);
+            font-size: 1.05rem;
         }
 
         details.ex-solution {
@@ -506,9 +590,8 @@
         <!-- 1 Portada -->
         <section class="slide active" data-name="Inicio" aria-label="Portada">
             <div class="wrap hero">
-                <h1 tabindex="-1">3. Ordenamiento en C++</h1>
-                <p class="lead">Algoritmos clásicos: Burbuja, Shell, Quicksort y Mergesort. Análisis de rendimiento,
-                    ejecución y su impacto en la memoria RAM.</p>
+                <h1 tabindex="-1">3. Ordenamiento y Búsqueda en C++</h1>
+                <p class="lead">Algoritmos clásicos: Burbuja, Shell, Quicksort, Mergesort y Búsqueda (Lineal y Binaria). Análisis de rendimiento temporal, memoria RAM y aplicaciones en bases de datos e industria.</p>
 
                 <div class="panel" style="margin-top: 30px; text-align: center; border-color: var(--accent);">
                     <h3 style="color: var(--accent);">¿Por qué estudiar cómo ordenar?</h3>
@@ -712,11 +795,216 @@
             </div>
         </section>
 
+        <!-- 3.6 Industria y Bases de Datos -->
+        <section class="slide" data-name="3.6 Industria y BD" aria-label="Ordenamiento en la Industria y Bases de Datos">
+            <div class="wrap">
+                <h2 tabindex="-1">3.6. Ordenamiento en la Industria y Bases de Datos</h2>
+                <p class="lead">¿Cómo ordenan sistemas gigantescos como PostgreSQL, MySQL o Google cuando los datos no caben en la memoria RAM?</p>
+
+                <div class="two">
+                    <div>
+                        <div class="tech-card" style="border-left: 4px solid var(--accent);">
+                            <h4>1. External Merge Sort (Ordenamiento Externo)</h4>
+                            <p>Cuando un dataset (ej. <strong>100 GB</strong>) supera la memoria RAM disponible (ej. <strong>8 GB</strong>), Quicksort no puede usarse directamente porque no puede hacer intercambios aleatorios en disco duro.</p>
+                            <ul>
+                                <li><strong>Fase 1 (Generación de Runs):</strong> Se leen bloques de datos que sí caben en RAM (ej. de 4 GB), se ordenan en memoria con Quicksort y se guardan temporalmente en disco como archivos ordenados llamados <em>Runs</em>.</li>
+                                <li><strong>Fase 2 (K-Way Merge):</strong> Con varios <em>runs</em> en disco, se cargan pequeños búferes de lectura en RAM y se fusionan ordenadamente hacia el archivo final (exactamente el principio de <strong>Mergesort</strong>).</li>
+                            </ul>
+                        </div>
+
+                        <div class="tech-card" style="border-left: 4px solid var(--hot);">
+                            <h4>2. Índices B-Tree en Bases de Datos Relacionales</h4>
+                            <p>En motores SQL (PostgreSQL, MySQL, SQLite), ejecutar <code>SELECT * FROM Estudiantes ORDER BY codigo;</code> no ordena la tabla desde cero en cada consulta. En su lugar, el motor mantiene un <strong>Índice en Árbol B+ (B+Tree)</strong> donde las claves ya residen ordenadas en páginas de almacenamiento, permitiendo lecturas secuenciales ultrarrápidas.</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="tech-card" style="border-left: 4px solid #673AB7;">
+                            <h4>3. Algoritmos Híbridos en Producción</h4>
+                            <p>En los compiladores y lenguajes profesionales casi nunca se usa un solo algoritmo puro; se combinan los mejores enfoques:</p>
+                            <ul>
+                                <li><strong>Introsort (C++ <code>std::sort</code>):</strong> Comienza con <strong>Quicksort</strong> por su velocidad in-place. Si la recursión se vuelve muy profunda (riesgo de caer en $O(N^2)$), conmuta automáticamente a <strong>Heapsort</strong> garantizando $O(N \log N)$. Si el subarreglo tiene menos de 16 elementos, conmuta a <strong>Insertion Sort</strong>.</li>
+                                <li><strong>Timsort (Python, Java, Android, Rust):</strong> Diseñado por Tim Peters. Aprovecha secuencias que ya vienen ordenadas en datos de la vida real (<em>runs naturales</em>) y las fusiona usando principios de Mergesort e Inserción.</li>
+                            </ul>
+                        </div>
+
+                        <div class="panel" style="background: var(--code-bg); text-align: center;">
+                            <p style="font-weight: 600; color: var(--accent); margin-bottom: 6px;">Regla de Oro en la Industria</p>
+                            <p class="hint" style="margin: 0;"><em>"Ordena una sola vez con un buen algoritmo ($O(N \log N)$), o indexa con un B-Tree, para que luego todas las búsquedas sean casi instantáneas ($O(\log N)$)."</em></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3.7 Algoritmos de Búsqueda -->
+        <section class="slide" data-name="3.7 Búsqueda" aria-label="Algoritmos de Búsqueda: Lineal y Binaria">
+            <div class="wrap">
+                <h2 tabindex="-1">3.7. Algoritmos de Búsqueda: Lineal y Binaria</h2>
+                <p class="lead">El propósito principal de ordenar un array es acelerar drásticamente la búsqueda de información.</p>
+
+                <div class="two">
+                    <div>
+                        <div class="big-o-badge warn">Búsqueda Lineal: O(N) — Datos sin ordenar</div>
+                        <div class="big-o-badge">Búsqueda Binaria: O(log N) — Requiere Array Ordenado</div>
+
+                        <div class="panel" style="margin-top: 14px;">
+                            <h4 style="margin: 0 0 8px; color: var(--title);">La Diferencia Matemática</h4>
+                            <p style="font-size: 0.95rem;">Si tienes <strong>1,000,000 de registros</strong>:</p>
+                            <ul style="font-size: 0.92rem; padding-left: 20px;">
+                                <li><strong>Búsqueda Lineal:</strong> Recorre uno a uno desde el inicio. Peor caso: <strong>1,000,000 de comparaciones</strong>.</li>
+                                <li><strong>Búsqueda Binaria:</strong> Descarta la mitad en cada paso ($medio = (inicio + fin) / 2$). Peor caso: <strong>¡Solo 20 comparaciones!</strong> ($\log_2 1,000,000 \approx 19.9$).</li>
+                            </ul>
+                            <p class="hint" style="margin-top: 10px;">¡Prueba el simulador de la derecha con el mismo número y compara la cantidad de pasos que toma cada una!</p>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="row" style="margin-bottom: 12px; justify-content: center; gap: 8px;">
+                            <label for="sel-search-target" style="font-weight: 600;">Buscar:</label>
+                            <select id="sel-search-target" style="padding: 5px 10px; font-weight: bold;">
+                                <option value="48" selected>48 (En el medio)</option>
+                                <option value="12">12 (Al inicio)</option>
+                                <option value="91">91 (Al final)</option>
+                                <option value="34">34 (Posición 2)</option>
+                                <option value="79">79 (Posición 6)</option>
+                                <option value="50">50 (No existe)</option>
+                            </select>
+                        </div>
+
+                        <div class="row" style="margin-bottom: 12px; justify-content: center; gap: 8px;">
+                            <button class="btn" id="btn-lin-step" style="border-color: var(--hot);">Paso Lineal</button>
+                            <button class="btn action" id="btn-bin-step">Paso Binaria</button>
+                            <button class="btn" id="btn-search-reset">Reiniciar</button>
+                        </div>
+
+                        <div class="search-container">
+                            <div class="search-flex" id="search-array">
+                                <!-- Renderizado por JS -->
+                            </div>
+                            <div class="status-log" id="search-log">Elige un valor y avanza paso a paso.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3.8 Caso Práctico de Búsqueda -->
+        <section class="slide" data-name="3.8 Caso Práctico" aria-label="Caso Práctico de Búsqueda en C++">
+            <div class="wrap">
+                <h2 tabindex="-1">3.8. Caso Práctico de Búsqueda en C++ (Evaluación)</h2>
+                <p class="lead">Implementación en consola de un caso típico para evaluación práctica en salas de cómputo: Sistema de Estudiantes con búsqueda lineal y binaria.</p>
+
+                <div class="panel" style="margin-bottom: 16px;">
+                    <h3 style="color: var(--accent); margin-bottom: 6px;">Caso: Registro de Notas de Estudiantes Unitrópico</h3>
+                    <p style="font-size: 0.95rem; margin-bottom: 10px;">En este ejercicio resolvemos el flujo completo evaluado en laboratorio: 1) Estructura de datos <code>struct</code>, 2) Búsqueda Lineal sobre datos desordenados, 3) Ordenamiento por código, y 4) Búsqueda Binaria para consultas ultrarrápidas.</p>
+
+                    <pre class="code" style="max-height: 380px; overflow-y: auto;">
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+struct Estudiante {
+    int codigo;
+    string nombre;
+    float nota;
+};
+
+// 1. Busqueda Lineal O(N): Funciona con el arreglo tal como viene (desordenado)
+int busquedaLineal(Estudiante arr[], int n, int codigoBuscado, int &comparaciones) {
+    comparaciones = 0;
+    for (int i = 0; i &lt; n; i++) {
+        comparaciones++;
+        if (arr[i].codigo == codigoBuscado) {
+            return i; // Encontrado en indice i
+        }
+    }
+    return -1; // No existe
+}
+
+// 2. Ordenamiento por Codigo (Burbuja optimizada con bandera)
+void ordenarPorCodigo(Estudiante arr[], int n) {
+    for (int i = 0; i &lt; n - 1; i++) {
+        bool huboCambio = false;
+        for (int j = 0; j &lt; n - i - 1; j++) {
+            if (arr[j].codigo &gt; arr[j + 1].codigo) {
+                Estudiante temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+                huboCambio = true;
+            }
+        }
+        if (!huboCambio) break; // Ya ordenado
+    }
+}
+
+// 3. Busqueda Binaria O(log N): Requiere que arr[] este PREVIAMENTE ORDENADO
+int busquedaBinaria(Estudiante arr[], int n, int codigoBuscado, int &comparaciones) {
+    int inicio = 0;
+    int fin = n - 1;
+    comparaciones = 0;
+
+    while (inicio &lt;= fin) {
+        comparaciones++;
+        int medio = inicio + (fin - inicio) / 2; // Evita desbordamiento de enteros
+
+        if (arr[medio].codigo == codigoBuscado) {
+            return medio; // Encontrado
+        }
+        if (arr[medio].codigo &lt; codigoBuscado) {
+            inicio = medio + 1; // Descartar mitad izquierda
+        } else {
+            fin = medio - 1;    // Descartar mitad derecha
+        }
+    }
+    return -1; // No encontrado
+}
+
+int main() {
+    const int TOTAL = 5;
+    Estudiante grupo[TOTAL] = {
+        {1050, "Carlos Perez", 4.2},
+        {1010, "Ana Gomez",    4.8},
+        {1090, "Laura Rios",   3.9},
+        {1030, "David Castro", 4.5},
+        {1070, "Sofia Rojas",  3.5}
+    };
+
+    int codigoTarget = 1030;
+    int comps = 0;
+
+    cout &lt;&lt; "--- 1. BUSQUEDA LINEAL (SIN ORDENAR) ---\n";
+    int idxLin = busquedaLineal(grupo, TOTAL, codigoTarget, comps);
+    if (idxLin != -1) {
+        cout &lt;&lt; "Estudiante: " &lt;&lt; grupo[idxLin].nombre &lt;&lt; " | Nota: " &lt;&lt; grupo[idxLin].nota
+             &lt;&lt; " (Comparaciones: " &lt;&lt; comps &lt;&lt; ")\n\n";
+    }
+
+    cout &lt;&lt; "--- 2. ORDENANDO POR CODIGO INSTITUCIONAL ---\n";
+    ordenarPorCodigo(grupo, TOTAL);
+    for (int i = 0; i &lt; TOTAL; i++) {
+        cout &lt;&lt; "[" &lt;&lt; grupo[i].codigo &lt;&lt; "] " &lt;&lt; grupo[i].nombre &lt;&lt; "\n";
+    }
+
+    cout &lt;&lt; "\n--- 3. BUSQUEDA BINARIA (SOBRE ARRAY ORDENADO) ---\n";
+    int idxBin = busquedaBinaria(grupo, TOTAL, codigoTarget, comps);
+    if (idxBin != -1) {
+        cout &lt;&lt; "Estudiante: " &lt;&lt; grupo[idxBin].nombre &lt;&lt; " | Nota: " &lt;&lt; grupo[idxBin].nota
+             &lt;&lt; " (Comparaciones: " &lt;&lt; comps &lt;&lt; ")\n";
+    }
+
+    return 0;
+}
+</pre>
+                </div>
+            </div>
+        </section>
+
         <!-- 7 Ejercicios -->
         <section class="slide" data-name="30 Ejercicios" aria-label="Ejercicios de Programación">
             <div class="wrap">
-                <h2 tabindex="-1">30 Ejercicios Prácticos (Algoritmos de Ordenamiento)</h2>
-                <p class="lead">Soluciones en C++ implementando paso a paso la lógica manual de cada algoritmo.</p>
+                <h2 tabindex="-1">Ejercicios Prácticos: Ordenamiento y Búsqueda</h2>
+                <p class="lead">Soluciones en C++ implementando paso a paso algoritmos de ordenamiento (Burbuja, Shell, Quick, Merge) y algoritmos de búsqueda (Lineal y Binaria).</p>
 
                 <!-- CATEGORÍA 1: BURBUJA -->
                 <h3
@@ -1230,6 +1518,75 @@ int main() {
     return 0;
 }
 </pre>
+                <!-- CATEGORÍA 5: ALGORITMOS DE BÚSQUEDA -->
+                <h3
+                    style="margin-top:20px; color:var(--accent); border-bottom: 2px solid var(--line); padding-bottom: 5px;">
+                    5. Algoritmos de Búsqueda (Lineal y Binaria)</h3>
+
+                <div class="exercise-card">
+                    <h4>Búsqueda Binaria Recursiva <span class="exercise-level level-med">Intermedio</span></h4>
+                    <p class="ex-desc"><strong>Planteamiento:</strong> Implementa la versión recursiva de la búsqueda binaria en C++. Si el elemento central coincide, retorna el índice; si es menor, llama recursivamente a la mitad izquierda; si es mayor, a la mitad derecha.</p>
+                    <details class="ex-solution">
+                        <summary></summary>
+                        <pre class="code">
+#include &lt;iostream&gt;
+using namespace std;
+
+int busquedaBinariaRec(int arr[], int inicio, int fin, int valor) {
+    if (inicio &gt; fin) return -1; // Caso base: no encontrado
+
+    int medio = inicio + (fin - inicio) / 2;
+
+    if (arr[medio] == valor) return medio; // Caso base: encontrado
+
+    if (valor &lt; arr[medio]) {
+        return busquedaBinariaRec(arr, inicio, medio - 1, valor); // Mitad izquierda
+    } else {
+        return busquedaBinariaRec(arr, medio + 1, fin, valor);     // Mitad derecha
+    }
+}
+
+int main() {
+    int ordenado[] = {10, 25, 32, 45, 58, 63, 77, 89, 94};
+    int n = 9;
+    int objetivo = 58;
+    int idx = busquedaBinariaRec(ordenado, 0, n - 1, objetivo);
+    if (idx != -1) cout &lt;&lt; "Valor " &lt;&lt; objetivo &lt;&lt; " encontrado en indice " &lt;&lt; idx;
+    return 0;
+}
+</pre>
+                    </details>
+                </div>
+
+                <div class="exercise-card">
+                    <h4>Búsqueda en Colecciones con &lt;algorithm&gt; <span class="exercise-level level-easy">Básico</span></h4>
+                    <p class="ex-desc"><strong>Planteamiento:</strong> Compara el uso de <code>std::binary_search</code> (retorna bool) con <code>std::lower_bound</code> (retorna la posición/iterador) de la biblioteca estándar de C++.</p>
+                    <details class="ex-solution">
+                        <summary></summary>
+                        <pre class="code">
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+
+int main() {
+    vector&lt;int&gt; v = {5, 12, 18, 25, 33, 47, 52};
+    int dato = 25;
+
+    // binary_search solo confirma existencia (true/false)
+    if (binary_search(v.begin(), v.end(), dato)) {
+        cout &lt;&lt; dato &lt;&lt; " existe en el vector.\n";
+    }
+
+    // lower_bound nos da la posicion exacta
+    auto it = lower_bound(v.begin(), v.end(), dato);
+    if (it != v.end() && *it == dato) {
+        int indice = distance(v.begin(), it);
+        cout &lt;&lt; "Ubicado en la posicion (indice): " &lt;&lt; indice &lt;&lt; endl;
+    }
+    return 0;
+}
+</pre>
                     </details>
                 </div>
 
@@ -1241,18 +1598,13 @@ int main() {
             <div class="wrap">
                 <h2 tabindex="-1">Resumen y Mejores Prácticas</h2>
                 <ul class="sum">
-                    <li><strong>Burbuja:</strong> Lento (O(N²)) y didáctico. No lo uses en producción. Es In-place y
-                        Estable.</li>
-                    <li><strong>Shell Sort:</strong> Un salto adelante (O(N log N)). Rápido y ahorra memoria (In-place),
-                        pero destruye el orden de elementos repetidos (Inestable).</li>
-                    <li><strong>Quicksort:</strong> El rey de la velocidad. In-place, usa poco stack, pero puede fallar
-                        en su peor caso (O(N²)). Es Inestable.</li>
-                    <li><strong>Mergesort:</strong> Garantiza siempre velocidad (O(N log N)) y es Estable, a costa de
-                        consumir <strong>doble memoria RAM</strong> (Out-of-place).</li>
-                    <li><strong>La realidad profesional:</strong> En C++, casi nunca escribimos esto a mano. Usamos
-                        <code>std::sort()</code> (que usa Quicksort optimizado) o <code>std::stable_sort()</code> (que
-                        usa Mergesort) desde la librería <code>&lt;algorithm&gt;</code>.
-                    </li>
+                    <li><strong>Burbuja:</strong> Lento (O(N²)) y puramente didáctico. In-place y Estable.</li>
+                    <li><strong>Shell Sort:</strong> Un gran avance (O(N log N) a O(N^1.5)). In-place pero Inestable por sus saltos largos.</li>
+                    <li><strong>Quicksort:</strong> El más veloz en memoria RAM promedio (O(N log N)). In-place e Inestable.</li>
+                    <li><strong>Mergesort:</strong> Tiempo O(N log N) garantizado y Estable, a costa de memoria auxiliar O(N) (Out-of-place).</li>
+                    <li><strong>Bases de Datos e Industria:</strong> Cuando los datos no caben en RAM (Big Data), se usa <em>External Merge Sort</em> en disco. Para evitar ordenar en cada consulta, los motores SQL crean <em>Índices B-Tree</em>.</li>
+                    <li><strong>Búsqueda Lineal vs. Binaria:</strong> Buscamos linealmente en datos desordenados (O(N)). Si el arreglo está ordenado, la Búsqueda Binaria reduce millones de operaciones a solo un puñado de pasos (O(log N)).</li>
+                    <li><strong>En C++ Moderno:</strong> En la práctica se usa <code>std::sort()</code> (Introsort: híbrido de Quick, Heap e Inserción) o <code>std::stable_sort()</code> (Mergesort) desde <code>&lt;algorithm&gt;</code>.</li>
                 </ul>
                 <div class="row top">
                     <button class="btn primary" type="button" data-go="1">Volver al inicio</button>
@@ -1476,6 +1828,129 @@ int main() {
                     mergeStep = 0;
                     renderMerge(mergeFrames[0].m, mergeFrames[0].a, mergeFrames[0].mh, mergeFrames[0].ah);
                     $('#merge-log').textContent = mergeFrames[0].msg;
+                };
+            }
+
+            /* ---------- 5. Animación de BÚSQUEDA (Lineal vs Binaria) ---------- */
+            var searchData = [12, 25, 34, 48, 57, 63, 79, 91];
+            var searchTarget = 48;
+            var sCont = $('#search-array');
+            var sLog = $('#search-log');
+
+            function renderSearch(data, state) {
+                if (!sCont) return;
+                sCont.innerHTML = '';
+                data.forEach((val, i) => {
+                    var box = document.createElement('div');
+                    box.className = 'search-box';
+                    box.innerHTML = `<span>${val}</span><span class="search-idx">[${i}]</span>`;
+                    
+                    if (state) {
+                        if (state.type === 'linear') {
+                            if (state.found && state.idx === i) {
+                                box.classList.add('found');
+                            } else if (state.idx === i) {
+                                box.classList.add('checking');
+                            } else if (i < state.idx) {
+                                box.classList.add('discarded');
+                            }
+                        } else if (state.type === 'binary') {
+                            if (state.found && state.mid === i) {
+                                box.classList.add('found');
+                            } else if (i === state.mid) {
+                                box.classList.add('mid');
+                            } else if (i === state.left || i === state.right) {
+                                box.classList.add('bound');
+                            }
+                            if (i < state.left || i > state.right) {
+                                box.classList.add('discarded');
+                            }
+                        }
+                    }
+                    sCont.appendChild(box);
+                });
+            }
+
+            var linIndex = -1;
+            var binLeft = 0;
+            var binRight = searchData.length - 1;
+            var binFinished = false;
+            var linFinished = false;
+            var linComps = 0;
+            var binComps = 0;
+
+            function initSearch() {
+                var sel = $('#sel-search-target');
+                if (sel) searchTarget = parseInt(sel.value, 10);
+                linIndex = -1;
+                binLeft = 0;
+                binRight = searchData.length - 1;
+                binFinished = false;
+                linFinished = false;
+                linComps = 0;
+                binComps = 0;
+                renderSearch(searchData, null);
+                if (sLog) sLog.textContent = `Buscando ${searchTarget}. Elige Paso Lineal o Paso Binaria para avanzar.`;
+            }
+
+            if ($('#btn-lin-step')) {
+                initSearch();
+
+                if ($('#sel-search-target')) {
+                    $('#sel-search-target').onchange = function() {
+                        initSearch();
+                    };
+                }
+
+                $('#btn-lin-step').onclick = function() {
+                    if (linFinished) return;
+                    linIndex++;
+                    linComps++;
+                    if (linIndex >= searchData.length) {
+                        linFinished = true;
+                        renderSearch(searchData, { type: 'linear', idx: linIndex - 1, found: false, done: true });
+                        sLog.textContent = `[Lineal] Fin del array. ${searchTarget} NO existe. Comparaciones totales: ${linComps} (Costo O(N)).`;
+                        return;
+                    }
+                    if (searchData[linIndex] === searchTarget) {
+                        linFinished = true;
+                        renderSearch(searchData, { type: 'linear', idx: linIndex, found: true, done: true });
+                        sLog.textContent = `[Lineal] ¡Encontrado ${searchTarget} en índice [${linIndex}]! Comparaciones: ${linComps}.`;
+                    } else {
+                        renderSearch(searchData, { type: 'linear', idx: linIndex, found: false, done: false });
+                        sLog.textContent = `[Lineal] Paso ${linComps}: arr[${linIndex}] = ${searchData[linIndex]} != ${searchTarget}. Avanza a [${linIndex + 1}]...`;
+                    }
+                };
+
+                $('#btn-bin-step').onclick = function() {
+                    if (binFinished) return;
+                    if (binLeft > binRight) {
+                        binFinished = true;
+                        renderSearch(searchData, { type: 'binary', left: binLeft, right: binRight, mid: -1, found: false, done: true });
+                        sLog.textContent = `[Binaria] Límite cruzado (inicio > fin). ${searchTarget} NO existe. Comparaciones: ${binComps} (O(log N)).`;
+                        return;
+                    }
+                    binComps++;
+                    var mid = Math.floor((binLeft + binRight) / 2);
+                    var midVal = searchData[mid];
+
+                    if (midVal === searchTarget) {
+                        binFinished = true;
+                        renderSearch(searchData, { type: 'binary', left: binLeft, right: binRight, mid: mid, found: true, done: true });
+                        sLog.textContent = `[Binaria] Paso ${binComps}: medio = [${mid}] (${midVal}) == ${searchTarget}. ¡Encontrado! O(log N).`;
+                    } else if (midVal < searchTarget) {
+                        renderSearch(searchData, { type: 'binary', left: binLeft, right: binRight, mid: mid, found: false, done: false });
+                        sLog.textContent = `[Binaria] Paso ${binComps}: medio = [${mid}] (${midVal}) < ${searchTarget}. Descartamos izquierda. Nuevo inicio = [${mid + 1}].`;
+                        binLeft = mid + 1;
+                    } else {
+                        renderSearch(searchData, { type: 'binary', left: binLeft, right: binRight, mid: mid, found: false, done: false });
+                        sLog.textContent = `[Binaria] Paso ${binComps}: medio = [${mid}] (${midVal}) > ${searchTarget}. Descartamos derecha. Nuevo fin = [${mid - 1}].`;
+                        binRight = mid - 1;
+                    }
+                };
+
+                $('#btn-search-reset').onclick = function() {
+                    initSearch();
                 };
             }
 

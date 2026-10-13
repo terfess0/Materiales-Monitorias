@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Estructura de Datos | Monitorías Académicas</title>
+  <title>Estructuras de Datos | Monitorías Académicas</title>
   <style>
     * {
       box-sizing: border-box;
@@ -261,7 +262,8 @@
       text-align: left;
     }
 
-    th, td {
+    th,
+    td {
       padding: 12px 14px;
       border-bottom: 1px solid #e5e7eb;
     }
@@ -329,12 +331,13 @@
     }
   </style>
 </head>
+
 <body>
   <div class="container">
 
     <header>
       <div class="institution">Universidad Internacional del Trópico Americano (Unitrópico)</div>
-      <h1>Estructura de Datos</h1>
+      <h1>Estructuras de Datos</h1>
       <p class="subtitle">Hub de Materiales de Estudio y Monitorías Académicas</p>
       <nav>
         <a href="#guias">Guías de Estudio</a>
@@ -346,22 +349,101 @@
     <!-- GUIAS DE ESTUDIO -->
     <section id="guias">
       <h2>Guías de Estudio</h2>
-      
+
       <div class="filter-box">
-        <input type="text" id="topicFilter" placeholder="Filtrar por tema (c++, ordenamiento, memoria, arreglos, listas...)" onkeyup="filterGuides()">
+        <input type="text" id="topicFilter"
+          placeholder="Filtrar por tema (c++, ordenamiento, memoria, arreglos, listas...)" onkeyup="filterGuides()">
       </div>
 
       <div class="guides-grid" id="guidesGrid">
 
-        <!-- GUIA 1 -->
-        <article class="guide-card" data-keywords="c++ introduccion fundamentos sintaxis variables tipos cin cout if else for while funciones ejercicios">
+        <!-- GUIA 1 (Tema 1 del Sílabo) -->
+        <article class="guide-card"
+          data-keywords="estructuras de datos introduccion conceptos tad lineales no lineales arreglos pilas colas teoria guia 1">
           <div>
-            <span class="guide-badge">Guía 01 &bull; Fundamentos de C++</span>
-            <h3 class="guide-title">1. Introducción a C++</h3>
+            <span class="guide-badge">Guía 01 &bull; Unidad 1: Introducción</span>
+            <h3 class="guide-title">1. Estructuras de Datos: Introducción</h3>
             <p class="guide-desc">
-              Lo esencial del lenguaje: compilación, anatomía de un programa, tipos de datos primitivos, 
-              entrada/salida con cin/cout, estructuras de control condicional (if/else), ciclos iterativos 
-              (for/while), funciones modulares y batería de 30 ejercicios prácticos de lógica.
+              Comprensión conceptual de las estructuras de datos: qué son, aplicaciones en la vida diaria
+              y en programación, tipos de estructuras (lineales y no lineales, estáticas y dinámicas),
+              laboratorio interactivo con arreglos, primer acercamiento a pilas y colas, y retos de selección.
+            </p>
+            <div class="guide-topics">
+              <b>Contenido principal:</b>
+              - ¿Qué es una estructura de datos?<br>
+              - Analogías en la vida diaria y en software<br>
+              - Clasificación: lineales vs no lineales, estáticas vs dinámicas<br>
+              - Práctica interactiva con arreglos<br>
+              - Conceptos de Pila y Cola + Reto interactivo de elección
+            </div>
+          </div>
+          <div>
+            <a href="./Estructuras%20de%20datos_%20introducci%C3%B3n.html" class="guide-btn">Abrir Guía 01 &rarr;</a>
+          </div>
+        </article>
+
+        <!-- GUIA 2 (Tema 2 del Sílabo) -->
+        <article class="guide-card"
+          data-keywords="arrays vectores arreglos 1d 2d matrices multidimensionales vector algorithm algoritmos guia 2">
+          <div>
+            <span class="guide-badge">Guía 02 &bull; Unidad 2: Arrays</span>
+            <h3 class="guide-title">2. Estructuras de Datos: Arrays</h3>
+            <p class="guide-desc">
+              Estudio detallado de arreglos en C++: arrays unidimensionales (1D), matrices bidimensionales (2D)
+              y multidimensionales (3D+), vectores dinámicos con std::vector, operaciones con la librería
+              &lt;algorithm&gt;,
+              comparación entre listas y arrays, y batería de 30 ejercicios prácticos con solución desplegable.
+            </p>
+            <div class="guide-topics">
+              <b>Contenido principal:</b>
+              - Arrays Unidimensionales (1D) y acceso directo<br>
+              - Matrices Bidimensionales (2D) y Multidimensionales (3D+)<br>
+              - Vectores dinámicos (std::vector)<br>
+              - Utilidades con &lt;algorithm&gt; (búsqueda y orden)<br>
+              - Comparación Listas vs Arrays + 30 ejercicios prácticos
+            </div>
+          </div>
+          <div>
+            <a href="./Estructuras%20de%20datos_%20arrays.html" class="guide-btn">Abrir Guía 02 &rarr;</a>
+          </div>
+        </article>
+
+        <!-- GUIA 3 (Tema 3 del Sílabo) -->
+        <article class="guide-card"
+          data-keywords="ordenamiento sorting burbuja bubble sort shell shellsort quicksort mergesort busqueda lineal binaria bases de datos industria ejercicios c++ guia 3">
+          <div>
+            <span class="guide-badge">Guía 03 &bull; Unidad 3: Ordenamiento y Búsqueda</span>
+            <h3 class="guide-title">3. Estructuras de Datos: Ordenamiento y Búsqueda</h3>
+            <p class="guide-desc">
+              Estudio profundo de los algoritmos clásicos de ordenamiento (Burbuja, Shell, Quicksort, Mergesort)
+              y algoritmos de búsqueda (Lineal y Binaria). Simuladores gráficos paso a paso, análisis Big O,
+              ordenamiento en bases de datos (External Merge Sort e Índices B-Tree), caso práctico evaluativo y
+              ejercicios resueltos.
+            </p>
+            <div class="guide-topics">
+              <b>Contenido principal:</b>
+              - Burbuja, Shell, Quicksort y Mergesort (con simuladores)<br>
+              - In-place vs Out-of-place, Estabilidad y Complejidad Big O<br>
+              - Ordenamiento en la industria y Bases de Datos (External Merge Sort y B-Trees)<br>
+              - Búsqueda Lineal vs. Búsqueda Binaria (Simulador interactivo)<br>
+              - Caso práctico evaluativo de registro de notas + Ejercicios
+            </div>
+          </div>
+          <div>
+            <a href="./Estructuras%20de%20datos_%20ordenamiento.html" class="guide-btn">Abrir Guía 03 &rarr;</a>
+          </div>
+        </article>
+
+        <!-- MATERIAL ANEXO: C++ -->
+        <article class="guide-card"
+          data-keywords="c++ introduccion fundamentos sintaxis variables tipos cin cout if else for while funciones ejercicios anexo material soporte">
+          <div>
+            <span class="guide-badge" style="color: #8A7222;">Material Anexo &bull; Fundamentos de C++</span>
+            <h3 class="guide-title">Material - Introducción a C++</h3>
+            <p class="guide-desc">
+              Material de soporte y nivelación: compilación en entornos libres (GCC/Dev-C++), anatomía de un programa,
+              tipos de datos primitivos, entrada/salida con cin/cout, estructuras de control condicional (if/else),
+              ciclos iterativos (for/while), modularidad con funciones y batería de 30 ejercicios prácticos de lógica.
             </p>
             <div class="guide-topics">
               <b>Contenido principal:</b>
@@ -369,71 +451,26 @@
               - Variables y tipos (int, float, char, bool, string)<br>
               - Entrada y Salida estándar (cin / cout)<br>
               - Condicionales y Ciclos (if, else, for, while)<br>
-              - Funciones y 30 ejercicios prácticos
+              - Funciones y 30 ejercicios prácticos de fundamentos
             </div>
           </div>
           <div>
-            <a href="./Introducci%C3%B3n%20a%20C++.html" class="guide-btn">Abrir Guía 01 &rarr;</a>
+            <a href="./Introducci%C3%B3n%20a%20C++.html" class="guide-btn" style="background-color: #505856;">Abrir
+              Material Anexo &rarr;</a>
           </div>
         </article>
 
-        <!-- GUIA 2 -->
-        <article class="guide-card" data-keywords="estructuras de datos introduccion conceptos tad lineales no lineales arreglos pilas colas">
+        <!-- MATERIAL ANEXO: COMPORTAMIENTO EN MEMORIA -->
+        <article class="guide-card"
+          data-keywords="memoria stack heap ram apuntadores punteros big o complejidad rendimiento reasignacion vector list stack queue lifo fifo anexo material soporte">
           <div>
-            <span class="guide-badge">Guía 02 &bull; Conceptos Iniciales</span>
-            <h3 class="guide-title">2. Estructuras de Datos: Introducción</h3>
+            <span class="guide-badge" style="color: #8A7222;">Material Anexo &bull; Comportamiento en Memoria</span>
+            <h3 class="guide-title">Material - Comportamiento en Memoria</h3>
             <p class="guide-desc">
-              Comprensión conceptual de las estructuras de datos: qué son, aplicaciones en la vida diaria 
-              y en programación, tipos de estructuras (lineales y no lineales), práctica inicial con arreglos, 
-              primer acercamiento a pilas y colas, y retos de selección.
-            </p>
-            <div class="guide-topics">
-              <b>Contenido principal:</b>
-              - ¿Qué es una estructura de datos?<br>
-              - Analogías en la vida diaria y en software<br>
-              - Clasificación: lineales vs no lineales<br>
-              - Práctica introductoria con arreglos<br>
-              - Conceptos de Pila y Cola + Retos de elección
-            </div>
-          </div>
-          <div>
-            <a href="./Estructuras%20de%20datos_%20introducci%C3%B3n.html" class="guide-btn">Abrir Guía 02 &rarr;</a>
-          </div>
-        </article>
-
-        <!-- GUIA 3 -->
-        <article class="guide-card" data-keywords="arrays vectores arreglos 1d 2d matrices multidimensionales vector algorithm algoritmos">
-          <div>
-            <span class="guide-badge">Guía 03 &bull; Arreglos y Vectores</span>
-            <h3 class="guide-title">3. Estructuras de Datos: Arrays</h3>
-            <p class="guide-desc">
-              Estudio detallado de arreglos en C++: arrays unidimensionales (1D), matrices bidimensionales (2D) 
-              y multidimensionales, vectores dinámicos con std::vector, operaciones con la librería &lt;algorithm&gt;, 
-              comparación entre listas y arrays, y 30 ejercicios prácticos.
-            </p>
-            <div class="guide-topics">
-              <b>Contenido principal:</b>
-              - Arrays Unidimensionales (1D)<br>
-              - Matrices Bidimensionales (2D) y Multidimensionales<br>
-              - Vectores dinámicos (std::vector)<br>
-              - Utilidades con &lt;algorithm&gt; (búsqueda y orden)<br>
-              - Comparación Listas vs Arrays + 30 ejercicios
-            </div>
-          </div>
-          <div>
-            <a href="./Estructuras%20de%20datos_%20arrays.html" class="guide-btn">Abrir Guía 03 &rarr;</a>
-          </div>
-        </article>
-
-        <!-- GUIA 4 -->
-        <article class="guide-card" data-keywords="memoria stack heap ram apuntadores punteros big o complejidad rendimiento reasignacion vector list stack queue lifo fifo">
-          <div>
-            <span class="guide-badge">Guía 04 &bull; Comportamiento en Memoria</span>
-            <h3 class="guide-title">4. Estructuras de Datos: Comportamiento</h3>
-            <p class="guide-desc">
-              Exploración visual e interactiva del comportamiento en memoria RAM en C++: diferencias entre Stack y Heap, 
-              asignación contigua vs nodos dispersos, simulación gráfica paso a paso de reasignación en std::vector, 
-              punteros en std::list, y estructuras LIFO/FIFO (std::stack y std::queue) con análisis de complejidad Big O.
+              Exploración visual e interactiva de la memoria RAM en C++: diferencias entre Stack y Heap,
+              asignación contigua vs nodos dispersos, simulación gráfica de reasignación en std::vector,
+              punteros en std::list, y estructuras LIFO/FIFO (std::stack y std::queue) con análisis de complejidad Big
+              O.
             </p>
             <div class="guide-topics">
               <b>Contenido principal:</b>
@@ -445,31 +482,8 @@
             </div>
           </div>
           <div>
-            <a href="./Estructuras%20de%20datos_%20comportamiento.html" class="guide-btn">Abrir Guía 04 &rarr;</a>
-          </div>
-        </article>
-
-        <!-- GUIA 5 -->
-        <article class="guide-card" data-keywords="ordenamiento sorting burbuja bubble sort shell shellsort quicksort mergesort divide y venceras estabilidad complejidad memoria in-place ejercicios c++">
-          <div>
-            <span class="guide-badge">Guía 05 &bull; Algoritmos de Ordenamiento</span>
-            <h3 class="guide-title">5. Estructuras de Datos: Ordenamiento</h3>
-            <p class="guide-desc">
-              Estudio profundo de los algoritmos clásicos de ordenamiento en C++: Burbuja (Bubble Sort), 
-              Shell Sort, Quicksort y Mergesort. Análisis de rendimiento temporal (Big O), uso de memoria 
-              (In-place vs Out-of-place), estabilidad, tabla comparativa y batería de 30 ejercicios prácticos con solución.
-            </p>
-            <div class="guide-topics">
-              <b>Contenido principal:</b>
-              - Conceptos clave: In-place vs Out-of-place y Estabilidad<br>
-              - Ordenamiento Burbuja (Bubble Sort) y optimización con bandera<br>
-              - Ordenamiento Shell (Shell Sort) y secuencia de saltos (gaps)<br>
-              - Quicksort y Mergesort (Estrategia Divide y Vencerás)<br>
-              - Tabla comparativa, Big O y 30 ejercicios resueltos
-            </div>
-          </div>
-          <div>
-            <a href="./Estructuras%20de%20datos_%20ordenamiento.html" class="guide-btn">Abrir Guía 05 &rarr;</a>
+            <a href="./Estructuras%20de%20datos_%20comportamiento.html" class="guide-btn"
+              style="background-color: #505856;">Abrir Material Anexo &rarr;</a>
           </div>
         </article>
 
@@ -481,7 +495,8 @@
       <div class="section-header-actions">
         <h2>Horarios de Monitorías Académicas</h2>
         <div class="share-actions">
-          <button type="button" class="btn-share" id="btnCompartirHorarios" onclick="compartirHorarios()" title="Copiar enlace directo a los horarios">
+          <button type="button" class="btn-share" id="btnCompartirHorarios" onclick="compartirHorarios()"
+            title="Copiar enlace directo a los horarios">
             Compartir Horario (#)
           </button>
           <span id="shareFeedback" class="share-feedback"></span>
@@ -554,7 +569,8 @@
           </tbody>
         </table>
       </div>
-      <p class="table-note">* Asiste con tus preguntas concretas o código fuente para optimizar el tiempo de asesoría.</p>
+      <p class="table-note">* Asiste con tus preguntas concretas o código fuente para optimizar el tiempo de asesoría.
+      </p>
     </section>
 
     <!-- CONTACTO -->
@@ -562,8 +578,9 @@
       <h2>Contacto</h2>
       <div class="contact-card">
         <p><strong>Monitor:</strong> Fray Santiago Fontalvo Caballero</p>
-        <p><strong>Asignatura:</strong> Estructura de Datos</p>
-        <p><strong>Correo Institucional:</strong> <a href="mailto:frayfontalvo.es@unitropico.edu.co">frayfontalvo.es@unitropico.edu.co</a></p>
+        <p><strong>Asignatura:</strong> Estructuras de Datos</p>
+        <p><strong>Correo Institucional:</strong> <a
+            href="mailto:frayfontalvo.es@unitropico.edu.co">frayfontalvo.es@unitropico.edu.co</a></p>
         <p>Atención presencial en los salones asignados durante las horas indicadas en la tabla de horarios.</p>
       </div>
     </section>
@@ -672,4 +689,5 @@
     });
   </script>
 </body>
+
 </html>
