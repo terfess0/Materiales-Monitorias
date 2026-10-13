@@ -298,7 +298,7 @@
             overflow-x: auto;
         }
 
-        /* Badges de Complejidad */
+        /* Badges de Complejidad alineados a los colores institucionales */
         .complexity-badge {
             display: inline-flex;
             align-items: center;
@@ -310,34 +310,27 @@
             margin: 2px 4px 2px 0;
         }
 
-        .c-excellent {
-            background: #d1fae5;
-            color: #065f46;
-            border: 1px solid #10b981;
-        }
-
+        .c-optimo,
+        .c-excellent,
         .c-good {
-            background: #e0f2fe;
-            color: #0369a1;
-            border: 1px solid #38bdf8;
+            background: var(--accent-soft);
+            color: var(--accent);
+            border: 1px solid var(--accent);
         }
 
+        .c-medio,
         .c-fair {
-            background: #fef3c7;
-            color: #92400e;
-            border: 1px solid #f59e0b;
+            background: var(--hot-soft);
+            color: #8A7222;
+            border: 1px solid var(--hot);
         }
 
-        .c-bad {
-            background: #ffedd5;
-            color: #9a3412;
-            border: 1px solid #f97316;
-        }
-
+        .c-lento,
+        .c-bad,
         .c-terrible {
-            background: #fee2e2;
-            color: #991b1b;
-            border: 1px solid #ef4444;
+            background: var(--bad-soft);
+            color: var(--bad);
+            border: 1px solid var(--bad);
         }
 
         /* Tabla de Referencia */
@@ -362,7 +355,7 @@
         }
 
         .cheat-table tr:hover {
-            background: #fafbfb;
+            background: var(--code-bg);
         }
 
         /* Tarjetas Informativas */
@@ -377,8 +370,10 @@
         .status-log {
             font-family: var(--f-mono);
             font-size: 0.9rem;
-            background: var(--ink);
-            color: #00FF00;
+            background: var(--code-bg);
+            color: var(--ink);
+            border: 1px solid var(--line);
+            border-left: 4px solid var(--accent);
             padding: 12px;
             border-radius: 6px;
             min-height: 44px;
@@ -408,16 +403,16 @@
         }
 
         .quiz-option.correct {
-            background: #d1fae5;
-            border-color: #10b981;
-            color: #065f46;
+            background: var(--ok-soft);
+            border-color: var(--ok);
+            color: var(--ok);
             font-weight: bold;
         }
 
         .quiz-option.incorrect {
-            background: #fee2e2;
-            border-color: #ef4444;
-            color: #991b1b;
+            background: var(--bad-soft);
+            border-color: var(--bad);
+            color: var(--bad);
         }
 
         .sum {
@@ -450,15 +445,15 @@
                 </div>
 
                 <div class="three" style="margin-top: 20px;">
-                    <div class="card-box" style="border-top: 3px solid #10b981;">
+                    <div class="card-box" style="border-top: 3px solid var(--accent);">
                         <h4 style="margin: 0 0 6px;">1. Es Universal</h4>
                         <p class="hint" style="margin: 0;">No mide segundos de reloj. Mide cómo crecen los pasos matemáticos cuando la entrada crece.</p>
                     </div>
-                    <div class="card-box" style="border-top: 3px solid #f59e0b;">
+                    <div class="card-box" style="border-top: 3px solid var(--hot);">
                         <h4 style="margin: 0 0 6px;">2. Explica las Estructuras</h4>
                         <p class="hint" style="margin: 0;">Explica por qué un vector es $O(1)$ en acceso pero $O(N)$ al insertar al inicio, o por qué una búsqueda binaria es $O(\log N)$.</p>
                     </div>
-                    <div class="card-box" style="border-top: 3px solid #ef4444;">
+                    <div class="card-box" style="border-top: 3px solid var(--bad);">
                         <h4 style="margin: 0 0 6px;">3. Clave en Evaluaciones</h4>
                         <p class="hint" style="margin: 0;">En parciales y entrevistas de programación es obligatorio justificar la complejidad temporal y espacial.</p>
                     </div>
@@ -472,7 +467,7 @@
         <section class="slide" data-name="Concepto" aria-label="Por qué no medimos en segundos">
             <div class="wrap">
                 <h2 tabindex="-1">¿Por qué no medimos el tiempo con un cronómetro?</h2>
-                <p class="def">Si mides un programa con reloj (<code>chrono</code> en C++), el resultado depende de si corres en un iPhone, en una laptop vieja o si abriste YouTube de fondo. Necesitamos una medida matemática objetiva.</p>
+                <p class="def">Si mides un programa con reloj (<code>chrono</code> en C++), el resultado depende de si corres en un teléfono, en una laptop vieja o si abriste programas de fondo. Necesitamos una medida matemática objetiva.</p>
 
                 <div class="two">
                     <div class="panel">
@@ -504,14 +499,14 @@ for (int i = 0; i &lt; N; i++) {
                     <div class="three">
                         <div>
                             <span class="complexity-badge c-bad" style="font-size: 1rem;">O (Big O)</span>
-                            <p style="font-size: 0.9rem; margin-top: 4px;"><strong>Peor caso (Límite Superior):</strong> El techo máximo de pasos que dará el algoritmo. Es el que nos importa en ingeniería para garantizar que el sistema no colapse.</p>
+                            <p style="font-size: 0.9rem; margin-top: 4px;"><strong>Peor caso (Límite Superior):</strong> El techo máximo de pasos que dará el algoritmo. Es el estándar de la industria para garantizar que el sistema no colapse.</p>
                         </div>
                         <div>
-                            <span class="complexity-badge c-excellent" style="font-size: 1rem;">Ω (Omega)</span>
-                            <p style="font-size: 0.9rem; margin-top: 4px;"><strong>Mejor caso (Límite Inferior):</strong> El escenario más afortunado. Por ejemplo, en búsqueda lineal, encontrar el elemento en la primera posición ($O(1)$).</p>
+                            <span class="complexity-badge c-optimo" style="font-size: 1rem;">Ω (Omega)</span>
+                            <p style="font-size: 0.9rem; margin-top: 4px;"><strong>Mejor caso (Límite Inferior):</strong> El escenario más afortunado. Por ejemplo, en búsqueda lineal, encontrar el dato en la primera casilla ($O(1)$).</p>
                         </div>
                         <div>
-                            <span class="complexity-badge c-good" style="font-size: 1rem;">Θ (Theta)</span>
+                            <span class="complexity-badge c-medio" style="font-size: 1rem;">Θ (Theta)</span>
                             <p style="font-size: 0.9rem; margin-top: 4px;"><strong>Caso Promedio / Ajustado:</strong> Describe el comportamiento típico cuando el mejor y peor caso crecen con el mismo orden de magnitud.</p>
                         </div>
                     </div>
@@ -523,49 +518,49 @@ for (int i = 0; i &lt; N; i++) {
         <section class="slide" data-name="Jerarquía" aria-label="El Semáforo de Complejidades">
             <div class="wrap">
                 <h2 tabindex="-1">La Jerarquía de Complejidades (El Semáforo)</h2>
-                <p class="lead">De la velocidad de la luz a lo computacionalmente imposible. Estas son las 7 familias más importantes:</p>
+                <p class="lead">De la velocidad máxima a lo computacionalmente inmanejable. Las 7 familias ordenadas según su eficiencia:</p>
 
                 <div class="two">
                     <div>
-                        <div class="card-box" style="margin-bottom: 10px; border-left: 5px solid #10b981;">
-                            <span class="complexity-badge c-excellent">O(1) — Constante</span>
-                            <p style="font-size: 0.92rem; margin: 4px 0 0;"><strong>Excelente.</strong> El tiempo no cambia sin importar si hay 1 dato o 10.000.000. Ej: <code>arr[5]</code>, <code>pila.push()</code>.</p>
+                        <div class="card-box" style="margin-bottom: 10px; border-left: 4px solid var(--accent);">
+                            <span class="complexity-badge c-optimo">O(1) — Constante</span>
+                            <p style="font-size: 0.92rem; margin: 4px 0 0;"><strong>Óptimo.</strong> El tiempo no cambia sin importar si hay 1 dato o 10.000.000. Ejemplos: <code>arr[5]</code>, <code>pila.push()</code>.</p>
                         </div>
 
-                        <div class="card-box" style="margin-bottom: 10px; border-left: 5px solid #0ea5e9;">
-                            <span class="complexity-badge c-good">O(log N) — Logarítmica</span>
-                            <p style="font-size: 0.92rem; margin: 4px 0 0;"><strong>Muy rápida.</strong> En cada paso divide los datos a la mitad. Para 1 millón de datos hace solo 20 pasos. Ej: <strong>Búsqueda Binaria</strong>.</p>
+                        <div class="card-box" style="margin-bottom: 10px; border-left: 4px solid var(--accent);">
+                            <span class="complexity-badge c-optimo">O(log N) — Logarítmica</span>
+                            <p style="font-size: 0.92rem; margin: 4px 0 0;"><strong>Muy rápida.</strong> En cada paso divide los datos a la mitad. Para 1 millón de datos hace solo 20 pasos. Ejemplo: <strong>Búsqueda Binaria</strong>.</p>
                         </div>
 
-                        <div class="card-box" style="margin-bottom: 10px; border-left: 5px solid #eab308;">
-                            <span class="complexity-badge c-fair">O(N) — Lineal</span>
-                            <p style="font-size: 0.92rem; margin: 4px 0 0;"><strong>Aceptable.</strong> Si los datos se duplican, el tiempo se duplica. Un solo bucle <code>for</code>. Ej: <strong>Búsqueda Lineal</strong>, imprimir un vector.</p>
+                        <div class="card-box" style="margin-bottom: 10px; border-left: 4px solid var(--hot);">
+                            <span class="complexity-badge c-medio">O(N) — Lineal</span>
+                            <p style="font-size: 0.92rem; margin: 4px 0 0;"><strong>Aceptable.</strong> Si los datos se duplican, los pasos se duplican. Un solo ciclo <code>for</code>. Ejemplo: <strong>Búsqueda Lineal</strong>, imprimir un vector.</p>
                         </div>
 
-                        <div class="card-box" style="margin-bottom: 10px; border-left: 5px solid #f97316;">
-                            <span class="complexity-badge c-bad">O(N log N) — Linealítmica</span>
-                            <p style="font-size: 0.92rem; margin: 4px 0 0;"><strong>Límite veloz de ordenamiento.</strong> El estándar de oro para ordenar datos en RAM. Ej: <strong>Quicksort, Mergesort, Shell Sort</strong>.</p>
+                        <div class="card-box" style="margin-bottom: 10px; border-left: 4px solid var(--accent);">
+                            <span class="complexity-badge c-optimo">O(N log N) — Linealítmica</span>
+                            <p style="font-size: 0.92rem; margin: 4px 0 0;"><strong>Límite veloz de ordenamiento.</strong> El estándar de oro para ordenar datos en memoria RAM. Ejemplos: <strong>Quicksort, Mergesort, Shell Sort</strong>.</p>
                         </div>
                     </div>
 
                     <div>
-                        <div class="card-box" style="margin-bottom: 10px; border-left: 5px solid #ef4444;">
-                            <span class="complexity-badge c-terrible">O(N²) — Cuadrática</span>
-                            <p style="font-size: 0.92rem; margin: 4px 0 0;"><strong>Peligrosa.</strong> Bucles anidados. Con 1.000 datos hace 1 millón de pasos. No escala. Ej: <strong>Ordenamiento Burbuja</strong>.</p>
+                        <div class="card-box" style="margin-bottom: 10px; border-left: 4px solid var(--bad);">
+                            <span class="complexity-badge c-lento">O(N²) — Cuadrática</span>
+                            <p style="font-size: 0.92rem; margin: 4px 0 0;"><strong>Lenta / Alarma.</strong> Ciclos anidados. Con 1.000 datos hace 1 millón de pasos. No escala bien. Ejemplo: <strong>Ordenamiento Burbuja</strong>.</p>
                         </div>
 
-                        <div class="card-box" style="margin-bottom: 10px; border-left: 5px solid #b91c1c;">
-                            <span class="complexity-badge c-terrible" style="background: #7f1d1d; color: white;">O(2ᴺ) — Exponencial</span>
-                            <p style="font-size: 0.92rem; margin: 4px 0 0;"><strong>Intratable.</strong> Cada nuevo elemento duplica el tiempo. Con $N=40$ tarda minutos, con $N=70$ tarda siglos. Ej: Fibonacci recursivo ingenuo.</p>
+                        <div class="card-box" style="margin-bottom: 10px; border-left: 4px solid var(--bad);">
+                            <span class="complexity-badge c-lento">O(2ᴺ) — Exponencial</span>
+                            <p style="font-size: 0.92rem; margin: 4px 0 0;"><strong>Inmanejable.</strong> Cada nuevo elemento duplica el tiempo. Con $N=40$ tarda minutos, con $N=70$ tarda siglos. Ejemplo: Fibonacci recursivo sin memorizar.</p>
                         </div>
 
-                        <div class="card-box" style="margin-bottom: 10px; border-left: 5px solid #450a0a;">
-                            <span class="complexity-badge c-terrible" style="background: #450a0a; color: white;">O(N!) — Factorial</span>
-                            <p style="font-size: 0.92rem; margin: 4px 0 0;"><strong>La peor de todas.</strong> Generar todas las permutaciones posibles. Con $N=20$ el universo terminaría antes de que finalice.</p>
+                        <div class="card-box" style="margin-bottom: 10px; border-left: 4px solid var(--bad);">
+                            <span class="complexity-badge c-lento">O(N!) — Factorial</span>
+                            <p style="font-size: 0.92rem; margin: 4px 0 0;"><strong>Intratable.</strong> Generar todas las permutaciones posibles. Con $N=20$ el cómputo tomaría miles de años.</p>
                         </div>
 
                         <div class="panel" style="padding: 12px; background: var(--accent-soft); border-color: var(--accent);">
-                            <p style="font-size: 0.88rem; margin: 0; color: var(--title); font-weight: 600;">Regla nemotécnica de velocidad:</p>
+                            <p style="font-size: 0.88rem; margin: 0; color: var(--title); font-weight: 600;">Regla de oro de crecimiento:</p>
                             <p style="font-family: var(--f-mono); font-size: 0.92rem; margin: 4px 0 0; color: var(--accent);">O(1) &lt; O(log N) &lt; O(N) &lt; O(N log N) &lt; O(N²) &lt; O(2ᴺ) &lt; O(N!)</p>
                         </div>
                     </div>
@@ -600,7 +595,7 @@ for (int i = 0; i &lt; N; i++) {
                                     <th>Fórmula</th>
                                     <th>Operaciones Estimadas</th>
                                     <th>Tiempo aprox. (1 Op = 1 ns)</th>
-                                    <th>Calificación</th>
+                                    <th>Evaluación</th>
                                 </tr>
                             </thead>
                             <tbody id="calc-tbody">
@@ -644,7 +639,7 @@ N²     = 10,000,000,000 (Diez mil millones)
                 </div>
 
                 <div class="two" style="margin-top: 18px;">
-                    <div class="panel" style="border-left: 4px solid #0284c7;">
+                    <div class="panel" style="border-left: 4px solid var(--accent);">
                         <h3>Regla 3: Bucles Consecutivos se Suman</h3>
                         <p>Si los bucles están uno después del otro de manera independiente, sus costos se suman:</p>
                         <pre class="code">for(int i=0; i&lt;A; i++) { ... } // O(A)
@@ -653,7 +648,7 @@ for(int j=0; j&lt;B; j++) { ... } // O(B)
 // Complejidad total: O(A + B)</pre>
                     </div>
 
-                    <div class="panel" style="border-left: 4px solid #b91c1c;">
+                    <div class="panel" style="border-left: 4px solid var(--bad);">
                         <h3>Regla 4: Bucles Anidados se Multiplican</h3>
                         <p>Si un bucle está dentro de otro, cada iteración exterior ejecuta el bucle interior completo:</p>
                         <pre class="code">for(int i=0; i&lt;N; i++) {       // N veces
@@ -675,7 +670,7 @@ for(int j=0; j&lt;B; j++) { ... } // O(B)
 
                 <div class="three">
                     <div class="panel">
-                        <span class="complexity-badge c-excellent">O(1)</span>
+                        <span class="complexity-badge c-optimo">O(1)</span>
                         <h4>Acceso Directo</h4>
                         <pre class="code">int consultar(int arr[], int idx) {
     return arr[idx]; // 1 sola operacion
@@ -685,7 +680,7 @@ for(int j=0; j&lt;B; j++) { ... } // O(B)
                     </div>
 
                     <div class="panel">
-                        <span class="complexity-badge c-good">O(log N)</span>
+                        <span class="complexity-badge c-optimo">O(log N)</span>
                         <h4>División Repetida (/= 2)</h4>
                         <pre class="code">void partir(int n) {
     while (n &gt; 1) {
@@ -697,7 +692,7 @@ for(int j=0; j&lt;B; j++) { ... } // O(B)
                     </div>
 
                     <div class="panel">
-                        <span class="complexity-badge c-fair">O(N)</span>
+                        <span class="complexity-badge c-medio">O(N)</span>
                         <h4>Un Ciclo Simple (i++)</h4>
                         <pre class="code">int sumar(int arr[], int n) {
     int total = 0;
@@ -712,8 +707,8 @@ for(int j=0; j&lt;B; j++) { ... } // O(B)
 
                 <div class="two" style="margin-top: 18px;">
                     <div class="panel">
-                        <span class="complexity-badge c-bad">O(N log N)</span>
-                        <h4>Un Ciclo N que contiene una División (/ 2)</h4>
+                        <span class="complexity-badge c-optimo">O(N log N)</span>
+                        <h4>Ciclo N que contiene una División (/ 2)</h4>
                         <pre class="code">for (int i = 0; i &lt; n; i++) {       // Se ejecuta N veces
     for (int j = n; j &gt; 0; j /= 2) { // Se ejecuta log(N) veces
         operacion();
@@ -724,7 +719,7 @@ for(int j=0; j&lt;B; j++) { ... } // O(B)
                     </div>
 
                     <div class="panel">
-                        <span class="complexity-badge c-terrible">O(N²)</span>
+                        <span class="complexity-badge c-lento">O(N²)</span>
                         <h4>Ciclos Anidados</h4>
                         <pre class="code">for (int i = 0; i &lt; n; i++) {
     for (int j = 0; j &lt; n; j++) {
@@ -803,59 +798,59 @@ void copiar(int original[], int n) {
                         <tbody>
                             <tr>
                                 <td><strong>Array Estático (int arr[N])</strong></td>
-                                <td><span class="complexity-badge c-excellent">O(1)</span></td>
-                                <td><span class="complexity-badge c-fair">O(N)</span></td>
+                                <td><span class="complexity-badge c-optimo">O(1)</span></td>
+                                <td><span class="complexity-badge c-medio">O(N)</span></td>
                                 <td>N/A (Tamaño fijo)</td>
-                                <td><span class="complexity-badge c-excellent">O(1)</span></td>
+                                <td><span class="complexity-badge c-optimo">O(1)</span></td>
                             </tr>
                             <tr>
                                 <td><strong>Vector Dinámico (std::vector)</strong></td>
-                                <td><span class="complexity-badge c-excellent">O(1)</span></td>
-                                <td><span class="complexity-badge c-fair">O(N)</span></td>
-                                <td><span class="complexity-badge c-excellent">O(1)</span> amortizado al final</td>
-                                <td><span class="complexity-badge c-fair">O(N)</span> Heap</td>
+                                <td><span class="complexity-badge c-optimo">O(1)</span></td>
+                                <td><span class="complexity-badge c-medio">O(N)</span></td>
+                                <td><span class="complexity-badge c-optimo">O(1)</span> al final</td>
+                                <td><span class="complexity-badge c-medio">O(N)</span> Heap</td>
                             </tr>
                             <tr>
                                 <td><strong>Búsqueda Binaria (Array ordenado)</strong></td>
                                 <td>N/A</td>
-                                <td><span class="complexity-badge c-good">O(log N)</span></td>
+                                <td><span class="complexity-badge c-optimo">O(log N)</span></td>
                                 <td>N/A</td>
-                                <td><span class="complexity-badge c-excellent">O(1)</span></td>
+                                <td><span class="complexity-badge c-optimo">O(1)</span></td>
                             </tr>
                             <tr>
                                 <td><strong>Pila (LIFO) / Cola (FIFO)</strong></td>
-                                <td>Solo Tope / Frente <span class="complexity-badge c-excellent">O(1)</span></td>
-                                <td><span class="complexity-badge c-fair">O(N)</span></td>
-                                <td><span class="complexity-badge c-excellent">O(1)</span> push / enqueue</td>
-                                <td><span class="complexity-badge c-fair">O(N)</span></td>
+                                <td>Tope / Frente <span class="complexity-badge c-optimo">O(1)</span></td>
+                                <td><span class="complexity-badge c-medio">O(N)</span></td>
+                                <td><span class="complexity-badge c-optimo">O(1)</span> push / enqueue</td>
+                                <td><span class="complexity-badge c-medio">O(N)</span></td>
                             </tr>
                             <tr>
                                 <td><strong>Ordenamiento Burbuja</strong></td>
                                 <td>N/A</td>
-                                <td>Tiempo: <span class="complexity-badge c-terrible">O(N²)</span></td>
+                                <td>Tiempo: <span class="complexity-badge c-lento">O(N²)</span></td>
                                 <td>Estable: Sí</td>
-                                <td><span class="complexity-badge c-excellent">O(1)</span> In-place</td>
+                                <td><span class="complexity-badge c-optimo">O(1)</span> In-place</td>
                             </tr>
                             <tr>
                                 <td><strong>Ordenamiento Shell</strong></td>
                                 <td>N/A</td>
-                                <td>Tiempo: <span class="complexity-badge c-good">O(N log N) a O(N^1.5)</span></td>
+                                <td>Tiempo: <span class="complexity-badge c-optimo">O(N log N) a O(N^1.5)</span></td>
                                 <td>Estable: No</td>
-                                <td><span class="complexity-badge c-excellent">O(1)</span> In-place</td>
+                                <td><span class="complexity-badge c-optimo">O(1)</span> In-place</td>
                             </tr>
                             <tr>
                                 <td><strong>Quicksort</strong></td>
                                 <td>N/A</td>
-                                <td>Tiempo Promedio: <span class="complexity-badge c-bad">O(N log N)</span></td>
+                                <td>Tiempo Promedio: <span class="complexity-badge c-optimo">O(N log N)</span></td>
                                 <td>Estable: No</td>
-                                <td><span class="complexity-badge c-good">O(log N)</span> Stack</td>
+                                <td><span class="complexity-badge c-optimo">O(log N)</span> Stack</td>
                             </tr>
                             <tr>
                                 <td><strong>Mergesort</strong></td>
                                 <td>N/A</td>
-                                <td>Tiempo Garantizado: <span class="complexity-badge c-bad">O(N log N)</span></td>
+                                <td>Tiempo Garantizado: <span class="complexity-badge c-optimo">O(N log N)</span></td>
                                 <td>Estable: Sí</td>
-                                <td><span class="complexity-badge c-fair">O(N)</span> Out-of-place</td>
+                                <td><span class="complexity-badge c-medio">O(N)</span> Out-of-place</td>
                             </tr>
                         </tbody>
                     </table>
@@ -1012,11 +1007,11 @@ void copiar(int original[], int n) {
                 if (!tbody) return;
 
                 var rows = [
-                    { name: 'O(1) - Constante', formula: '1', ops: 1, badge: 'c-excellent', label: 'Instantáneo' },
-                    { name: 'O(log N) - Logarítmica', formula: 'log₂(N)', ops: Math.ceil(Math.log2(n)), badge: 'c-good', label: 'Ultra Rápido' },
-                    { name: 'O(N) - Lineal', formula: 'N', ops: n, badge: 'c-fair', label: 'Rápido' },
-                    { name: 'O(N log N) - Linealítmica', formula: 'N × log₂(N)', ops: Math.ceil(n * Math.log2(n)), badge: 'c-bad', label: 'Eficiente' },
-                    { name: 'O(N²) - Cuadrática', formula: 'N²', ops: n * n, badge: 'c-terrible', label: n > 10000 ? 'Inmanejable' : 'Lento' }
+                    { name: 'O(1) - Constante', formula: '1', ops: 1, badge: 'c-optimo', label: 'Instantáneo' },
+                    { name: 'O(log N) - Logarítmica', formula: 'log₂(N)', ops: Math.ceil(Math.log2(n)), badge: 'c-optimo', label: 'Ultra Rápido' },
+                    { name: 'O(N) - Lineal', formula: 'N', ops: n, badge: 'c-medio', label: 'Aceptable' },
+                    { name: 'O(N log N) - Linealítmica', formula: 'N × log₂(N)', ops: Math.ceil(n * Math.log2(n)), badge: 'c-optimo', label: 'Eficiente' },
+                    { name: 'O(N²) - Cuadrática', formula: 'N²', ops: n * n, badge: 'c-lento', label: n > 10000 ? 'Inmanejable' : 'Lento' }
                 ];
 
                 tbody.innerHTML = '';
@@ -1025,8 +1020,8 @@ void copiar(int original[], int n) {
                     tr.innerHTML = `
                         <td><strong>${r.name}</strong></td>
                         <td><code>${r.formula}</code></td>
-                        <td><strong style="font-family: var(--f-mono);">${formatOps(r.ops)}</strong></td>
-                        <td style="font-family: var(--f-mono); font-size: 0.85rem;">${formatTime(r.ops)}</td>
+                        <td><strong style="font-family: var(--f-mono); color: var(--ink);">${formatOps(r.ops)}</strong></td>
+                        <td style="font-family: var(--f-mono); font-size: 0.85rem; color: var(--muted);">${formatTime(r.ops)}</td>
                         <td><span class="complexity-badge ${r.badge}">${r.label}</span></td>
                     `;
                     tbody.appendChild(tr);
@@ -1036,7 +1031,7 @@ void copiar(int original[], int n) {
                 if (log) {
                     var opsLog = Math.ceil(Math.log2(n));
                     var opsQuad = n * n;
-                    log.textContent = `Para N = ${n.toLocaleString()}: O(log N) solo hace ${opsLog} pasos, mientras que O(N²) hace ${formatOps(opsQuad)} pasos.`;
+                    log.textContent = `Para N = ${n.toLocaleString()}: O(log N) solo hace ${opsLog} pasos, mientras que O(N²) ya requiere ${formatOps(opsQuad)} pasos.`;
                 }
             }
 
@@ -1059,7 +1054,7 @@ void copiar(int original[], int n) {
                         { text: "O(log N) - Logarítmica", correct: false },
                         { text: "O(N²) - Cuadrática", correct: false }
                     ],
-                    explanation: "¡Correcto! Acceder directamente a una casilla de un arreglo con corchetes arr[i] toma exactamente una operación, sin importar el tamaño del arreglo."
+                    explanation: "Acceder directamente a una casilla de un arreglo con corchetes arr[i] toma exactamente una operación, sin importar el tamaño del arreglo."
                 },
                 {
                     statement: "¿Cuál es la complejidad temporal de este ciclo?",
@@ -1070,7 +1065,7 @@ void copiar(int original[], int n) {
                         { text: "O(log N) - Logarítmica", correct: false },
                         { text: "O(1) - Constante", correct: false }
                     ],
-                    explanation: "¡Correcto! Hace N/2 iteraciones, pero aplicando la Regla 1 (despreciar constantes), N/2 se simplifica a O(N)."
+                    explanation: "Hace N/2 iteraciones, pero aplicando la Regla 1 (despreciar constantes numéricas), N/2 se simplifica a O(N)."
                 },
                 {
                     statement: "¿Cuál es la complejidad de estos dos bucles anidados?",
@@ -1081,7 +1076,7 @@ void copiar(int original[], int n) {
                         { text: "O(N²) - Cuadrática", correct: true },
                         { text: "O(N³)", correct: false }
                     ],
-                    explanation: "¡Exacto! El bucle exterior da N vueltas, y para cada una de ellas, el bucle interior da otras N vueltas: N * N = O(N²)."
+                    explanation: "El bucle exterior da N vueltas, y para cada una de ellas, el bucle interior da otras N vueltas: N * N = O(N²)."
                 },
                 {
                     statement: "¿Cuál es la complejidad de este algoritmo con división?",
@@ -1092,7 +1087,7 @@ void copiar(int original[], int n) {
                         { text: "O(1) - Constante", correct: false },
                         { text: "O(N²)", correct: false }
                     ],
-                    explanation: "¡Excelente! Cada paso divide N a la mitad. El número de veces que puedes dividir N entre 2 antes de llegar a 1 es log₂(N)."
+                    explanation: "Cada paso divide N a la mitad. El número de veces que puedes dividir N entre 2 antes de llegar a 1 es exactamente log₂(N)."
                 }
             ];
 
@@ -1125,11 +1120,13 @@ void copiar(int original[], int n) {
                             btn.classList.add('correct');
                             qScore++;
                             $('#q-score').textContent = `Aciertos: ${qScore}`;
-                            fb.style.color = '#00FF00';
-                            fb.textContent = q.explanation;
+                            fb.style.borderLeftColor = 'var(--ok)';
+                            fb.style.color = 'var(--ok)';
+                            fb.textContent = 'Correcto: ' + q.explanation;
                         } else {
                             btn.classList.add('incorrect');
-                            fb.style.color = '#FF8888';
+                            fb.style.borderLeftColor = 'var(--bad)';
+                            fb.style.color = 'var(--bad)';
                             fb.textContent = 'Incorrecto. ' + q.explanation;
                         }
 

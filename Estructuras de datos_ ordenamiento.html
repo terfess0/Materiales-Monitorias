@@ -355,10 +355,8 @@
         }
 
         .sort-box.pivot .sort-bar {
-            background: #673AB7;
+            background: var(--hot);
         }
-
-        /* Morado para QuickSort */
 
         /* Memoria Auxiliar (Para MergeSort) */
         .aux-array-flex {
@@ -397,8 +395,10 @@
         .status-log {
             font-family: var(--f-mono);
             font-size: 0.9rem;
-            background: var(--ink);
-            color: #00FF00;
+            background: var(--code-bg);
+            color: var(--ink);
+            border: 1px solid var(--line);
+            border-left: 4px solid var(--accent);
             padding: 10px;
             border-radius: 6px;
             min-height: 40px;
@@ -859,7 +859,7 @@
                     </div>
 
                     <div>
-                        <div class="tech-card" style="border-left: 4px solid #673AB7;">
+                        <div class="tech-card" style="border-left: 4px solid var(--accent);">
                             <h4>3. Algoritmos Híbridos en Producción</h4>
                             <p>En los compiladores y lenguajes profesionales casi nunca se usa un solo algoritmo puro; se combinan los mejores enfoques:</p>
                             <ul>
