@@ -298,8 +298,16 @@
             overflow-x: auto;
         }
 
-        /* Badges de Complejidad alineados a los colores institucionales */
-        .complexity-badge {
+        /* Badges de Complejidad alineados a los colores institucionales (Verde Unitrópico) */
+        .complexity-badge,
+        .c-optimo,
+        .c-excellent,
+        .c-good,
+        .c-medio,
+        .c-fair,
+        .c-lento,
+        .c-bad,
+        .c-terrible {
             display: inline-flex;
             align-items: center;
             padding: 4px 10px;
@@ -307,30 +315,10 @@
             font-family: var(--f-mono);
             font-size: 0.88rem;
             font-weight: 700;
-            margin: 2px 4px 2px 0;
-        }
-
-        .c-optimo,
-        .c-excellent,
-        .c-good {
             background: var(--accent-soft);
             color: var(--accent);
             border: 1px solid var(--accent);
-        }
-
-        .c-medio,
-        .c-fair {
-            background: var(--hot-soft);
-            color: #8A7222;
-            border: 1px solid var(--hot);
-        }
-
-        .c-lento,
-        .c-bad,
-        .c-terrible {
-            background: var(--bad-soft);
-            color: var(--bad);
-            border: 1px solid var(--bad);
+            margin: 2px 4px 2px 0;
         }
 
         /* Tabla de Referencia */
@@ -449,11 +437,11 @@
                         <h4 style="margin: 0 0 6px;">1. Es Universal</h4>
                         <p class="hint" style="margin: 0;">No mide segundos de reloj. Mide cómo crecen los pasos matemáticos cuando la entrada crece.</p>
                     </div>
-                    <div class="card-box" style="border-top: 3px solid var(--hot);">
+                    <div class="card-box" style="border-top: 3px solid var(--accent);">
                         <h4 style="margin: 0 0 6px;">2. Explica las Estructuras</h4>
                         <p class="hint" style="margin: 0;">Explica por qué un vector es $O(1)$ en acceso pero $O(N)$ al insertar al inicio, o por qué una búsqueda binaria es $O(\log N)$.</p>
                     </div>
-                    <div class="card-box" style="border-top: 3px solid var(--bad);">
+                    <div class="card-box" style="border-top: 3px solid var(--accent);">
                         <h4 style="margin: 0 0 6px;">3. Clave en Evaluaciones</h4>
                         <p class="hint" style="margin: 0;">En parciales y entrevistas de programación es obligatorio justificar la complejidad temporal y espacial.</p>
                     </div>
@@ -478,7 +466,7 @@
                             <li>La memoria RAM y el sistema operativo pueden estar ocupados en segundo plano.</li>
                             <li>El compilador puede aplicar optimizaciones impredecibles.</li>
                         </ul>
-                        <p style="margin-top: 10px; font-weight: 600; color: var(--bad);">Conclusión: Los segundos no permiten comparar algoritmos de forma científica.</p>
+                        <p style="margin-top: 10px; font-weight: 600; color: var(--accent);">Conclusión: Los segundos no permiten comparar algoritmos de forma científica.</p>
                     </div>
 
                     <div class="panel">
@@ -498,15 +486,15 @@ for (int i = 0; i &lt; N; i++) {
                     <h3 style="margin-bottom: 8px;">La Trinidad Asintótica (O, Ω, Θ)</h3>
                     <div class="three">
                         <div>
-                            <span class="complexity-badge c-bad" style="font-size: 1rem;">O (Big O)</span>
+                            <span class="complexity-badge" style="font-size: 1rem;">O (Big O)</span>
                             <p style="font-size: 0.9rem; margin-top: 4px;"><strong>Peor caso (Límite Superior):</strong> El techo máximo de pasos que dará el algoritmo. Es el estándar de la industria para garantizar que el sistema no colapse.</p>
                         </div>
                         <div>
-                            <span class="complexity-badge c-optimo" style="font-size: 1rem;">Ω (Omega)</span>
+                            <span class="complexity-badge" style="font-size: 1rem;">Ω (Omega)</span>
                             <p style="font-size: 0.9rem; margin-top: 4px;"><strong>Mejor caso (Límite Inferior):</strong> El escenario más afortunado. Por ejemplo, en búsqueda lineal, encontrar el dato en la primera casilla ($O(1)$).</p>
                         </div>
                         <div>
-                            <span class="complexity-badge c-medio" style="font-size: 1rem;">Θ (Theta)</span>
+                            <span class="complexity-badge" style="font-size: 1rem;">Θ (Theta)</span>
                             <p style="font-size: 0.9rem; margin-top: 4px;"><strong>Caso Promedio / Ajustado:</strong> Describe el comportamiento típico cuando el mejor y peor caso crecen con el mismo orden de magnitud.</p>
                         </div>
                     </div>
@@ -514,48 +502,48 @@ for (int i = 0; i &lt; N; i++) {
             </div>
         </section>
 
-        <!-- 3 El Semáforo de Complejidades -->
-        <section class="slide" data-name="Jerarquía" aria-label="El Semáforo de Complejidades">
+        <!-- 3 Jerarquía de Complejidades -->
+        <section class="slide" data-name="Jerarquía" aria-label="La Jerarquía de Complejidades">
             <div class="wrap">
-                <h2 tabindex="-1">La Jerarquía de Complejidades (El Semáforo)</h2>
-                <p class="lead">De la velocidad máxima a lo computacionalmente inmanejable. Las 7 familias ordenadas según su eficiencia:</p>
+                <h2 tabindex="-1">La Jerarquía de Complejidades</h2>
+                <p class="lead">De la velocidad máxima a las complejidades que no escalan. Las 7 clases ordenadas según su eficiencia:</p>
 
                 <div class="two">
                     <div>
                         <div class="card-box" style="margin-bottom: 10px; border-left: 4px solid var(--accent);">
-                            <span class="complexity-badge c-optimo">O(1) — Constante</span>
+                            <span class="complexity-badge">O(1) — Constante</span>
                             <p style="font-size: 0.92rem; margin: 4px 0 0;"><strong>Óptimo.</strong> El tiempo no cambia sin importar si hay 1 dato o 10.000.000. Ejemplos: <code>arr[5]</code>, <code>pila.push()</code>.</p>
                         </div>
 
                         <div class="card-box" style="margin-bottom: 10px; border-left: 4px solid var(--accent);">
-                            <span class="complexity-badge c-optimo">O(log N) — Logarítmica</span>
+                            <span class="complexity-badge">O(log N) — Logarítmica</span>
                             <p style="font-size: 0.92rem; margin: 4px 0 0;"><strong>Muy rápida.</strong> En cada paso divide los datos a la mitad. Para 1 millón de datos hace solo 20 pasos. Ejemplo: <strong>Búsqueda Binaria</strong>.</p>
                         </div>
 
-                        <div class="card-box" style="margin-bottom: 10px; border-left: 4px solid var(--hot);">
-                            <span class="complexity-badge c-medio">O(N) — Lineal</span>
+                        <div class="card-box" style="margin-bottom: 10px; border-left: 4px solid var(--accent);">
+                            <span class="complexity-badge">O(N) — Lineal</span>
                             <p style="font-size: 0.92rem; margin: 4px 0 0;"><strong>Aceptable.</strong> Si los datos se duplican, los pasos se duplican. Un solo ciclo <code>for</code>. Ejemplo: <strong>Búsqueda Lineal</strong>, imprimir un vector.</p>
                         </div>
 
                         <div class="card-box" style="margin-bottom: 10px; border-left: 4px solid var(--accent);">
-                            <span class="complexity-badge c-optimo">O(N log N) — Linealítmica</span>
+                            <span class="complexity-badge">O(N log N) — Linealítmica</span>
                             <p style="font-size: 0.92rem; margin: 4px 0 0;"><strong>Límite veloz de ordenamiento.</strong> El estándar de oro para ordenar datos en memoria RAM. Ejemplos: <strong>Quicksort, Mergesort, Shell Sort</strong>.</p>
                         </div>
                     </div>
 
                     <div>
-                        <div class="card-box" style="margin-bottom: 10px; border-left: 4px solid var(--bad);">
-                            <span class="complexity-badge c-lento">O(N²) — Cuadrática</span>
+                        <div class="card-box" style="margin-bottom: 10px; border-left: 4px solid var(--accent);">
+                            <span class="complexity-badge">O(N²) — Cuadrática</span>
                             <p style="font-size: 0.92rem; margin: 4px 0 0;"><strong>Lenta / Alarma.</strong> Ciclos anidados. Con 1.000 datos hace 1 millón de pasos. No escala bien. Ejemplo: <strong>Ordenamiento Burbuja</strong>.</p>
                         </div>
 
-                        <div class="card-box" style="margin-bottom: 10px; border-left: 4px solid var(--bad);">
-                            <span class="complexity-badge c-lento">O(2ᴺ) — Exponencial</span>
+                        <div class="card-box" style="margin-bottom: 10px; border-left: 4px solid var(--accent);">
+                            <span class="complexity-badge">O(2ᴺ) — Exponencial</span>
                             <p style="font-size: 0.92rem; margin: 4px 0 0;"><strong>Inmanejable.</strong> Cada nuevo elemento duplica el tiempo. Con $N=40$ tarda minutos, con $N=70$ tarda siglos. Ejemplo: Fibonacci recursivo sin memorizar.</p>
                         </div>
 
-                        <div class="card-box" style="margin-bottom: 10px; border-left: 4px solid var(--bad);">
-                            <span class="complexity-badge c-lento">O(N!) — Factorial</span>
+                        <div class="card-box" style="margin-bottom: 10px; border-left: 4px solid var(--accent);">
+                            <span class="complexity-badge">O(N!) — Factorial</span>
                             <p style="font-size: 0.92rem; margin: 4px 0 0;"><strong>Intratable.</strong> Generar todas las permutaciones posibles. Con $N=20$ el cómputo tomaría miles de años.</p>
                         </div>
 
@@ -626,7 +614,7 @@ for(int j = 0; j &lt; n; j++) { ... } // N pasos
                         <p class="hint">Ignoramos los números multiplicadores: $O(3N^2) \rightarrow O(N^2)$.</p>
                     </div>
 
-                    <div class="panel" style="border-left: 4px solid var(--hot);">
+                    <div class="panel" style="border-left: 4px solid var(--accent);">
                         <h3>Regla 2: Quedarse con el Término Dominante</h3>
                         <p>Si tienes una función como $f(N) = N^2 + 500N + 10000$, para valores grandes de $N$ el término $N^2$ aplasta por completo a todos los demás.</p>
                         <pre class="code">Si N = 100,000:
@@ -648,7 +636,7 @@ for(int j=0; j&lt;B; j++) { ... } // O(B)
 // Complejidad total: O(A + B)</pre>
                     </div>
 
-                    <div class="panel" style="border-left: 4px solid var(--bad);">
+                    <div class="panel" style="border-left: 4px solid var(--accent);">
                         <h3>Regla 4: Bucles Anidados se Multiplican</h3>
                         <p>Si un bucle está dentro de otro, cada iteración exterior ejecuta el bucle interior completo:</p>
                         <pre class="code">for(int i=0; i&lt;N; i++) {       // N veces
@@ -740,7 +728,7 @@ for(int j=0; j&lt;B; j++) { ... } // O(B)
                 <p class="def">Big O no es solo para el tiempo: mide también <strong>cuánta memoria RAM adicional</strong> necesita crear el algoritmo para ejecutarse.</p>
 
                 <div class="two">
-                    <div class="panel" style="border-left: 4px solid var(--ok);">
+                    <div class="panel" style="border-left: 4px solid var(--accent);">
                         <h3>Espacio O(1): Algoritmos In-Place</h3>
                         <p>Solo usan unas pocas variables escalares auxiliares (índices, banderas, temporales). No importa si el arreglo tiene 10 o 10 millones de datos, la memoria extra es constante.</p>
                         <pre class="code">// Ejemplo: Invertir un array In-Place
@@ -756,7 +744,7 @@ void invertir(int arr[], int n) {
                         <p class="hint">Burbuja, Shell Sort y Quicksort son ejemplos de memoria espacial muy baja.</p>
                     </div>
 
-                    <div class="panel" style="border-left: 4px solid var(--bad);">
+                    <div class="panel" style="border-left: 4px solid var(--accent);">
                         <h3>Espacio O(N): Algoritmos Out-of-Place</h3>
                         <p>Crean un segundo arreglo o copian la estructura en memoria RAM. Si tu entrada ocupa 2 GB, necesitarás otros 2 GB libres en el sistema.</p>
                         <pre class="code">// Ejemplo: Crear un clon temporal
@@ -1007,11 +995,11 @@ void copiar(int original[], int n) {
                 if (!tbody) return;
 
                 var rows = [
-                    { name: 'O(1) - Constante', formula: '1', ops: 1, badge: 'c-optimo', label: 'Instantáneo' },
-                    { name: 'O(log N) - Logarítmica', formula: 'log₂(N)', ops: Math.ceil(Math.log2(n)), badge: 'c-optimo', label: 'Ultra Rápido' },
-                    { name: 'O(N) - Lineal', formula: 'N', ops: n, badge: 'c-medio', label: 'Aceptable' },
-                    { name: 'O(N log N) - Linealítmica', formula: 'N × log₂(N)', ops: Math.ceil(n * Math.log2(n)), badge: 'c-optimo', label: 'Eficiente' },
-                    { name: 'O(N²) - Cuadrática', formula: 'N²', ops: n * n, badge: 'c-lento', label: n > 10000 ? 'Inmanejable' : 'Lento' }
+                    { name: 'O(1) - Constante', formula: '1', ops: 1, label: 'Instantáneo' },
+                    { name: 'O(log N) - Logarítmica', formula: 'log₂(N)', ops: Math.ceil(Math.log2(n)), label: 'Ultra Rápido' },
+                    { name: 'O(N) - Lineal', formula: 'N', ops: n, label: 'Aceptable' },
+                    { name: 'O(N log N) - Linealítmica', formula: 'N × log₂(N)', ops: Math.ceil(n * Math.log2(n)), label: 'Eficiente' },
+                    { name: 'O(N²) - Cuadrática', formula: 'N²', ops: n * n, label: n > 10000 ? 'Inmanejable' : 'Lento' }
                 ];
 
                 tbody.innerHTML = '';
@@ -1022,7 +1010,7 @@ void copiar(int original[], int n) {
                         <td><code>${r.formula}</code></td>
                         <td><strong style="font-family: var(--f-mono); color: var(--ink);">${formatOps(r.ops)}</strong></td>
                         <td style="font-family: var(--f-mono); font-size: 0.85rem; color: var(--muted);">${formatTime(r.ops)}</td>
-                        <td><span class="complexity-badge ${r.badge}">${r.label}</span></td>
+                        <td><span class="complexity-badge">${r.label}</span></td>
                     `;
                     tbody.appendChild(tr);
                 });
