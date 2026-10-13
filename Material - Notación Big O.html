@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Material - Notación Big O</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=JetBrains+Mono:wght@400;600&family=Public+Sans:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            color-scheme: light;
+            --bg: #FFFFFF;
+            --surface: #FFFFFF;
+            --ink: #141414;
+            --muted: #505856;
+            --line: #D6DDDB;
+            --title: #00594E;
+            --accent: #00594E;
+            --accent-soft: #E4F0ED;
+            --on-accent: #FFFFFF;
+            --hot: #B5A160;
+            --hot-soft: #F6F1E0;
+            --ok: #00594E;
+            --ok-soft: #DCEEE9;
+            --bad: #B3412F;
+            --bad-soft: #F8E1DC;
+            --code-bg: #F6F7F7;
+            --f-head: 'Bricolage Grotesque', 'Segoe UI', system-ui, sans-serif;
+            --f-body: 'Public Sans', 'Segoe UI', system-ui, sans-serif;
+            --f-mono: 'JetBrains Mono', ui-monospace, Consolas, monospace;
+        }
+
+        :root {
+            box-sizing: border-box;
+            padding-top: env(safe-area-inset-top, 0px);
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+        }
+
+        html {
+            height: 100%;
+            scroll-padding-top: env(safe-area-inset-top, 0px);
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: inherit;
+        }
+
+        body {
+            margin: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: var(--bg);
+            color: var(--ink);
+            font-family: var(--f-body);
+            font-size: 18px;
+            line-height: 1.55;
+        }
+
+        [hidden] {
+            display: none !important;
+        }
+
+        [tabindex="-1"]:focus {
+            outline: none;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: var(--f-head);
+            line-height: 1.15;
+            margin: 0 0 .35em;
+            letter-spacing: -.015em;
+            font-weight: 700;
+            color: var(--title);
+        }
+
+        h1 {
+            font-size: clamp(2.1rem, 5vw, 3.4rem);
+            letter-spacing: -.03em;
+            font-weight: 800;
+        }
+
+        h2 {
+            font-size: clamp(1.5rem, 3.2vw, 2.2rem);
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            letter-spacing: -.005em;
+        }
+
+        p {
+            margin: 0 0 .8em;
+        }
+
+        .lead {
+            font-size: clamp(1.05rem, 1.8vw, 1.3rem);
+            color: var(--muted);
+        }
+
+        .hint {
+            color: var(--muted);
+            font-size: .95rem;
+        }
+
+        code,
+        .mono {
+            font-family: var(--f-mono);
+        }
+
+        /* Contenedores de Diapositivas */
+        .deck {
+            flex: 1;
+            min-height: 0;
+            position: relative;
+        }
+
+        .slide {
+            position: absolute;
+            inset: 0;
+            overflow-y: auto;
+            display: none;
+            flex-direction: column;
+            padding: clamp(10px, 1.6vw, 16px) clamp(14px, 3vw, 36px) clamp(14px, 2.4vw, 24px);
+        }
+
+        .slide.active {
+            display: flex;
+            animation: enter .22s ease-out;
+        }
+
+        .wrap {
+            width: 100%;
+            margin: 0 auto;
+            max-width: 1200px;
+        }
+
+        @keyframes enter {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        /* Barra de Navegación */
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px clamp(14px, 4vw, 40px);
+            border-top: 3px solid var(--hot);
+            background: var(--surface);
+            z-index: 10;
+        }
+
+        .track {
+            flex: 1;
+            height: 4px;
+            background: var(--line);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .bar {
+            height: 100%;
+            width: 0;
+            background: var(--accent);
+            transition: width .25s ease;
+        }
+
+        .count {
+            font: 600 .9rem var(--f-mono);
+            color: var(--muted);
+            min-width: 4.5em;
+            text-align: center;
+        }
+
+        .navname {
+            color: var(--muted);
+            font-size: .9rem;
+            white-space: nowrap;
+        }
+
+        @media (max-width:640px) {
+            .navname {
+                display: none;
+            }
+        }
+
+        /* Botones y Controles */
+        .btn {
+            font: 600 1rem var(--f-body);
+            padding: .55em 1em;
+            border-radius: 8px;
+            border: 2px solid var(--ink);
+            background: var(--surface);
+            color: var(--ink);
+            cursor: pointer;
+            line-height: 1.2;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            background: var(--accent-soft);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .btn.primary,
+        .btn.action {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: var(--on-accent);
+        }
+
+        .btn.primary:hover,
+        .btn.action:hover {
+            filter: brightness(1.08);
+        }
+
+        .btn:disabled {
+            opacity: .45;
+            cursor: not-allowed;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .row.top {
+            margin-top: 16px;
+        }
+
+        .panel {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: clamp(14px, 2.4vw, 24px);
+        }
+
+        .two {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 24px;
+        }
+
+        @media (max-width:760px) {
+            .two {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .three {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        @media (max-width:850px) {
+            .three {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .def {
+            color: var(--title);
+            font: 500 clamp(1.15rem, 2.2vw, 1.45rem)/1.4 var(--f-head);
+            border-left: 4px solid var(--hot);
+            padding-left: 18px;
+            margin: 0 0 18px;
+        }
+
+        .code {
+            font: .92rem/1.55 var(--f-mono);
+            background: var(--code-bg);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 12px 14px;
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+
+        /* Badges de Complejidad */
+        .complexity-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-family: var(--f-mono);
+            font-size: 0.88rem;
+            font-weight: 700;
+            margin: 2px 4px 2px 0;
+        }
+
+        .c-excellent {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #10b981;
+        }
+
+        .c-good {
+            background: #e0f2fe;
+            color: #0369a1;
+            border: 1px solid #38bdf8;
+        }
+
+        .c-fair {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #f59e0b;
+        }
+
+        .c-bad {
+            background: #ffedd5;
+            color: #9a3412;
+            border: 1px solid #f97316;
+        }
+
+        .c-terrible {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #ef4444;
+        }
+
+        /* Tabla de Referencia */
+        .cheat-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.92rem;
+            margin: 15px 0;
+        }
+
+        .cheat-table th,
+        .cheat-table td {
+            padding: 10px 14px;
+            border: 1px solid var(--line);
+            text-align: left;
+        }
+
+        .cheat-table th {
+            background: var(--code-bg);
+            font-weight: 700;
+            color: var(--title);
+        }
+
+        .cheat-table tr:hover {
+            background: #fafbfb;
+        }
+
+        /* Tarjetas Informativas */
+        .card-box {
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 16px;
+            background: var(--surface);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+        }
+
+        .status-log {
+            font-family: var(--f-mono);
+            font-size: 0.9rem;
+            background: var(--ink);
+            color: #00FF00;
+            padding: 12px;
+            border-radius: 6px;
+            min-height: 44px;
+            margin-top: 10px;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* Quiz */
+        .quiz-option {
+            width: 100%;
+            text-align: left;
+            padding: 10px 14px;
+            margin-bottom: 8px;
+            border: 2px solid var(--line);
+            border-radius: 8px;
+            background: var(--surface);
+            font-family: var(--f-mono);
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .quiz-option:hover {
+            border-color: var(--accent);
+            background: var(--accent-soft);
+        }
+
+        .quiz-option.correct {
+            background: #d1fae5;
+            border-color: #10b981;
+            color: #065f46;
+            font-weight: bold;
+        }
+
+        .quiz-option.incorrect {
+            background: #fee2e2;
+            border-color: #ef4444;
+            color: #991b1b;
+        }
+
+        .sum {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .sum li {
+            padding: 12px 0;
+            border-top: 1px solid var(--line);
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="deck" id="deck">
+
+        <!-- 1 Portada -->
+        <section class="slide active" data-name="Inicio" aria-label="Portada">
+            <div class="wrap hero">
+                <h1 tabindex="-1">Material - Notación Big O</h1>
+                <p class="lead">El estándar mundial para medir la velocidad, eficiencia y escalamiento de algoritmos y estructuras de datos sin depender de qué computadora tengas.</p>
+
+                <div class="panel" style="margin-top: 24px; border-left: 4px solid var(--accent);">
+                    <h3 style="color: var(--accent);">¿Por qué es el tema más importante de la materia?</h3>
+                    <p>Cuando un programa procesa 10 datos, casi cualquier algoritmo responde en menos de 1 milisegundo. Pero cuando procesa <strong>100.000 o 10.000.000 de registros</strong>, un mal algoritmo puede tardar <strong>días enteros</strong> o agotar la memoria RAM del servidor.</p>
+                    <p style="margin: 0;">La <strong>Notación Big O</strong> te da ojos de rayos X para predecir si tu código resistirá el mundo real.</p>
+                </div>
+
+                <div class="three" style="margin-top: 20px;">
+                    <div class="card-box" style="border-top: 3px solid #10b981;">
+                        <h4 style="margin: 0 0 6px;">1. Es Universal</h4>
+                        <p class="hint" style="margin: 0;">No mide segundos de reloj. Mide cómo crecen los pasos matemáticos cuando la entrada crece.</p>
+                    </div>
+                    <div class="card-box" style="border-top: 3px solid #f59e0b;">
+                        <h4 style="margin: 0 0 6px;">2. Explica las Estructuras</h4>
+                        <p class="hint" style="margin: 0;">Explica por qué un vector es $O(1)$ en acceso pero $O(N)$ al insertar al inicio, o por qué una búsqueda binaria es $O(\log N)$.</p>
+                    </div>
+                    <div class="card-box" style="border-top: 3px solid #ef4444;">
+                        <h4 style="margin: 0 0 6px;">3. Clave en Evaluaciones</h4>
+                        <p class="hint" style="margin: 0;">En parciales y entrevistas de programación es obligatorio justificar la complejidad temporal y espacial.</p>
+                    </div>
+                </div>
+
+                <p class="hint row top">Avanza con las flechas del teclado o los botones inferiores.</p>
+            </div>
+        </section>
+
+        <!-- 2 ¿Por qué no en segundos? -->
+        <section class="slide" data-name="Concepto" aria-label="Por qué no medimos en segundos">
+            <div class="wrap">
+                <h2 tabindex="-1">¿Por qué no medimos el tiempo con un cronómetro?</h2>
+                <p class="def">Si mides un programa con reloj (<code>chrono</code> en C++), el resultado depende de si corres en un iPhone, en una laptop vieja o si abriste YouTube de fondo. Necesitamos una medida matemática objetiva.</p>
+
+                <div class="two">
+                    <div class="panel">
+                        <h3>El Problema de Medir Segundos</h3>
+                        <p>Imagina que ejecutas dos algoritmos y mides el tiempo en tu PC:</p>
+                        <ul>
+                            <li>El procesador tiene núcleos diferentes y frecuencias variables (GHz).</li>
+                            <li>La memoria RAM y el sistema operativo pueden estar ocupados en segundo plano.</li>
+                            <li>El compilador puede aplicar optimizaciones impredecibles.</li>
+                        </ul>
+                        <p style="margin-top: 10px; font-weight: 600; color: var(--bad);">Conclusión: Los segundos no permiten comparar algoritmos de forma científica.</p>
+                    </div>
+
+                    <div class="panel">
+                        <h3>La Solución: Contar Operaciones Fundamentales</h3>
+                        <p>En vez de mirar el reloj, contamos <strong>cuántas operaciones elementales</strong> (comparaciones, sumas, asignaciones) hace el código en función de <strong>$N$</strong> (la cantidad de datos):</p>
+                        <pre class="code">// Ejemplo: ¿Cuántos pasos hace este bucle?
+for (int i = 0; i &lt; N; i++) {
+    cout &lt;&lt; arr[i]; // Se repite exactamente N veces
+}
+// Con N = 100   -&gt; 100 operaciones
+// Con N = 10000 -&gt; 10000 operaciones
+// Complejidad: O(N) (Crecimiento lineal)</pre>
+                    </div>
+                </div>
+
+                <div class="panel" style="margin-top: 20px; background: var(--code-bg);">
+                    <h3 style="margin-bottom: 8px;">La Trinidad Asintótica (O, Ω, Θ)</h3>
+                    <div class="three">
+                        <div>
+                            <span class="complexity-badge c-bad" style="font-size: 1rem;">O (Big O)</span>
+                            <p style="font-size: 0.9rem; margin-top: 4px;"><strong>Peor caso (Límite Superior):</strong> El techo máximo de pasos que dará el algoritmo. Es el que nos importa en ingeniería para garantizar que el sistema no colapse.</p>
+                        </div>
+                        <div>
+                            <span class="complexity-badge c-excellent" style="font-size: 1rem;">Ω (Omega)</span>
+                            <p style="font-size: 0.9rem; margin-top: 4px;"><strong>Mejor caso (Límite Inferior):</strong> El escenario más afortunado. Por ejemplo, en búsqueda lineal, encontrar el elemento en la primera posición ($O(1)$).</p>
+                        </div>
+                        <div>
+                            <span class="complexity-badge c-good" style="font-size: 1rem;">Θ (Theta)</span>
+                            <p style="font-size: 0.9rem; margin-top: 4px;"><strong>Caso Promedio / Ajustado:</strong> Describe el comportamiento típico cuando el mejor y peor caso crecen con el mismo orden de magnitud.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3 El Semáforo de Complejidades -->
+        <section class="slide" data-name="Jerarquía" aria-label="El Semáforo de Complejidades">
+            <div class="wrap">
+                <h2 tabindex="-1">La Jerarquía de Complejidades (El Semáforo)</h2>
+                <p class="lead">De la velocidad de la luz a lo computacionalmente imposible. Estas son las 7 familias más importantes:</p>
+
+                <div class="two">
+                    <div>
+                        <div class="card-box" style="margin-bottom: 10px; border-left: 5px solid #10b981;">
+                            <span class="complexity-badge c-excellent">O(1) — Constante</span>
+                            <p style="font-size: 0.92rem; margin: 4px 0 0;"><strong>Excelente.</strong> El tiempo no cambia sin importar si hay 1 dato o 10.000.000. Ej: <code>arr[5]</code>, <code>pila.push()</code>.</p>
+                        </div>
+
+                        <div class="card-box" style="margin-bottom: 10px; border-left: 5px solid #0ea5e9;">
+                            <span class="complexity-badge c-good">O(log N) — Logarítmica</span>
+                            <p style="font-size: 0.92rem; margin: 4px 0 0;"><strong>Muy rápida.</strong> En cada paso divide los datos a la mitad. Para 1 millón de datos hace solo 20 pasos. Ej: <strong>Búsqueda Binaria</strong>.</p>
+                        </div>
+
+                        <div class="card-box" style="margin-bottom: 10px; border-left: 5px solid #eab308;">
+                            <span class="complexity-badge c-fair">O(N) — Lineal</span>
+                            <p style="font-size: 0.92rem; margin: 4px 0 0;"><strong>Aceptable.</strong> Si los datos se duplican, el tiempo se duplica. Un solo bucle <code>for</code>. Ej: <strong>Búsqueda Lineal</strong>, imprimir un vector.</p>
+                        </div>
+
+                        <div class="card-box" style="margin-bottom: 10px; border-left: 5px solid #f97316;">
+                            <span class="complexity-badge c-bad">O(N log N) — Linealítmica</span>
+                            <p style="font-size: 0.92rem; margin: 4px 0 0;"><strong>Límite veloz de ordenamiento.</strong> El estándar de oro para ordenar datos en RAM. Ej: <strong>Quicksort, Mergesort, Shell Sort</strong>.</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="card-box" style="margin-bottom: 10px; border-left: 5px solid #ef4444;">
+                            <span class="complexity-badge c-terrible">O(N²) — Cuadrática</span>
+                            <p style="font-size: 0.92rem; margin: 4px 0 0;"><strong>Peligrosa.</strong> Bucles anidados. Con 1.000 datos hace 1 millón de pasos. No escala. Ej: <strong>Ordenamiento Burbuja</strong>.</p>
+                        </div>
+
+                        <div class="card-box" style="margin-bottom: 10px; border-left: 5px solid #b91c1c;">
+                            <span class="complexity-badge c-terrible" style="background: #7f1d1d; color: white;">O(2ᴺ) — Exponencial</span>
+                            <p style="font-size: 0.92rem; margin: 4px 0 0;"><strong>Intratable.</strong> Cada nuevo elemento duplica el tiempo. Con $N=40$ tarda minutos, con $N=70$ tarda siglos. Ej: Fibonacci recursivo ingenuo.</p>
+                        </div>
+
+                        <div class="card-box" style="margin-bottom: 10px; border-left: 5px solid #450a0a;">
+                            <span class="complexity-badge c-terrible" style="background: #450a0a; color: white;">O(N!) — Factorial</span>
+                            <p style="font-size: 0.92rem; margin: 4px 0 0;"><strong>La peor de todas.</strong> Generar todas las permutaciones posibles. Con $N=20$ el universo terminaría antes de que finalice.</p>
+                        </div>
+
+                        <div class="panel" style="padding: 12px; background: var(--accent-soft); border-color: var(--accent);">
+                            <p style="font-size: 0.88rem; margin: 0; color: var(--title); font-weight: 600;">Regla nemotécnica de velocidad:</p>
+                            <p style="font-family: var(--f-mono); font-size: 0.92rem; margin: 4px 0 0; color: var(--accent);">O(1) &lt; O(log N) &lt; O(N) &lt; O(N log N) &lt; O(N²) &lt; O(2ᴺ) &lt; O(N!)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4 Calculadora Interactiva de Crecimiento -->
+        <section class="slide" data-name="Calculadora" aria-label="Calculadora Interactiva de Operaciones">
+            <div class="wrap">
+                <h2 tabindex="-1">Simulador Interactivo de Operaciones</h2>
+                <p class="lead">Selecciona un tamaño de entrada $N$ y mira cómo se disparan los pasos según la complejidad:</p>
+
+                <div class="panel">
+                    <div class="row" style="justify-content: center; gap: 12px; margin-bottom: 20px;">
+                        <label for="calc-n-select" style="font-weight: bold; font-size: 1.05rem;">Elige el tamaño de entrada (N):</label>
+                        <select id="calc-n-select" style="padding: 8px 14px; font-weight: bold; font-size: 1rem; border-radius: 8px;">
+                            <option value="10">N = 10 (Pequeño)</option>
+                            <option value="100">N = 100 (Mediano)</option>
+                            <option value="1000" selected>N = 1,000 (Mil datos)</option>
+                            <option value="10000">N = 10,000 (Diez mil)</option>
+                            <option value="100000">N = 100,000 (Cien mil)</option>
+                            <option value="1000000">N = 1,000,000 (Un millón)</option>
+                        </select>
+                    </div>
+
+                    <div style="overflow-x: auto;">
+                        <table class="cheat-table" id="calc-table">
+                            <thead>
+                                <tr>
+                                    <th>Complejidad</th>
+                                    <th>Fórmula</th>
+                                    <th>Operaciones Estimadas</th>
+                                    <th>Tiempo aprox. (1 Op = 1 ns)</th>
+                                    <th>Calificación</th>
+                                </tr>
+                            </thead>
+                            <tbody id="calc-tbody">
+                                <!-- Generado por JS -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="status-log" id="calc-log">Con N = 1,000, mientras O(log N) toma apenas 10 pasos, O(N²) ya requiere 1 millón de pasos.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5 Reglas para Calcular Big O -->
+        <section class="slide" data-name="Reglas de Cálculo" aria-label="Reglas para calcular Big O">
+            <div class="wrap">
+                <h2 tabindex="-1">Las 4 Reglas de Oro para Calcular Big O</h2>
+                <p class="lead">Aprende a simplificar cualquier expresión algebraica a su Big O real en 4 pasos:</p>
+
+                <div class="two">
+                    <div class="panel" style="border-left: 4px solid var(--accent);">
+                        <h3>Regla 1: Desprecia las Constantes</h3>
+                        <p>No importa si un bucle hace $2N$, $5N$ o $100N$ operaciones; la tasa de crecimiento sigue siendo lineal ($O(N)$).</p>
+                        <pre class="code">// Dos bucles consecutivos del mismo tamaño:
+for(int i = 0; i &lt; n; i++) { ... } // N pasos
+for(int j = 0; j &lt; n; j++) { ... } // N pasos
+// Total: 2N -&gt; Se simplifica a O(N)</pre>
+                        <p class="hint">Ignoramos los números multiplicadores: $O(3N^2) \rightarrow O(N^2)$.</p>
+                    </div>
+
+                    <div class="panel" style="border-left: 4px solid var(--hot);">
+                        <h3>Regla 2: Quedarse con el Término Dominante</h3>
+                        <p>Si tienes una función como $f(N) = N^2 + 500N + 10000$, para valores grandes de $N$ el término $N^2$ aplasta por completo a todos los demás.</p>
+                        <pre class="code">Si N = 100,000:
+N²     = 10,000,000,000 (Diez mil millones)
+500N   = 50,000,000 (Cincuenta millones)
+10000  = 10,000
+
+// Resultado final: O(N²)</pre>
+                    </div>
+                </div>
+
+                <div class="two" style="margin-top: 18px;">
+                    <div class="panel" style="border-left: 4px solid #0284c7;">
+                        <h3>Regla 3: Bucles Consecutivos se Suman</h3>
+                        <p>Si los bucles están uno después del otro de manera independiente, sus costos se suman:</p>
+                        <pre class="code">for(int i=0; i&lt;A; i++) { ... } // O(A)
+for(int j=0; j&lt;B; j++) { ... } // O(B)
+
+// Complejidad total: O(A + B)</pre>
+                    </div>
+
+                    <div class="panel" style="border-left: 4px solid #b91c1c;">
+                        <h3>Regla 4: Bucles Anidados se Multiplican</h3>
+                        <p>Si un bucle está dentro de otro, cada iteración exterior ejecuta el bucle interior completo:</p>
+                        <pre class="code">for(int i=0; i&lt;N; i++) {       // N veces
+    for(int j=0; j&lt;N; j++) {   // N veces
+        // Se ejecuta N * N veces
+    }
+}
+// Complejidad total: O(N * N) = O(N²)</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6 Patrones Comunes de Código C++ -->
+        <section class="slide" data-name="Patrones C++" aria-label="Patrones Comunes de Código en C++">
+            <div class="wrap">
+                <h2 tabindex="-1">Patrones Visuales en Código C++</h2>
+                <p class="lead">Identifica la complejidad con solo mirar la estructura de control del código:</p>
+
+                <div class="three">
+                    <div class="panel">
+                        <span class="complexity-badge c-excellent">O(1)</span>
+                        <h4>Acceso Directo</h4>
+                        <pre class="code">int consultar(int arr[], int idx) {
+    return arr[idx]; // 1 sola operacion
+}
+// No hay ciclos for ni while</pre>
+                        <p class="hint">Operaciones aritméticas, lecturas y asignaciones simples.</p>
+                    </div>
+
+                    <div class="panel">
+                        <span class="complexity-badge c-good">O(log N)</span>
+                        <h4>División Repetida (/= 2)</h4>
+                        <pre class="code">void partir(int n) {
+    while (n &gt; 1) {
+        n = n / 2; // Divide a la mitad
+    }
+}
+// i *= 2 o i /= 2 siempre es O(log N)</pre>
+                        <p class="hint">Búsqueda binaria, árboles equilibrados.</p>
+                    </div>
+
+                    <div class="panel">
+                        <span class="complexity-badge c-fair">O(N)</span>
+                        <h4>Un Ciclo Simple (i++)</h4>
+                        <pre class="code">int sumar(int arr[], int n) {
+    int total = 0;
+    for(int i = 0; i &lt; n; i++) {
+        total += arr[i];
+    }
+    return total;
+}</pre>
+                        <p class="hint">Recorrer un arreglo, encontrar el máximo.</p>
+                    </div>
+                </div>
+
+                <div class="two" style="margin-top: 18px;">
+                    <div class="panel">
+                        <span class="complexity-badge c-bad">O(N log N)</span>
+                        <h4>Un Ciclo N que contiene una División (/ 2)</h4>
+                        <pre class="code">for (int i = 0; i &lt; n; i++) {       // Se ejecuta N veces
+    for (int j = n; j &gt; 0; j /= 2) { // Se ejecuta log(N) veces
+        operacion();
+    }
+}
+// Total: N * log(N) = O(N log N)</pre>
+                        <p class="hint">Quicksort, Mergesort (divide el array a la mitad recursivamente y en cada nivel procesa $N$ elementos).</p>
+                    </div>
+
+                    <div class="panel">
+                        <span class="complexity-badge c-terrible">O(N²)</span>
+                        <h4>Ciclos Anidados</h4>
+                        <pre class="code">for (int i = 0; i &lt; n; i++) {
+    for (int j = 0; j &lt; n; j++) {
+        comparar(arr[i], arr[j]);
+    }
+}
+// Burbuja, comparar todos contra todos</pre>
+                        <p class="hint">Matrices $N \times N$, pares de elementos.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7 Complejidad Espacial (Memoria RAM) -->
+        <section class="slide" data-name="Espacio (RAM)" aria-label="Complejidad Espacial">
+            <div class="wrap">
+                <h2 tabindex="-1">Complejidad Espacial (Memoria RAM)</h2>
+                <p class="def">Big O no es solo para el tiempo: mide también <strong>cuánta memoria RAM adicional</strong> necesita crear el algoritmo para ejecutarse.</p>
+
+                <div class="two">
+                    <div class="panel" style="border-left: 4px solid var(--ok);">
+                        <h3>Espacio O(1): Algoritmos In-Place</h3>
+                        <p>Solo usan unas pocas variables escalares auxiliares (índices, banderas, temporales). No importa si el arreglo tiene 10 o 10 millones de datos, la memoria extra es constante.</p>
+                        <pre class="code">// Ejemplo: Invertir un array In-Place
+void invertir(int arr[], int n) {
+    int temp; // O(1) memoria extra
+    for(int i = 0; i &lt; n / 2; i++) {
+        temp = arr[i];
+        arr[i] = arr[n - 1 - i];
+        arr[n - 1 - i] = temp;
+    }
+}
+// Espacio auxiliar: O(1)</pre>
+                        <p class="hint">Burbuja, Shell Sort y Quicksort son ejemplos de memoria espacial muy baja.</p>
+                    </div>
+
+                    <div class="panel" style="border-left: 4px solid var(--bad);">
+                        <h3>Espacio O(N): Algoritmos Out-of-Place</h3>
+                        <p>Crean un segundo arreglo o copian la estructura en memoria RAM. Si tu entrada ocupa 2 GB, necesitarás otros 2 GB libres en el sistema.</p>
+                        <pre class="code">// Ejemplo: Crear un clon temporal
+void copiar(int original[], int n) {
+    int* copia = new int[n]; // Pide N casillas en Heap
+    for(int i = 0; i &lt; n; i++) copia[i] = original[i];
+    // ...
+    delete[] copia;
+}
+// Espacio auxiliar: O(N)</pre>
+                        <p class="hint">Mergesort requiere memoria espacial $O(N)$ para mezclar las mitades temporales.</p>
+                    </div>
+                </div>
+
+                <div class="panel" style="margin-top: 18px; background: var(--code-bg);">
+                    <h3 style="margin-bottom: 6px;">¡Cuidado con la Recursión! (El Call Stack)</h3>
+                    <p style="font-size: 0.95rem; margin: 0;">Cada vez que una función se llama a sí misma, la computadora guarda los parámetros y variables locales en la <strong>Pila de Llamadas (Stack)</strong>. Si una función recursiva baja $N$ niveles de profundidad, consumirá <strong>$O(N)$ de memoria espacial</strong> en el Stack, arriesgando un <em>Stack Overflow</em>.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 8 Cheat Sheet del Curso -->
+        <section class="slide" data-name="Tabla Resumen" aria-label="Tabla Resumen del Curso">
+            <div class="wrap">
+                <h2 tabindex="-1">Cheat Sheet: Complejidad en las Estructuras del Curso</h2>
+                <p class="lead">Guía rápida de referencia de todo lo que vemos en el semestre de Estructuras de Datos:</p>
+
+                <div style="overflow-x: auto;">
+                    <table class="cheat-table">
+                        <thead>
+                            <tr>
+                                <th>Estructura / Algoritmo</th>
+                                <th>Acceso por Índice</th>
+                                <th>Búsqueda</th>
+                                <th>Inserción</th>
+                                <th>Memoria Extra</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Array Estático (int arr[N])</strong></td>
+                                <td><span class="complexity-badge c-excellent">O(1)</span></td>
+                                <td><span class="complexity-badge c-fair">O(N)</span></td>
+                                <td>N/A (Tamaño fijo)</td>
+                                <td><span class="complexity-badge c-excellent">O(1)</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Vector Dinámico (std::vector)</strong></td>
+                                <td><span class="complexity-badge c-excellent">O(1)</span></td>
+                                <td><span class="complexity-badge c-fair">O(N)</span></td>
+                                <td><span class="complexity-badge c-excellent">O(1)</span> amortizado al final</td>
+                                <td><span class="complexity-badge c-fair">O(N)</span> Heap</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Búsqueda Binaria (Array ordenado)</strong></td>
+                                <td>N/A</td>
+                                <td><span class="complexity-badge c-good">O(log N)</span></td>
+                                <td>N/A</td>
+                                <td><span class="complexity-badge c-excellent">O(1)</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Pila (LIFO) / Cola (FIFO)</strong></td>
+                                <td>Solo Tope / Frente <span class="complexity-badge c-excellent">O(1)</span></td>
+                                <td><span class="complexity-badge c-fair">O(N)</span></td>
+                                <td><span class="complexity-badge c-excellent">O(1)</span> push / enqueue</td>
+                                <td><span class="complexity-badge c-fair">O(N)</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Ordenamiento Burbuja</strong></td>
+                                <td>N/A</td>
+                                <td>Tiempo: <span class="complexity-badge c-terrible">O(N²)</span></td>
+                                <td>Estable: Sí</td>
+                                <td><span class="complexity-badge c-excellent">O(1)</span> In-place</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Ordenamiento Shell</strong></td>
+                                <td>N/A</td>
+                                <td>Tiempo: <span class="complexity-badge c-good">O(N log N) a O(N^1.5)</span></td>
+                                <td>Estable: No</td>
+                                <td><span class="complexity-badge c-excellent">O(1)</span> In-place</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Quicksort</strong></td>
+                                <td>N/A</td>
+                                <td>Tiempo Promedio: <span class="complexity-badge c-bad">O(N log N)</span></td>
+                                <td>Estable: No</td>
+                                <td><span class="complexity-badge c-good">O(log N)</span> Stack</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Mergesort</strong></td>
+                                <td>N/A</td>
+                                <td>Tiempo Garantizado: <span class="complexity-badge c-bad">O(N log N)</span></td>
+                                <td>Estable: Sí</td>
+                                <td><span class="complexity-badge c-fair">O(N)</span> Out-of-place</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 9 Reto Interactivo: Quiz de Big O -->
+        <section class="slide" data-name="Quiz Big O" aria-label="Reto de Complejidad">
+            <div class="wrap">
+                <h2 tabindex="-1">Reto Interactivo: ¿Cuál es el Big O?</h2>
+                <p class="lead">Pon a prueba tu intuición analizando estos fragmentos de código:</p>
+
+                <div class="panel">
+                    <div id="quiz-container">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <span style="font-weight: bold; color: var(--accent); font-family: var(--f-mono);" id="q-counter">Pregunta 1 de 4</span>
+                            <span style="font-size: 0.9rem; color: var(--muted);" id="q-score">Aciertos: 0</span>
+                        </div>
+
+                        <div id="q-code-container" style="margin-bottom: 16px;">
+                            <p id="q-statement" style="font-weight: 600; margin-bottom: 8px;"></p>
+                            <pre class="code" id="q-code" style="max-height: 200px;"></pre>
+                        </div>
+
+                        <div id="q-options" style="display: flex; flex-direction: column; gap: 8px;">
+                            <!-- Opciones generadas por JS -->
+                        </div>
+
+                        <div class="status-log" id="q-feedback" style="display: none; margin-top: 15px;"></div>
+
+                        <div style="margin-top: 15px; text-align: right;">
+                            <button class="btn primary" id="btn-q-next" style="display: none;">Siguiente Pregunta &rarr;</button>
+                        </div>
+                    </div>
+
+                    <div id="quiz-finished" style="display: none; text-align: center; padding: 20px;">
+                        <h3 style="color: var(--ok);">¡Reto Completado!</h3>
+                        <p id="final-score-text" style="font-size: 1.15rem; margin-bottom: 20px;"></p>
+                        <button class="btn primary" id="btn-q-restart">Intentar de Nuevo</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 10 Resumen -->
+        <section class="slide" data-name="Resumen" aria-label="Resumen de Big O">
+            <div class="wrap">
+                <h2 tabindex="-1">Resumen y Mejores Prácticas</h2>
+                <ul class="sum">
+                    <li><strong>Big O mide la tasa de crecimiento:</strong> Ignora los segundos de reloj y describe cómo escala el algoritmo cuando $N$ crece hacia el infinito.</li>
+                    <li><strong>Regla de oro:</strong> Desprecia constantes numéricas ($O(3N) \rightarrow O(N)$) y conserva únicamente el término de mayor crecimiento ($O(N^2 + N) \rightarrow O(N^2)$).</li>
+                    <li><strong>Para búsquedas:</strong> Búsqueda Lineal es $O(N)$ (desordenado). Si el arreglo está ordenado, usa Búsqueda Binaria para saltar a $O(\log N)$.</li>
+                    <li><strong>Para ordenamiento:</strong> Burbuja ($O(N^2)$) es solo didáctico. En aplicaciones reales, Quicksort, Mergesort y Shell Sort operan en $O(N \log N)$.</li>
+                    <li><strong>No olvides la memoria:</strong> Un algoritmo veloz que consuma $O(N)$ de memoria RAM puede agotar los recursos en sistemas con millones de registros.</li>
+                </ul>
+
+                <div class="row top">
+                    <button class="btn primary" type="button" data-go="1">Volver al inicio</button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Barra de Navegación Inferior -->
+    <nav class="nav" aria-label="Navegación de diapositivas">
+        <button class="btn" id="prev" type="button" aria-label="Diapositiva anterior">Anterior</button>
+        <div class="track" aria-hidden="true">
+            <div class="bar" id="bar"></div>
+        </div>
+        <span class="count" id="count" aria-live="polite">1 / 10</span>
+        <span class="navname" id="navName">Inicio</span>
+        <button class="btn primary" id="next" type="button" aria-label="Diapositiva siguiente">Siguiente</button>
+    </nav>
+
+    <script>
+        (function () {
+            'use strict';
+            var $ = function (s) { return document.querySelector(s); };
+            var $$ = function (s) { return Array.prototype.slice.call(document.querySelectorAll(s)); };
+
+            /* ---------- Navegación de Diapositivas ---------- */
+            var slides = $$('.slide');
+            var N = slides.length;
+            var cur = 0;
+
+            function go(i, focus) {
+                i = Math.max(0, Math.min(N - 1, i));
+                slides[cur].classList.remove('active');
+                cur = i;
+                var s = slides[cur];
+                s.classList.add('active');
+                s.scrollTop = 0;
+                $('#bar').style.width = ((cur + 1) / N * 100) + '%';
+                $('#count').textContent = (cur + 1) + ' / ' + N;
+                $('#navName').textContent = s.getAttribute('data-name') || '';
+                $('#prev').disabled = cur === 0;
+                $('#next').disabled = cur === N - 1;
+                if (focus) {
+                    var h = s.querySelector('h1,h2');
+                    if (h) h.focus({ preventScroll: true });
+                }
+            }
+
+            $('#prev').onclick = function () { go(cur - 1, true); };
+            $('#next').onclick = function () { go(cur + 1, true); };
+
+            document.addEventListener('click', function (e) {
+                var b = e.target.closest && e.target.closest('[data-go]');
+                if (b) go(parseInt(b.getAttribute('data-go'), 10) - 1, true);
+            });
+
+            document.addEventListener('keydown', function (e) {
+                var t = e.target;
+                if (t.closest && t.closest('input,select,textarea')) return;
+                if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); go(cur + 1, true); }
+                else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); go(cur - 1, true); }
+                else if (e.key === 'Home') { go(0, true); }
+                else if (e.key === 'End') { go(N - 1, true); }
+            });
+
+            go(0, false);
+
+            /* ---------- Calculadora de Crecimiento ---------- */
+            function formatOps(val) {
+                if (val >= 1e12) return (val / 1e12).toFixed(2) + ' Billones';
+                if (val >= 1e9) return (val / 1e9).toFixed(2) + ' Mil Millones';
+                if (val >= 1e6) return (val / 1e6).toFixed(2) + ' Millones';
+                if (val >= 1e3) return (val / 1e3).toFixed(1) + ' mil';
+                return val.toLocaleString();
+            }
+
+            function formatTime(nanos) {
+                if (nanos < 1000) return nanos.toFixed(0) + ' nanosegundos';
+                var micros = nanos / 1000;
+                if (micros < 1000) return micros.toFixed(2) + ' microsegundos';
+                var millis = micros / 1000;
+                if (millis < 1000) return millis.toFixed(2) + ' milisegundos';
+                var secs = millis / 1000;
+                if (secs < 60) return secs.toFixed(2) + ' segundos';
+                var mins = secs / 60;
+                if (mins < 60) return mins.toFixed(1) + ' minutos';
+                var hours = mins / 60;
+                if (hours < 24) return hours.toFixed(1) + ' horas';
+                var days = hours / 24;
+                if (days < 365) return days.toFixed(1) + ' días';
+                var years = days / 365;
+                return years.toExponential(1) + ' años';
+            }
+
+            function updateCalculator(n) {
+                var tbody = $('#calc-tbody');
+                if (!tbody) return;
+
+                var rows = [
+                    { name: 'O(1) - Constante', formula: '1', ops: 1, badge: 'c-excellent', label: 'Instantáneo' },
+                    { name: 'O(log N) - Logarítmica', formula: 'log₂(N)', ops: Math.ceil(Math.log2(n)), badge: 'c-good', label: 'Ultra Rápido' },
+                    { name: 'O(N) - Lineal', formula: 'N', ops: n, badge: 'c-fair', label: 'Rápido' },
+                    { name: 'O(N log N) - Linealítmica', formula: 'N × log₂(N)', ops: Math.ceil(n * Math.log2(n)), badge: 'c-bad', label: 'Eficiente' },
+                    { name: 'O(N²) - Cuadrática', formula: 'N²', ops: n * n, badge: 'c-terrible', label: n > 10000 ? 'Inmanejable' : 'Lento' }
+                ];
+
+                tbody.innerHTML = '';
+                rows.forEach(function (r) {
+                    var tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><strong>${r.name}</strong></td>
+                        <td><code>${r.formula}</code></td>
+                        <td><strong style="font-family: var(--f-mono);">${formatOps(r.ops)}</strong></td>
+                        <td style="font-family: var(--f-mono); font-size: 0.85rem;">${formatTime(r.ops)}</td>
+                        <td><span class="complexity-badge ${r.badge}">${r.label}</span></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+                var log = $('#calc-log');
+                if (log) {
+                    var opsLog = Math.ceil(Math.log2(n));
+                    var opsQuad = n * n;
+                    log.textContent = `Para N = ${n.toLocaleString()}: O(log N) solo hace ${opsLog} pasos, mientras que O(N²) hace ${formatOps(opsQuad)} pasos.`;
+                }
+            }
+
+            var nSel = $('#calc-n-select');
+            if (nSel) {
+                updateCalculator(parseInt(nSel.value, 10));
+                nSel.onchange = function () {
+                    updateCalculator(parseInt(this.value, 10));
+                };
+            }
+
+            /* ---------- Reto / Quiz de Big O ---------- */
+            var questions = [
+                {
+                    statement: "¿Cuál es la complejidad temporal de este algoritmo?",
+                    code: "int consultarElemento(int arr[], int n, int indice) {\n    if (indice >= 0 && indice < n) {\n        return arr[indice];\n    }\n    return -1;\n}",
+                    options: [
+                        { text: "O(1) - Constante", correct: true },
+                        { text: "O(N) - Lineal", correct: false },
+                        { text: "O(log N) - Logarítmica", correct: false },
+                        { text: "O(N²) - Cuadrática", correct: false }
+                    ],
+                    explanation: "¡Correcto! Acceder directamente a una casilla de un arreglo con corchetes arr[i] toma exactamente una operación, sin importar el tamaño del arreglo."
+                },
+                {
+                    statement: "¿Cuál es la complejidad temporal de este ciclo?",
+                    code: "void imprimirPares(int n) {\n    for (int i = 0; i < n; i += 2) {\n        cout << i << endl;\n    }\n}",
+                    options: [
+                        { text: "O(N/2)", correct: false },
+                        { text: "O(N) - Lineal", correct: true },
+                        { text: "O(log N) - Logarítmica", correct: false },
+                        { text: "O(1) - Constante", correct: false }
+                    ],
+                    explanation: "¡Correcto! Hace N/2 iteraciones, pero aplicando la Regla 1 (despreciar constantes), N/2 se simplifica a O(N)."
+                },
+                {
+                    statement: "¿Cuál es la complejidad de estos dos bucles anidados?",
+                    code: "void matriz(int n) {\n    for (int i = 0; i < n; i++) {\n        for (int j = 0; j < n; j++) {\n            cout << i + j << \" \";\n        }\n    }\n}",
+                    options: [
+                        { text: "O(2N)", correct: false },
+                        { text: "O(N log N)", correct: false },
+                        { text: "O(N²) - Cuadrática", correct: true },
+                        { text: "O(N³)", correct: false }
+                    ],
+                    explanation: "¡Exacto! El bucle exterior da N vueltas, y para cada una de ellas, el bucle interior da otras N vueltas: N * N = O(N²)."
+                },
+                {
+                    statement: "¿Cuál es la complejidad de este algoritmo con división?",
+                    code: "void dividir(int n) {\n    while (n > 1) {\n        cout << n << endl;\n        n = n / 2;\n    }\n}",
+                    options: [
+                        { text: "O(log N) - Logarítmica", correct: true },
+                        { text: "O(N) - Lineal", correct: false },
+                        { text: "O(1) - Constante", correct: false },
+                        { text: "O(N²)", correct: false }
+                    ],
+                    explanation: "¡Excelente! Cada paso divide N a la mitad. El número de veces que puedes dividir N entre 2 antes de llegar a 1 es log₂(N)."
+                }
+            ];
+
+            var qIndex = 0;
+            var qScore = 0;
+
+            function renderQuiz() {
+                var q = questions[qIndex];
+                $('#q-counter').textContent = `Pregunta ${qIndex + 1} de ${questions.length}`;
+                $('#q-score').textContent = `Aciertos: ${qScore}`;
+                $('#q-statement').textContent = q.statement;
+                $('#q-code').textContent = q.code;
+
+                var optBox = $('#q-options');
+                optBox.innerHTML = '';
+                var fb = $('#q-feedback');
+                fb.style.display = 'none';
+                $('#btn-q-next').style.display = 'none';
+
+                q.options.forEach(function (opt) {
+                    var btn = document.createElement('button');
+                    btn.className = 'quiz-option';
+                    btn.textContent = opt.text;
+                    btn.onclick = function () {
+                        var allBtns = optBox.querySelectorAll('.quiz-option');
+                        allBtns.forEach(function (b) { b.disabled = true; });
+
+                        fb.style.display = 'block';
+                        if (opt.correct) {
+                            btn.classList.add('correct');
+                            qScore++;
+                            $('#q-score').textContent = `Aciertos: ${qScore}`;
+                            fb.style.color = '#00FF00';
+                            fb.textContent = q.explanation;
+                        } else {
+                            btn.classList.add('incorrect');
+                            fb.style.color = '#FF8888';
+                            fb.textContent = 'Incorrecto. ' + q.explanation;
+                        }
+
+                        if (qIndex < questions.length - 1) {
+                            $('#btn-q-next').style.display = 'inline-block';
+                        } else {
+                            setTimeout(function () {
+                                $('#quiz-container').style.display = 'none';
+                                $('#quiz-finished').style.display = 'block';
+                                $('#final-score-text').textContent = `Obtuviste ${qScore} de ${questions.length} respuestas correctas.`;
+                            }, 1500);
+                        }
+                    };
+                    optBox.appendChild(btn);
+                });
+            }
+
+            if ($('#q-statement')) {
+                renderQuiz();
+                $('#btn-q-next').onclick = function () {
+                    qIndex++;
+                    renderQuiz();
+                };
+                $('#btn-q-restart').onclick = function () {
+                    qIndex = 0;
+                    qScore = 0;
+                    $('#quiz-container').style.display = 'block';
+                    $('#quiz-finished').style.display = 'none';
+                    renderQuiz();
+                };
+            }
+
+        })();
+    </script>
+</body>
+
+</html>
