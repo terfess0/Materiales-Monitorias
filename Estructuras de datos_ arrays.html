@@ -380,6 +380,162 @@
       animation: swap .5s ease-out
     }
 
+    @keyframes popIn {
+      0% {
+        transform: scale(0.3);
+        opacity: 0;
+        background: var(--ok-soft);
+        border-color: var(--ok);
+      }
+      60% {
+        transform: scale(1.15);
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .box.pop-in {
+      animation: popIn .4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes popDelete {
+      0% {
+        transform: scale(1);
+        background: var(--bad-soft);
+        border-color: var(--bad);
+      }
+      50% {
+        transform: scale(1.18);
+        background: var(--bad);
+        color: #fff;
+      }
+      100% {
+        transform: scale(0.2);
+        opacity: 0;
+      }
+    }
+
+    .box.pop-delete {
+      animation: popDelete .45s ease-in forwards;
+    }
+
+    @keyframes rangeDelete {
+      0% {
+        transform: scale(1);
+        background: var(--bad-soft);
+        border-color: var(--bad);
+      }
+      40% {
+        transform: translateY(-8px) scale(1.05);
+        background: var(--bad);
+        color: #fff;
+      }
+      100% {
+        transform: translateY(12px) scale(0.2);
+        opacity: 0;
+      }
+    }
+
+    .box.range-delete {
+      animation: rangeDelete .5s ease-in forwards;
+    }
+
+    @keyframes highlightModify {
+      0% {
+        transform: scale(1);
+      }
+      40% {
+        transform: scale(1.2);
+        background: var(--hot);
+        border-color: #8A7222;
+        color: var(--ink);
+      }
+      100% {
+        transform: scale(1);
+        background: var(--hot-soft);
+        border-color: var(--hot);
+      }
+    }
+
+    .box.modified {
+      animation: highlightModify .5s ease-out;
+    }
+
+    @keyframes slideShift {
+      0% {
+        transform: translateX(-18px);
+        opacity: 0.6;
+      }
+      100% {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .box.shifted {
+      animation: slideShift .35s ease-out;
+    }
+
+    /* Estilos interactivos para simulaciones de vectores */
+    .vec-metrics-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .vec-metric {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: var(--code-bg);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-family: var(--f-mono);
+      font-weight: 600;
+    }
+
+    .vec-metric strong {
+      color: var(--accent);
+    }
+
+    .iter-label {
+      text-align: center;
+      font: 600 .75rem var(--f-mono);
+      color: var(--accent);
+      margin-top: 2px;
+    }
+
+    .iter-label.marked {
+      color: var(--bad);
+      font-weight: 700;
+    }
+
+    .badge-op {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-family: var(--f-mono);
+      font-weight: 700;
+    }
+
+    .badge-op.time-o1 {
+      background: var(--ok-soft);
+      color: var(--ok);
+    }
+
+    .badge-op.time-on {
+      background: var(--hot-soft);
+      color: #8A7222;
+    }
+
     /* Cuadrículas 2D (Matrices) */
     .grid2d {
       display: grid;
@@ -414,6 +570,14 @@
       background: var(--hot);
       color: var(--ink);
       transform: scale(1.05);
+    }
+
+    .box2d.modified {
+      animation: highlightModify .5s ease-out;
+    }
+
+    .box2d.pop-in {
+      animation: popIn .4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
     /* Layouts */
@@ -678,11 +842,15 @@
           <dd>Matrices. Estudiantes que comprendan 1D y deseen dominar las 2 dimensiones.</dd>
           <dt>N-D: Multidimensionales</dt>
           <dd>Llevando la lógica a 3 o más dimensiones (Tensores).</dd>
-          <dt>Vectores y Algoritmos</dt>
-          <dd>Arrays dinámicos con <code>std::vector</code> y uso de <code>&lt;algorithm&gt;</code>.</dd>
+          <dt>Vectores y Operaciones</dt>
+          <dd>Arrays dinámicos con <code>std::vector</code>: crecimiento con <code>push_back</code>, acceso directo <code>v[i]</code>, inserción con <code>insert</code> y eliminación puntual/rango con <code>erase</code>.</dd>
+          <dt>Matrices con Vectores</dt>
+          <dd>Vectores 2D dinámicos (<code>vector&lt;vector&lt;T&gt;&gt;</code>) y matrices irregulares (jagged).</dd>
+          <dt>Librería Algorithm</dt>
+          <dd>Uso de <code>&lt;algorithm&gt;</code> para ordenar, invertir y transformar.</dd>
           <dt>Listas vs Arrays</dt>
           <dd>Diferencias clave en memoria y uso (std::list).</dd>
-          <dt>20 Ejercicios Prácticos</dt>
+          <dt>30 Ejercicios Prácticos</dt>
           <dd>Batería de ejercicios graduados por dificultad para afianzar todo lo aprendido (sin abusar de punteros).
           </dd>
         </dl>
@@ -862,7 +1030,7 @@ for(int p = 0; p < 2; p++) {
       </div>
     </section>
 
-    <!-- 6 Vectores -->
+    <!-- 6 Vectores (Introducción Original) -->
     <section class="slide" data-name="Vectores" aria-label="Vectores std">
       <div class="wrap">
         <h2 tabindex="-1">Vectores (Arrays Dinámicos)</h2>
@@ -902,7 +1070,380 @@ int cant = v.size();
       </div>
     </section>
 
-    <!-- 7 Librería Algorithm -->
+    <!-- 7 Simulador: Crecimiento y Acceso -->
+    <section class="slide" data-name="Simulador: push_back" aria-label="Simulador push_back y Acceso">
+      <div class="wrap">
+        <h2 tabindex="-1">Simulador: Crecimiento y Acceso en Memoria</h2>
+        <p class="def">Observa en tiempo real cómo interactúa <code>std::vector</code> al añadir elementos al final con <code>push_back()</code>, retirarlos con <code>pop_back()</code> o modificar posiciones con <code>v[i]</code>.</p>
+
+        <div class="panel">
+          <div class="vec-metrics-row">
+            <div>
+              <span class="vec-metric">Tamaño <code>v.size()</code>: <strong id="vecBasicSize">3</strong></span>
+              <span class="vec-metric">Capacidad <code>v.capacity()</code>: <strong id="vecBasicCap">4</strong></span>
+              <span class="badge-op time-o1">Operación instantánea al final</span>
+            </div>
+            <div class="hint" style="margin: 0; font-size: 0.85rem;">
+              Representación en memoria dinámica
+            </div>
+          </div>
+
+          <div class="cells" id="vecBasicCells" style="justify-content: center; margin: 24px 0 16px;">
+            <!-- Generado por JavaScript -->
+          </div>
+
+          <div class="row" style="justify-content: center; margin-top: 15px;">
+            <button class="btn action" id="btnVecPush"><code>push_back(40)</code> Añadir al final</button>
+            <button class="btn" id="btnVecPop"><code>pop_back()</code> Quitar último</button>
+            <button class="btn" id="btnVecIndex" style="border-color: var(--hot); background: var(--hot-soft); color: #695315;">Alternativa: <code>v[1] = 99</code></button>
+            <button class="btn" id="btnVecReset">Reiniciar</button>
+          </div>
+
+          <div class="two" style="margin-top: 22px; align-items: start;">
+            <div>
+              <pre class="code" id="vecBasicCode" style="margin:0;">// Inicia con: vector&lt;int&gt; v = {10, 20, 30};
+v.push_back(40); // Agrega 40 al final y expande tamaño</pre>
+            </div>
+            <div>
+              <p id="vecBasicMsg" class="hint" style="margin: 0; line-height: 1.5;">Haz clic en los botones para observar cómo se añaden, eliminan o modifican los datos en memoria en tiempo real.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8 Explicación: push_back vs v[i] -->
+    <section class="slide" data-name="push_back vs v[i]" aria-label="push_back vs v[i]">
+      <div class="wrap">
+        <h2 tabindex="-1">¿<code>push_back()</code> o asignación con <code>v[i]</code>?</h2>
+        <p class="def">Dos formas de trabajar con un vector: cuándo conviene usar <code>push_back()</code> y por qué no debes usar <code>v[i]</code> para agregar elementos nuevos.</p>
+
+        <div class="two">
+          <div>
+            <h3>Diferencias y Cuándo Usar Cada Uno</h3>
+            <ul class="uses">
+              <li>
+                <span><strong>Para agregar datos usa <code>push_back(x)</code>:</strong> El vector se encarga de apartar espacio y actualiza su tamaño automáticamente.</span>
+                <b>Agregar</b>
+              </li>
+              <li>
+                <span><strong>Para modificar usa <code>v[i] = x</code>:</strong> Solo se debe usar sobre casillas que ya existen (de <code>0</code> a <code>size() - 1</code>). Por ejemplo, si creaste <code>vector&lt;int&gt; v(5);</code> ya tienes 5 casillas listas para editar.</span>
+                <b>Modificar</b>
+              </li>
+              <li>
+                <span><strong>¿Por qué no usar <code>v[i]</code> para agregar?</strong> Si intentas hacer <code>v[i] = x</code> con un índice mayor o igual al tamaño actual, <code>v.size()</code> <strong>no sabrá</strong> que agregaste ese elemento y seguirá mostrando el tamaño anterior. Además, estás accediendo a una posición no reservada, lo que puede causar fallos inesperados en el programa.</span>
+                <b>Importante</b>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h3>Comparativa en C++</h3>
+            <pre class="code">
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+// CASO 1: Agregar elementos con push_back()
+vector&lt;int&gt; a; // Inicia con tamaño 0 (vacío)
+a.push_back(10); // Tamaño pasa a 1 -> [10]
+a.push_back(20); // Tamaño pasa a 2 -> [10, 20]
+a.pop_back();    // Retira el 20 -> queda [10]
+
+// CASO 2: Vector con tamaño inicial y modificar con v[i]
+int n = 3;
+vector&lt;int&gt; b(n); // Ya tiene 3 casillas: [0, 0, 0]
+b[0] = 100;       // Modifica la casilla 0
+b[1] = 200;       // Modifica la casilla 1
+b[2] = 300;       // Modifica la casilla 2
+
+// ¿Qué pasa si haces b[5] = 500?
+// b.size() seguirá diciendo 3 (no sabrá que está ahí),
+// y esa casilla no está apartada. ¡Usa push_back()!
+</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9 Simulador: Inserción (insert) -->
+    <section class="slide" data-name="Simulador: insert" aria-label="Simulador Inserción en Vectores">
+      <div class="wrap">
+        <h2 tabindex="-1">Simulador: Inserción y Desplazamiento (<code>insert</code>)</h2>
+        <p class="def">A diferencia de <code>push_back()</code> que solo añade al final, <code>insert()</code> permite colocar datos en cualquier posición mediante <strong>iteradores</strong>, empujando los demás elementos a la derecha.</p>
+
+        <div class="panel">
+          <div class="vec-metrics-row">
+            <div>
+              <span class="vec-metric">Elementos: <strong id="vecInsertSize">4</strong></span>
+              <span class="badge-op time-on">Empuja elementos a la derecha</span>
+            </div>
+            <div class="hint" style="margin: 0; font-size: 0.85rem;">
+              Posiciones con iteradores: <code>begin()</code> al inicio | <code>end()</code> al final
+            </div>
+          </div>
+
+          <div class="cells" id="vecInsertCells" style="justify-content: center; margin: 24px 0 16px;">
+            <!-- Generado por JavaScript -->
+          </div>
+
+          <div class="row" style="justify-content: center; margin-top: 15px;">
+            <button class="btn action" id="btnInsertBegin"><code>insert(v.begin(), 5)</code> Al Inicio</button>
+            <button class="btn action" id="btnInsertMid"><code>insert(v.begin() + 2, 77)</code> En Posición 2</button>
+            <button class="btn" id="btnInsertMulti"><code>insert(v.begin() + 1, 2, 99)</code> Múltiple</button>
+            <button class="btn" id="btnInsertReset">Reiniciar</button>
+          </div>
+
+          <div class="two" style="margin-top: 22px; align-items: start;">
+            <div>
+              <pre class="code" id="vecInsertCode" style="margin:0;">// Estado inicial: vector&lt;int&gt; v = {10, 20, 30, 40};
+v.insert(v.begin() + 2, 77); // Desplaza [30, 40] a la derecha</pre>
+            </div>
+            <div>
+              <p id="vecInsertMsg" class="hint" style="margin: 0; line-height: 1.5;">Observa cómo los elementos existentes abren espacio desplazándose hacia la derecha para dar lugar al nuevo elemento.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10 Explicación: Uso de insert() -->
+    <section class="slide" data-name="Uso de insert()" aria-label="Explicación de insert en C++">
+      <div class="wrap">
+        <h2 tabindex="-1">Inserción con <code>insert()</code> e Iteradores</h2>
+        <p class="def">Comprende cómo los iteradores indican la posición exacta donde quieres insertar y qué hace el computador por dentro.</p>
+
+        <div class="two">
+          <div>
+            <h3>¿Cómo funcionan los Iteradores en <code>insert()</code>?</h3>
+            <p><code>insert()</code> no recibe un número entero simple, sino un <strong>iterador</strong> (un indicador de posición):</p>
+            <ul style="font-size: 0.95rem; padding-left: 20px;">
+              <li><code>v.begin()</code>: Apunta al primer elemento (índice 0).</li>
+              <li><code>v.begin() + k</code>: Apunta a la posición con índice $k$.</li>
+              <li><code>v.end()</code>: Apunta justo <em>después</em> del último elemento.</li>
+            </ul>
+            <p class="hint" style="margin-top: 15px;"><strong>¿Qué pasa por dentro?</strong> Al insertar al inicio o en el medio, C++ debe mover todos los elementos posteriores una casilla hacia la derecha para abrir espacio. Por eso, insertar al final con <code>push_back()</code> es mucho más directo.</p>
+          </div>
+          <div>
+            <h3>Sintaxis y Ejemplos en C++</h3>
+            <pre class="code">
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+vector&lt;int&gt; v = {10, 20, 30, 40};
+
+// 1. Insertar al principio (índice 0)
+v.insert(v.begin(), 5);
+// Resultado: {5, 10, 20, 30, 40}
+
+// 2. Insertar en una posición específica (ej: índice 2)
+v.insert(v.begin() + 2, 77);
+// Resultado: {5, 10, 77, 20, 30, 40}
+
+// 3. Insertar varias copias del mismo número
+// v.insert(posicion, cantidad, valor)
+v.insert(v.begin() + 1, 2, 99); // Inserta dos 99s
+</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11 Simulador: Eliminación (erase) -->
+    <section class="slide" data-name="Simulador: erase" aria-label="Simulador Eliminación en Vectores">
+      <div class="wrap">
+        <h2 tabindex="-1">Simulador: Eliminación y Compactación (<code>erase</code>)</h2>
+        <p class="def"><code>erase()</code> elimina un dato puntual o un <strong>rango completo</strong> de elementos continuos, compactando el vector hacia la izquierda para no dejar huecos.</p>
+
+        <div class="panel">
+          <div class="vec-metrics-row">
+            <div>
+              <span class="vec-metric">Elementos restantes: <strong id="vecEraseSize">6</strong></span>
+              <span class="badge-op time-on">Compacta elementos a la izquierda</span>
+            </div>
+            <div class="hint" style="margin: 0; font-size: 0.85rem;">
+              Regla de oro: El rango <code>[inicio, fin)</code> excluye el elemento fin
+            </div>
+          </div>
+
+          <div class="cells" id="vecEraseCells" style="justify-content: center; margin: 24px 0 16px;">
+            <!-- Generado por JavaScript -->
+          </div>
+
+          <div class="row" style="justify-content: center; margin-top: 15px;">
+            <button class="btn action" id="btnEraseSingle"><code>erase(v.begin() + 2)</code> Borrar Puntual (42)</button>
+            <button class="btn action" id="btnEraseRange" style="border-color: var(--bad); background: var(--bad-soft); color: var(--bad);"><code>erase(begin()+1, begin()+4)</code> Borrar Rango [1, 4)</button>
+            <button class="btn" id="btnEraseClear"><code>clear()</code> Vaciar Vector</button>
+            <button class="btn" id="btnEraseReset">Restaurar</button>
+          </div>
+
+          <div class="two" style="margin-top: 22px; align-items: start;">
+            <div>
+              <pre class="code" id="vecEraseCode" style="margin:0;">// Vector inicial: {15, 28, 42, 60, 75, 90}
+v.erase(v.begin() + 1, v.begin() + 4); // Elimina índices 1, 2 y 3</pre>
+            </div>
+            <div>
+              <p id="vecEraseMsg" class="hint" style="margin: 0; line-height: 1.5;">Haz clic en "Borrar Rango" para ver cómo se resalta y elimina un subconjunto entero en un solo paso.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 12 Explicación: Uso de erase() -->
+    <section class="slide" data-name="Uso de erase()" aria-label="Explicación de erase en C++">
+      <div class="wrap">
+        <h2 tabindex="-1">Eliminación con <code>erase()</code>: Puntual y por Rango</h2>
+        <p class="def">La regla del rango semiabierto $[inicio, fin)$, limpieza completa con <code>clear()</code> y verificación con <code>empty()</code>.</p>
+
+        <div class="two">
+          <div>
+            <h3>Puntual, Rangos y Limpieza Total</h3>
+            <ul class="uses">
+              <li>
+                <span><strong>Borrado Puntual:</strong> <code>v.erase(v.begin() + i);</code> elimina únicamente el dato en la posición $i$. Los elementos a la derecha se corren hacia la izquierda.</span>
+                <b>Puntual</b>
+              </li>
+              <li>
+                <span><strong>Borrado por Rango Semiabierto:</strong> <code>v.erase(ini, fin);</code> elimina todos los elementos desde <code>ini</code> hasta justo antes de <code>fin</code>. El elemento en <code>fin</code> <strong>no</strong> se borra.</span>
+                <b>Rango</b>
+              </li>
+              <li>
+                <span><strong>Limpieza Rápida:</strong> <code>v.clear()</code> elimina todos los datos a la vez dejando el tamaño en 0. Puedes comprobar si quedó vacío con <code>v.empty()</code> (devuelve <code>true</code>).</span>
+                <b>Limpieza</b>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h3>En C++</h3>
+            <pre class="code">
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+vector&lt;int&gt; v = {15, 28, 42, 60, 75, 90};
+
+// 1. Borrar un elemento puntual (índice 2: el 42)
+v.erase(v.begin() + 2);
+// Queda: {15, 28, 60, 75, 90}
+
+// 2. Borrar un RANGO: borra índices 1, 2 y 3 (excluye el 4)
+// Borra el 28, 42 y 60. Conserva el 75 (índice 4).
+v.erase(v.begin() + 1, v.begin() + 4);
+// Queda: {15, 75, 90}
+
+// 3. Vaciar completamente
+v.clear();
+if (v.empty()) {
+    cout &lt;&lt; "El vector está vacío";
+}
+</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 13 Simulador: Matrices con Vectores (2D) -->
+    <section class="slide" data-name="Simulador: Vectores 2D" aria-label="Simulador Matrices con Vectores">
+      <div class="wrap">
+        <h2 tabindex="-1">Simulador: Matrices Dinámicas (Vectores 2D)</h2>
+        <p class="def">Explora la cuadrícula interactiva de un <code>vector&lt;vector&lt;T&gt;&gt;</code>: agrega filas completas o crea filas con diferente número de columnas.</p>
+
+        <div class="panel">
+          <div class="vec-metrics-row">
+            <div>
+              <span class="vec-metric">Filas <code>m.size()</code>: <strong id="vec2dRows">3</strong></span>
+              <span class="vec-metric">Cols Fila 0 <code>m[0].size()</code>: <strong id="vec2dCols">4</strong></span>
+              <span class="badge-op time-o1">Acceso directo [f][c]</span>
+              <span class="badge-op time-on">Tamaño flexible</span>
+            </div>
+            <div class="hint" style="margin: 0; font-size: 0.85rem;">
+              <code>vector&lt;vector&lt;int&gt;&gt; matriz;</code>
+            </div>
+          </div>
+
+          <!-- Cuadrícula 2D generada por JS -->
+          <div id="vec2dGrid" class="grid2d" style="margin: 15px auto; justify-content: center;">
+            <!-- Celdas dinámicas -->
+          </div>
+
+          <div class="row" style="justify-content: center; margin-top: 15px;">
+            <button class="btn action" id="btnVec2D-Cell">Ver <code>matriz[1][2]</code></button>
+            <button class="btn action" id="btnVec2D-PushRow"><code>matriz.push_back(...)</code> +1 Fila</button>
+            <button class="btn" id="btnVec2D-PushCol" style="border-color: var(--hot); background: var(--hot-soft); color: #695315;"><code>matriz[0].push_back(99)</code> Fila Irregular</button>
+            <button class="btn" id="btnVec2D-Modify"><code>matriz[2][1] = 70</code> Modificar</button>
+            <button class="btn" id="btnVec2D-Reset">Reiniciar</button>
+          </div>
+
+          <div class="two" style="margin-top: 22px; align-items: start;">
+            <div>
+              <pre class="code" id="vec2dCode" style="margin:0;">// Acceso directo a coordenadas:
+int dato = matriz[1][2]; // Fila 1, Columna 2 -> Valor: 8</pre>
+            </div>
+            <div>
+              <p id="vec2dMsg" class="hint" style="margin: 0; line-height: 1.5;">Interactúa con los botones para ver cómo una matriz con vectores puede crecer en filas o tener columnas independientes.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 14 Explicación: Matrices con Vectores en C++ -->
+    <section class="slide" data-name="Vectores 2D en C++" aria-label="Explicación Matrices con Vectores">
+      <div class="wrap">
+        <h2 tabindex="-1">Matrices con Vectores: Concepto y Sintaxis</h2>
+        <p class="def">Cómo declarar matrices dinámicas, crear filas de tamaño variable (matrices irregulares) y recorrerlas con bucles anidados en C++.</p>
+
+        <div class="two">
+          <div>
+            <h3>Ventajas frente a la Matriz Clásica (int m[3][4])</h3>
+            <ul class="uses">
+              <li>
+                <span><strong>Tamaño al Ejecutar:</strong> Puedes pedir las filas y columnas al usuario con <code>cin &gt;&gt; f &gt;&gt; c;</code> y crear la matriz a la medida exacta sin tamaños fijos.</span>
+                <b>Flexible</b>
+              </li>
+              <li>
+                <span><strong>Filas de Diferente Tamaño:</strong> Cada fila es un vector independiente. Una fila puede tener 2 elementos y otra 10 sin desperdiciar casillas vacías.</span>
+                <b>Versátil</b>
+              </li>
+              <li>
+                <span><strong>Fácil de Pasar a Funciones:</strong> Se pasa directamente como <code>void procesar(vector&lt;vector&lt;int&gt;&gt;&amp; m)</code> sin tener que definir un número de columnas fijo en la función.</span>
+                <b>Limpio</b>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h3>Sintaxis y Recorrido en C++</h3>
+            <pre class="code">
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+// 1. Inicialización con datos predefinidos
+vector&lt;vector&lt;int&gt;&gt; m = {
+    {1, 5, 9, 3}, // Fila 0
+    {7, 2, 8, 4}, // Fila 1
+    {6, 0, 1, 5}  // Fila 2
+};
+
+// 2. Crear matriz de F filas x C columnas llena de ceros:
+int F = 3, C = 4;
+vector&lt;vector&lt;int&gt;&gt; vacia(F, vector&lt;int&gt;(C, 0));
+
+// 3. Recorrido dinámico con bucles:
+for(int i = 0; i &lt; m.size(); i++) {
+    for(int j = 0; j &lt; m[i].size(); j++) {
+        cout &lt;&lt; m[i][j] &lt;&lt; " ";
+    }
+    cout &lt;&lt; endl;
+}
+</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 15 Librería Algorithm -->
     <section class="slide" data-name="Algorithm" aria-label="Librería Algorithm">
       <div class="wrap">
         <h2 tabindex="-1">Magia con <code>&lt;algorithm&gt;</code></h2>
@@ -956,7 +1497,7 @@ int cant = v.size();
       </div>
     </section>
 
-    <!-- 8 Listas vs Arrays -->
+    <!-- 16 Listas vs Arrays -->
     <section class="slide" data-name="Listas" aria-label="Listas vs Arrays">
       <div class="wrap">
         <h2 tabindex="-1">Listas vs. Arrays</h2>
@@ -983,7 +1524,7 @@ int cant = v.size();
       </div>
     </section>
 
-    <!-- 9 Ejercicios -->
+    <!-- 17 30 Ejercicios Prácticos -->
     <section class="slide" data-name="30 Ejercicios" aria-label="Ejercicios de Programación">
       <div class="wrap">
         <h2 tabindex="-1">30 Ejercicios Prácticos (Énfasis en Vectores)</h2>
@@ -1797,18 +2338,18 @@ int main() {
       </div>
     </section>
 
-    <!-- 10 Resumen -->
+    <!-- 18 Resumen -->
     <section class="slide" data-name="Resumen" aria-label="Resumen">
       <div class="wrap">
         <h2 tabindex="-1">Resumen</h2>
         <ul class="sum">
           <li><strong>Arrays 1D:</strong> Conjunto ordenado y finito de variables en una sola línea (estáticos).</li>
-          <li><strong>Arrays 2D (Matrices):</strong> "Array de arrays", ideal para cuadriculas, tableros o sistemas de
+          <li><strong>Arrays 2D (Matrices):</strong> "Array de arrays", ideal para cuadrículas, tableros o sistemas de
             coordenadas. Requiere dos índices.</li>
           <li><strong>Multidimensionales (3D+):</strong> Útiles para modelar el espacio, pero el consumo de memoria
             crece muy rápido.</li>
-          <li><strong>std::vector:</strong> La versión moderna y dinámica del array en C++. Crece según lo necesites y
-            conoce su propio tamaño.</li>
+          <li><strong>std::vector y Operaciones Clave:</strong> Estructura dinámica en el Heap. Crece con <code>push_back()</code> o se indexa con <code>v[i]</code> si fue predimensionado. Permite inserciones con <code>insert()</code> y eliminaciones puntuales o por rangos semiabiertos <code>[inicio, fin)</code> con <code>erase()</code>.</li>
+          <li><strong>Matrices con Vectores (Vectores 2D):</strong> <code>vector&lt;vector&lt;T&gt;&gt;</code> supera las limitaciones de las matrices estáticas: memoria dinámica en el Heap, paso limpio a funciones y soporte para filas de longitud variable (matrices irregulares o <em>jagged</em>).</li>
           <li><strong>&lt;algorithm&gt;:</strong> Utiliza siempre esta librería para no reinventar la rueda (sort,
             reverse, count).</li>
         </ul>
@@ -1825,7 +2366,7 @@ int main() {
     <div class="track" aria-hidden="true">
       <div class="bar" id="bar"></div>
     </div>
-    <span class="count" id="count" aria-live="polite">1 / 10</span>
+    <span class="count" id="count" aria-live="polite">1 / 18</span>
     <span class="navname" id="navName">Inicio</span>
     <button class="btn primary" id="next" type="button" aria-label="Diapositiva siguiente">Siguiente</button>
   </nav>
@@ -1887,7 +2428,391 @@ int main() {
         };
       }
 
-      /* ---------- Interactividad Diapositiva 7 (Algorithm) ---------- */
+      /* ---------- Interactividad Diapositiva 6 (Vectores Básico y v[i]) ---------- */
+      var vecBasicData = [10, 20, 30];
+      var vecBasicCells = $('#vecBasicCells');
+      var vecBasicSize = $('#vecBasicSize');
+      var vecBasicCap = $('#vecBasicCap');
+      var vecBasicCode = $('#vecBasicCode');
+      var vecBasicMsg = $('#vecBasicMsg');
+
+      function calcCapacity(len) {
+        if (len === 0) return 0;
+        var c = 1;
+        while (c < len) c *= 2;
+        return c;
+      }
+
+      function renderVecBasic(animClass, targetIdx) {
+        if (!vecBasicCells) return;
+        vecBasicCells.innerHTML = '';
+        if (vecBasicData.length === 0) {
+          vecBasicCells.innerHTML = '<div style="color:var(--muted); font-style:italic; padding: 20px 0;">(Vector vacío - size: 0)</div>';
+        } else {
+          vecBasicData.forEach(function (val, idx) {
+            var cell = document.createElement('div');
+            cell.className = 'cell';
+            var extra = (idx === targetIdx && animClass) ? animClass : '';
+            cell.innerHTML = '<div class="box filled ' + extra + '">' + val + '</div>' +
+                             '<div class="idx">v[' + idx + ']</div>';
+            vecBasicCells.appendChild(cell);
+          });
+        }
+        if (vecBasicSize) vecBasicSize.textContent = vecBasicData.length;
+        if (vecBasicCap) vecBasicCap.textContent = calcCapacity(vecBasicData.length);
+      }
+
+      if ($('#btnVecPush')) {
+        $('#btnVecPush').onclick = function () {
+          if (vecBasicData.length >= 7) {
+            vecBasicMsg.textContent = "Tamaño máximo de demostración alcanzado (7 elementos). Reinicia para probar nuevamente.";
+            return;
+          }
+          var nextVal = (vecBasicData.length + 1) * 10;
+          vecBasicData.push(nextVal);
+          renderVecBasic('pop-in', vecBasicData.length - 1);
+          vecBasicMsg.textContent = "v.push_back(" + nextVal + "); agregó " + nextVal + " al final del vector. Tamaño actual: " + vecBasicData.length + ".";
+          vecBasicCode.innerHTML = "// push_back agrega al final y actualiza el tamaño automáticamente\nv.push_back(" + nextVal + ");\ncout &lt;&lt; v.size(); // " + vecBasicData.length;
+        };
+      }
+
+      if ($('#btnVecPop')) {
+        $('#btnVecPop').onclick = function () {
+          if (vecBasicData.length === 0) {
+            vecBasicMsg.textContent = "El vector ya está vacío. No puedes ejecutar pop_back() en un vector sin elementos.";
+            return;
+          }
+          var lastIdx = vecBasicData.length - 1;
+          var val = vecBasicData[lastIdx];
+          var boxes = vecBasicCells.querySelectorAll('.box');
+          if (boxes[lastIdx]) {
+            boxes[lastIdx].classList.add('pop-delete');
+          }
+          setTimeout(function () {
+            vecBasicData.pop();
+            renderVecBasic();
+            vecBasicMsg.textContent = "v.pop_back(); eliminó el último elemento (" + val + "). Tamaño restante: " + vecBasicData.length + ".";
+            vecBasicCode.innerHTML = "// pop_back retira el último elemento del vector\nv.pop_back();\n// El elemento " + val + " fue retirado";
+          }, 350);
+        };
+      }
+
+      if ($('#btnVecIndex')) {
+        $('#btnVecIndex').onclick = function () {
+          if (vecBasicData.length < 2) {
+            vecBasicMsg.textContent = "Se necesitan al menos 2 elementos en el vector para modificar v[1]. Añade elementos con push_back primero.";
+            return;
+          }
+          var newVal = vecBasicData[1] === 99 ? 25 : 99;
+          vecBasicData[1] = newVal;
+          renderVecBasic('modified', 1);
+          vecBasicMsg.textContent = "Asignación v[1] = " + newVal + "; modifica la casilla 1 ya existente sin alterar el tamaño total (" + vecBasicData.length + ").";
+          vecBasicCode.innerHTML = "// Modificación en posición ya existente\nv[1] = " + newVal + "; // Modifica la posición 1 sin añadir celdas nuevas";
+        };
+      }
+
+      if ($('#btnVecReset')) {
+        $('#btnVecReset').onclick = function () {
+          vecBasicData = [10, 20, 30];
+          renderVecBasic('pop-in');
+          vecBasicMsg.textContent = "Vector restablecido a su estado inicial: {10, 20, 30}.";
+          vecBasicCode.innerHTML = "vector&lt;int&gt; v = {10, 20, 30};\n// Tamaño: 3 | Capacidad: 4";
+        };
+      }
+      renderVecBasic();
+
+      /* ---------- Interactividad Diapositiva 7 (Vectores insert) ---------- */
+      var vecInsertData = [10, 20, 30, 40];
+      var vecInsertCells = $('#vecInsertCells');
+      var vecInsertSize = $('#vecInsertSize');
+      var vecInsertCode = $('#vecInsertCode');
+      var vecInsertMsg = $('#vecInsertMsg');
+
+      function renderVecInsert(insertedIdx, insertedCount) {
+        if (!vecInsertCells) return;
+        vecInsertCells.innerHTML = '';
+        vecInsertData.forEach(function (val, idx) {
+          var cell = document.createElement('div');
+          cell.className = 'cell';
+          var isNew = (insertedIdx !== undefined && idx >= insertedIdx && idx < insertedIdx + (insertedCount || 1));
+          var isShifted = (insertedIdx !== undefined && idx >= insertedIdx + (insertedCount || 1));
+          var animClass = isNew ? 'pop-in' : (isShifted ? 'shifted' : '');
+          
+          var iterText = idx === 0 ? 'begin()' : 'begin()+' + idx;
+          cell.innerHTML = '<div class="box filled ' + animClass + '">' + val + '</div>' +
+                           '<div class="idx">[' + idx + ']</div>' +
+                           '<div class="iter-label">' + iterText + '</div>';
+          vecInsertCells.appendChild(cell);
+        });
+        if (vecInsertSize) vecInsertSize.textContent = vecInsertData.length;
+      }
+
+      if ($('#btnInsertBegin')) {
+        $('#btnInsertBegin').onclick = function () {
+          if (vecInsertData.length >= 8) {
+            vecInsertMsg.textContent = "Límite visual alcanzado. Reinicia para seguir probando.";
+            return;
+          }
+          vecInsertData.unshift(5);
+          renderVecInsert(0, 1);
+          vecInsertMsg.textContent = "v.insert(v.begin(), 5); insertó 5 en la posición 0. Todos los elementos anteriores se desplazaron hacia la derecha.";
+          vecInsertCode.innerHTML = "// Insertar al inicio: desplaza todos los elementos existentes hacia la derecha\nv.insert(v.begin(), 5);";
+        };
+      }
+
+      if ($('#btnInsertMid')) {
+        $('#btnInsertMid').onclick = function () {
+          if (vecInsertData.length >= 8) {
+            vecInsertMsg.textContent = "Límite visual alcanzado. Reinicia para seguir probando.";
+            return;
+          }
+          var pos = Math.min(2, vecInsertData.length);
+          vecInsertData.splice(pos, 0, 77);
+          renderVecInsert(pos, 1);
+          vecInsertMsg.textContent = "v.insert(v.begin() + " + pos + ", 77); insertó 77 en el índice " + pos + ". Los elementos desde esa posición se movieron a la derecha.";
+          vecInsertCode.innerHTML = "// Insertar en posición arbitraria usando iterador begin() + " + pos + "\nv.insert(v.begin() + " + pos + ", 77);";
+        };
+      }
+
+      if ($('#btnInsertMulti')) {
+        $('#btnInsertMulti').onclick = function () {
+          if (vecInsertData.length >= 7) {
+            vecInsertMsg.textContent = "Límite visual alcanzado. Reinicia para seguir probando.";
+            return;
+          }
+          vecInsertData.splice(1, 0, 99, 99);
+          renderVecInsert(1, 2);
+          vecInsertMsg.textContent = "v.insert(v.begin() + 1, 2, 99); insertó 2 copias del número 99 en el índice 1.";
+          vecInsertCode.innerHTML = "// Inserción múltiple: (iterador, cantidad, valor)\nv.insert(v.begin() + 1, 2, 99);";
+        };
+      }
+
+      if ($('#btnInsertReset')) {
+        $('#btnInsertReset').onclick = function () {
+          vecInsertData = [10, 20, 30, 40];
+          renderVecInsert();
+          vecInsertMsg.textContent = "Vector restablecido a {10, 20, 30, 40}.";
+          vecInsertCode.innerHTML = "vector&lt;int&gt; v = {10, 20, 30, 40};";
+        };
+      }
+      renderVecInsert();
+
+      /* ---------- Interactividad Diapositiva 8 (Vectores erase) ---------- */
+      var vecEraseData = [15, 28, 42, 60, 75, 90];
+      var vecEraseCells = $('#vecEraseCells');
+      var vecEraseSize = $('#vecEraseSize');
+      var vecEraseCode = $('#vecEraseCode');
+      var vecEraseMsg = $('#vecEraseMsg');
+
+      function renderVecErase(highlightRange) {
+        if (!vecEraseCells) return;
+        vecEraseCells.innerHTML = '';
+        if (vecEraseData.length === 0) {
+          vecEraseCells.innerHTML = '<div style="color:var(--muted); font-style:italic; padding: 20px 0;">(Vector vacío - size: 0 | empty() == true)</div>';
+        } else {
+          vecEraseData.forEach(function (val, idx) {
+            var cell = document.createElement('div');
+            cell.className = 'cell';
+            var inRange = highlightRange && idx >= highlightRange[0] && idx < highlightRange[1];
+            var iterText = idx === 0 ? 'begin()' : 'begin()+' + idx;
+            var markClass = inRange ? 'marked' : '';
+            var boxClass = inRange ? 'range-delete' : '';
+            cell.innerHTML = '<div class="box filled ' + boxClass + '">' + val + '</div>' +
+                             '<div class="idx">[' + idx + ']</div>' +
+                             '<div class="iter-label ' + markClass + '">' + iterText + '</div>';
+            vecEraseCells.appendChild(cell);
+          });
+        }
+        if (vecEraseSize) vecEraseSize.textContent = vecEraseData.length;
+      }
+
+      if ($('#btnEraseSingle')) {
+        $('#btnEraseSingle').onclick = function () {
+          if (vecEraseData.length <= 2) {
+            vecEraseMsg.textContent = "Quedan pocos elementos. Restablece el vector para repetir la prueba.";
+            return;
+          }
+          var targetIdx = Math.min(2, vecEraseData.length - 1);
+          var val = vecEraseData[targetIdx];
+          var boxes = vecEraseCells.querySelectorAll('.box');
+          if (boxes[targetIdx]) {
+            boxes[targetIdx].classList.add('pop-delete');
+          }
+          setTimeout(function () {
+            vecEraseData.splice(targetIdx, 1);
+            renderVecErase();
+            vecEraseMsg.textContent = "v.erase(v.begin() + " + targetIdx + "); eliminó el elemento " + val + ". Los elementos posteriores se compactaron a la izquierda.";
+            vecEraseCode.innerHTML = "// Borrado puntual: v.erase(iterador)\nv.erase(v.begin() + " + targetIdx + "); // Elimina " + val + " y compacta";
+          }, 350);
+        };
+      }
+
+      if ($('#btnEraseRange')) {
+        $('#btnEraseRange').onclick = function () {
+          if (vecEraseData.length < 5) {
+            vecEraseMsg.textContent = "Restablece el vector primero para tener los elementos suficientes del rango [1, 4).";
+            return;
+          }
+          // Highlight indices 1, 2, 3
+          renderVecErase([1, 4]);
+          vecEraseMsg.textContent = "Seleccionando rango semiabierto [1, 4) -> Índices 1, 2 y 3. ¡El índice 4 (75) NO se borra!";
+          setTimeout(function () {
+            vecEraseData.splice(1, 3); // removes 3 elements: indices 1, 2, 3
+            renderVecErase();
+            vecEraseMsg.textContent = "v.erase(v.begin() + 1, v.begin() + 4); eliminó las posiciones 1, 2 y 3. El vector quedó con " + vecEraseData.length + " elementos.";
+            vecEraseCode.innerHTML = "// Rango semiabierto [inicio, fin): elimina [1, 4)\nv.erase(v.begin() + 1, v.begin() + 4); // Elimina 3 elementos";
+          }, 500);
+        };
+      }
+
+      if ($('#btnEraseClear')) {
+        $('#btnEraseClear').onclick = function () {
+          var boxes = vecEraseCells.querySelectorAll('.box');
+          boxes.forEach(function (b) { b.classList.add('pop-delete'); });
+          setTimeout(function () {
+            vecEraseData = [];
+            renderVecErase();
+            vecEraseMsg.textContent = "v.clear(); vació todos los elementos del vector. v.empty() ahora retorna true y v.size() es 0.";
+            vecEraseCode.innerHTML = "// Vaciar todo el vector\nv.clear();\ncout &lt;&lt; boolalpha &lt;&lt; v.empty(); // true";
+          }, 350);
+        };
+      }
+
+      if ($('#btnEraseReset')) {
+        $('#btnEraseReset').onclick = function () {
+          vecEraseData = [15, 28, 42, 60, 75, 90];
+          renderVecErase();
+          vecEraseMsg.textContent = "Vector restaurado a {15, 28, 42, 60, 75, 90}.";
+          vecEraseCode.innerHTML = "vector&lt;int&gt; v = {15, 28, 42, 60, 75, 90};";
+        };
+      }
+      renderVecErase();
+
+      /* ---------- Interactividad Diapositiva 9 (Matrices con Vectores) ---------- */
+      var vec2DData = [
+        [1, 5, 9, 3],
+        [7, 2, 8, 4],
+        [6, 0, 1, 5]
+      ];
+      var vec2dGrid = $('#vec2dGrid');
+      var vec2dRows = $('#vec2dRows');
+      var vec2dCols = $('#vec2dCols');
+      var vec2dCode = $('#vec2dCode');
+      var vec2dMsg = $('#vec2dMsg');
+
+      function renderVec2D(highlightCoord, animClass) {
+        if (!vec2dGrid) return;
+        vec2dGrid.innerHTML = '';
+        var maxCols = 0;
+        vec2DData.forEach(function (r) { if (r.length > maxCols) maxCols = r.length; });
+        vec2dGrid.style.gridTemplateColumns = '36px repeat(' + maxCols + ', 52px)';
+
+        // Fila de encabezados de columnas
+        var emptyHead = document.createElement('div');
+        emptyHead.className = 'box2d header';
+        vec2dGrid.appendChild(emptyHead);
+        for (var c = 0; c < maxCols; c++) {
+          var colHead = document.createElement('div');
+          colHead.className = 'box2d header';
+          colHead.textContent = 'c' + c;
+          vec2dGrid.appendChild(colHead);
+        }
+
+        // Filas y celdas
+        vec2DData.forEach(function (row, rIdx) {
+          var rowHead = document.createElement('div');
+          rowHead.className = 'box2d header';
+          rowHead.textContent = 'f' + rIdx;
+          vec2dGrid.appendChild(rowHead);
+
+          for (var cIdx = 0; cIdx < maxCols; cIdx++) {
+            var cell = document.createElement('div');
+            if (cIdx < row.length) {
+              var isHl = highlightCoord && highlightCoord[0] === rIdx && highlightCoord[1] === cIdx;
+              var isAnim = isHl && animClass;
+              cell.className = 'box2d' + (isHl ? ' highlight' : '') + (isAnim ? ' ' + animClass : '');
+              cell.textContent = row[cIdx];
+            } else {
+              // Celda vacía para ilustrar matriz irregular (jagged)
+              cell.className = 'box2d header';
+              cell.style.border = '1px dashed var(--line)';
+              cell.style.borderRadius = '6px';
+              cell.textContent = '-';
+            }
+            vec2dGrid.appendChild(cell);
+          }
+        });
+
+        if (vec2dRows) vec2dRows.textContent = vec2DData.length;
+        if (vec2dCols) vec2dCols.textContent = vec2DData[0] ? vec2DData[0].length : 0;
+      }
+
+      if ($('#btnVec2D-Cell')) {
+        $('#btnVec2D-Cell').onclick = function () {
+          if (vec2DData.length > 1 && vec2DData[1].length > 2) {
+            renderVec2D([1, 2], 'pop-in');
+            vec2dMsg.textContent = "matriz[1][2] = " + vec2DData[1][2] + "; accede directamente al dato en la Fila 1, Columna 2.";
+            vec2dCode.innerHTML = "// Acceso por coordenadas [fila][columna]\nint valor = matriz[1][2]; // " + vec2DData[1][2] + "\ncout &lt;&lt; \"Valor: \" &lt;&lt; valor;";
+          } else {
+            vec2dMsg.textContent = "Reinicia la matriz para acceder a [1][2].";
+          }
+        };
+      }
+
+      if ($('#btnVec2D-PushRow')) {
+        $('#btnVec2D-PushRow').onclick = function () {
+          if (vec2DData.length >= 5) {
+            vec2dMsg.textContent = "Límite visual alcanzado (5 filas). Reinicia para probar nuevamente.";
+            return;
+          }
+          var newRowIdx = vec2DData.length;
+          vec2DData.push([10, 20, 30, 40]);
+          renderVec2D([newRowIdx, 0], 'pop-in');
+          vec2dMsg.textContent = "matriz.push_back({10, 20, 30, 40}); agregó una nueva fila completa al final. Filas totales: " + vec2DData.length + ".";
+          vec2dCode.innerHTML = "// Añadir una nueva fila completa de 4 elementos\nmatriz.push_back({10, 20, 30, 40});\ncout &lt;&lt; \"Filas: \" &lt;&lt; matriz.size(); // " + vec2DData.length;
+        };
+      }
+
+      if ($('#btnVec2D-PushCol')) {
+        $('#btnVec2D-PushCol').onclick = function () {
+          if (vec2DData[0].length >= 6) {
+            vec2dMsg.textContent = "Límite de columnas alcanzado en la fila 0.";
+            return;
+          }
+          vec2DData[0].push(99);
+          renderVec2D([0, vec2DData[0].length - 1], 'pop-in');
+          vec2dMsg.textContent = "matriz[0].push_back(99); añadió 99 solo a la Fila 0. ¡Las demás filas no se alteraron! Demuestra una matriz irregular (jagged array).";
+          vec2dCode.innerHTML = "// En vector<vector<int>>, cada fila puede tener diferente tamaño\nmatriz[0].push_back(99);\ncout &lt;&lt; matriz[0].size(); // " + vec2DData[0].length + " columnas en fila 0";
+        };
+      }
+
+      if ($('#btnVec2D-Modify')) {
+        $('#btnVec2D-Modify').onclick = function () {
+          if (vec2DData.length > 2 && vec2DData[2].length > 1) {
+            var newVal = vec2DData[2][1] === 70 ? 0 : 70;
+            vec2DData[2][1] = newVal;
+            renderVec2D([2, 1], 'modified');
+            vec2dMsg.textContent = "matriz[2][1] = " + newVal + "; modificó directamente el valor de la fila 2, columna 1.";
+            vec2dCode.innerHTML = "// Modificación directa de celda existente\nmatriz[2][1] = " + newVal + ";\n// El valor en [2][1] se actualizó inmediatamente";
+          }
+        };
+      }
+
+      if ($('#btnVec2D-Reset')) {
+        $('#btnVec2D-Reset').onclick = function () {
+          vec2DData = [
+            [1, 5, 9, 3],
+            [7, 2, 8, 4],
+            [6, 0, 1, 5]
+          ];
+          renderVec2D();
+          vec2dMsg.textContent = "Matriz con vectores restablecida a su tamaño original 3x4.";
+          vec2dCode.innerHTML = "vector&lt;vector&lt;int&gt;&gt; matriz = {\n    {1, 5, 9, 3},\n    {7, 2, 8, 4},\n    {6, 0, 1, 5}\n};";
+        };
+      }
+      renderVec2D();
+
+      /* ---------- Interactividad Diapositiva 10 (Algorithm) ---------- */
       var arrData = [55, 12, 89, 34, 7];
       var algoVec = $('#algoVec');
       var algoMsg = $('#algoMsg');
