@@ -405,6 +405,190 @@
             color: var(--accent);
             font-weight: 600;
         }
+
+        /* ========================================================= */
+        /* Estilos: Paso de Parámetros y Simuladores Compactos       */
+        /* ========================================================= */
+        .analogy-badge {
+            font-size: 0.72rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-val {
+            background: var(--hot-soft);
+            color: #8A7222;
+        }
+
+        .badge-ref {
+            background: var(--ok-soft);
+            color: var(--ok);
+        }
+
+        /* Simuladores Cuadrícula 4x2 (Memoria) */
+        .mem-sim-box {
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            background: var(--surface);
+            padding: 14px 16px;
+            box-shadow: 0 2px 8px rgba(0, 89, 78, 0.04);
+        }
+
+        .sim-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .sim-step-badge {
+            font-family: var(--f-mono);
+            font-size: 0.85rem;
+            color: var(--accent);
+            padding: 3px 8px;
+            background: var(--accent-soft);
+            border-radius: 6px;
+            font-weight: 700;
+        }
+
+        .mem-block-title {
+            font-family: var(--f-head);
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .mem-block-title.active {
+            color: var(--accent);
+        }
+
+        .grid-4x2 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .grid-cell {
+            border: 1.5px solid var(--line);
+            border-radius: 6px;
+            padding: 5px 4px;
+            text-align: center;
+            background: var(--code-bg);
+            transition: all 0.25s ease;
+            min-height: 56px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .grid-cell.empty {
+            opacity: 0.45;
+            background: #fafafa;
+            border-style: dashed;
+        }
+
+        .grid-cell.active-var {
+            border-color: var(--accent);
+            background: #f0f7f5;
+            box-shadow: 0 0 0 2px var(--accent-soft);
+        }
+
+        .grid-cell.updated {
+            animation: pulseSuccess 0.5s ease;
+            border-color: #00a896;
+            background: #e6f6f2;
+        }
+
+        .grid-cell.freed {
+            opacity: 0.35;
+            border-style: dotted;
+            text-decoration: line-through;
+        }
+
+        @keyframes pulseSuccess {
+            0% { transform: scale(1); border-color: var(--accent); }
+            50% { transform: scale(1.05); border-color: #00a896; background: #eaf8f4; }
+            100% { transform: scale(1); border-color: var(--accent); }
+        }
+
+        .cell-addr {
+            font-family: var(--f-mono);
+            font-size: 0.68rem;
+            color: var(--muted);
+            line-height: 1;
+        }
+
+        .cell-name {
+            font-family: var(--f-head);
+            font-size: 0.84rem;
+            font-weight: 700;
+            color: var(--ink);
+            margin: 2px 0;
+            line-height: 1.2;
+        }
+
+        .cell-val {
+            font-family: var(--f-mono);
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: var(--accent);
+            background: var(--accent-soft);
+            padding: 1px 6px;
+            border-radius: 4px;
+            line-height: 1.2;
+        }
+
+        .cell-alias-badge {
+            position: absolute;
+            top: -9px;
+            right: -4px;
+            background: var(--ok);
+            color: white;
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 1px 6px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 89, 78, 0.2);
+        }
+
+        .sim-log-box {
+            background: var(--accent-soft);
+            border-left: 3px solid var(--accent);
+            padding: 8px 12px;
+            border-radius: 0 6px 6px 0;
+            font-size: 0.95rem;
+            color: #0c3831;
+            line-height: 1.45;
+        }
+
+        .sim-terminal-box {
+            background: #141414;
+            color: #4ade80;
+            font-family: var(--f-mono);
+            font-size: 0.85rem;
+            padding: 6px 12px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sim-terminal-box span {
+            color: #888;
+            font-size: 0.75rem;
+        }
     </style>
 </head>
 
@@ -712,10 +896,337 @@ int main() {
             </div>
         </section>
 
-        <!-- 9 Ejercicios -->
-        <section class="slide" data-name="30 Ejercicios" aria-label="Ejercicios de Programación">
+        <!-- 9 Conceptos: Paso por Valor vs Paso por Referencia -->
+        <section class="slide" data-name="Parámetros: Conceptos" aria-label="Conceptos de Paso de Parámetros">
             <div class="wrap">
-                <h2 tabindex="-1">30 Ejercicios Prácticos (Fundamentos)</h2>
+                <h2 tabindex="-1">Paso de Parámetros: Valor vs Referencia</h2>
+                <p class="lead">Cuando una función recibe datos en C++, existen dos formas de trabajar con ellos: hacer una copia o compartir la casilla original en memoria.</p>
+
+                <div class="two" style="margin-top: 20px; gap: 32px;">
+                    <div>
+                        <h3 style="color: var(--accent); font-size: 1.35rem; margin: 0 0 10px 0;">Paso por Valor</h3>
+                        <p style="font-size: 1.05rem; line-height: 1.6; margin-bottom: 12px; color: var(--ink);">
+                            La función recibe una <strong>copia independiente</strong> en otro espacio de la memoria.
+                        </p>
+                        <ul style="font-size: 1rem; line-height: 1.65; padding-left: 20px; color: var(--muted); margin: 0;">
+                            <li><strong style="color: var(--ink);">Aislamiento:</strong> Las modificaciones dentro de la función solo alteran la copia. La variable en <code>main()</code> <strong>no cambia</strong>.</li>
+                            <li><strong style="color: var(--ink);">Analogía sencilla:</strong> Es como entregar una fotocopia; los apuntes o rayones que hagas en la copia no alteran el documento original.</li>
+                            <li><strong style="color: var(--ink);">¿Cuándo usarlo?:</strong> Para datos primitivos pequeños (<code>int</code>, <code>float</code>, <code>char</code>, <code>bool</code>) de solo lectura.</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 style="color: var(--accent); font-size: 1.35rem; margin: 0 0 10px 0;">Paso por Referencia</h3>
+                        <p style="font-size: 1.05rem; line-height: 1.6; margin-bottom: 12px; color: var(--ink);">
+                            La función recibe un <strong>enlace directo</strong> (un alias o apodo) a la casilla original de memoria.
+                        </p>
+                        <ul style="font-size: 1rem; line-height: 1.65; padding-left: 20px; color: var(--muted); margin: 0;">
+                            <li><strong style="color: var(--ink);">Misma casilla:</strong> No se duplica memoria. Cualquier cambio dentro de la función <strong>modifica directamente la variable en main()</strong>.</li>
+                            <li><strong style="color: var(--ink);">Analogía sencilla:</strong> Es como compartir un documento en línea; si alguien escribe o borra, todos ven el cambio de inmediato.</li>
+                            <li><strong style="color: var(--ink);">¿Cuándo usarlo?:</strong> Cuando necesites que la función devuelva o modifique datos en <code>main()</code>, o al pasar estructuras grandes.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div style="margin-top: 24px; padding: 14px 18px; background: var(--accent-soft); border-radius: 8px;">
+                    <p style="margin: 0; font-size: 1.02rem; color: #0c3831; line-height: 1.55;">
+                        <strong>Criterio para elegir:</strong> Si quieres proteger el dato original para que nadie lo toque, usa <strong>valor</strong>. Si necesitas que la función guarde o altere el resultado en la misma variable, usa <strong>referencia</strong>.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 10 Paso por Valor -->
+        <section class="slide" data-name="Paso por Valor" aria-label="Explicación detallada de Paso por Valor">
+            <div class="wrap">
+                <h2 tabindex="-1">Paso por Valor</h2>
+                <p class="lead">Es el comportamiento por defecto en C++. La función recibe una copia independiente del valor original.</p>
+
+                <div class="two" style="align-items: start; gap: 24px;">
+                    <!-- Código y explicación -->
+                    <div>
+                        <h3 style="color: var(--accent); margin: 0 0 8px 0; font-size: 1.25rem;">Código de Ejemplo</h3>
+                        <pre class="code" style="font-size: 0.95rem; margin: 0 0 14px 0; padding: 12px;">void duplicar(int x) {
+    x = x * 2; // Modifica unicamente su copia local 'x'
+}
+
+int main() {
+    int numero = 10;
+    duplicar(numero); // Envia el valor 10
+    cout &lt;&lt; "Valor final: " &lt;&lt; numero; // Imprime 10
+    return 0;
+}</pre>
+                        <p style="font-size: 1.05rem; line-height: 1.6; margin: 0 0 10px 0; color: var(--ink);">
+                            Al no colocar <code>&amp;</code>, la función crea una casilla nueva en memoria y clona el número 10.
+                        </p>
+                        <p style="font-size: 1rem; line-height: 1.5; margin: 0; color: var(--muted);">
+                            Cualquier operación sobre <code>x</code> se queda en su propia casilla. La variable <code>numero</code> en <code>main()</code> jamás se modifica.
+                        </p>
+                    </div>
+
+                    <!-- Cuadrícula 4x2 de Memoria -->
+                    <div>
+                        <div class="mem-sim-box">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                <span style="font-weight: 700; font-size: 0.95rem; color: var(--title);">Memoria del Programa (Cuadrícula 4x2)</span>
+                                <span class="sim-step-badge" id="valStepBadge">Paso 1 de 4</span>
+                            </div>
+
+                            <!-- Fila 1: Bloque de main() -->
+                            <div class="mem-block-title active" id="valTitleMain">
+                                <span>Bloque de main()</span>
+                                <span style="font-size: 0.75rem; text-transform: none; color: var(--muted);">Direcciones 0x101 - 0x104</span>
+                            </div>
+                            <div class="grid-4x2" id="valGridMain">
+                                <div class="grid-cell active-var" id="valCell0">
+                                    <div class="cell-addr">0x101</div>
+                                    <div class="cell-name">numero</div>
+                                    <div class="cell-val" id="valVal0">10</div>
+                                </div>
+                                <div class="grid-cell empty">
+                                    <div class="cell-addr">0x102</div>
+                                    <div class="cell-name">--</div>
+                                    <div class="cell-addr">libre</div>
+                                </div>
+                                <div class="grid-cell empty">
+                                    <div class="cell-addr">0x103</div>
+                                    <div class="cell-name">--</div>
+                                    <div class="cell-addr">libre</div>
+                                </div>
+                                <div class="grid-cell empty">
+                                    <div class="cell-addr">0x104</div>
+                                    <div class="cell-name">--</div>
+                                    <div class="cell-addr">libre</div>
+                                </div>
+                            </div>
+
+                            <!-- Fila 2: Bloque de duplicar() -->
+                            <div class="mem-block-title" id="valTitleFunc">
+                                <span>Bloque de duplicar()</span>
+                                <span id="valFuncStatus" style="font-size: 0.75rem; text-transform: none; color: var(--muted);">Inactivo</span>
+                            </div>
+                            <div class="grid-4x2" id="valGridFunc">
+                                <div class="grid-cell empty" id="valCellFunc0">
+                                    <div class="cell-addr">0x201</div>
+                                    <div class="cell-name" id="valFuncName0">--</div>
+                                    <div class="cell-val" id="valFuncVal0" style="display: none;">--</div>
+                                    <div class="cell-addr" id="valFuncFree0">libre</div>
+                                </div>
+                                <div class="grid-cell empty">
+                                    <div class="cell-addr">0x202</div>
+                                    <div class="cell-name">--</div>
+                                    <div class="cell-addr">libre</div>
+                                </div>
+                                <div class="grid-cell empty">
+                                    <div class="cell-addr">0x203</div>
+                                    <div class="cell-name">--</div>
+                                    <div class="cell-addr">libre</div>
+                                </div>
+                                <div class="grid-cell empty">
+                                    <div class="cell-addr">0x204</div>
+                                    <div class="cell-name">--</div>
+                                    <div class="cell-addr">libre</div>
+                                </div>
+                            </div>
+
+                            <!-- Controles -->
+                            <div class="sim-controls" style="margin-bottom: 8px;">
+                                <button type="button" class="btn" id="valPrevBtn" style="padding: 4px 12px; font-size: 0.82rem;">◀ Anterior</button>
+                                <button type="button" class="btn primary" id="valNextBtn" style="padding: 4px 14px; font-size: 0.82rem;">Siguiente ▶</button>
+                                <button type="button" class="btn" id="valResetBtn" style="padding: 4px 12px; font-size: 0.82rem;">Reiniciar</button>
+                            </div>
+
+                            <!-- Explicación del paso -->
+                            <div class="sim-log-box" id="valLogBox" style="min-height: 44px;">
+                                1. <code>main()</code> inicia y reserva la casilla <code>0x101</code> para <code>numero = 10</code>.
+                            </div>
+
+                            <!-- Consola -->
+                            <div class="sim-terminal-box" style="margin-top: 6px;">
+                                <span>Salida cout:</span>
+                                <div id="valTermOut" style="font-weight: bold;">--</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 11 Paso por Referencia -->
+        <section class="slide" data-name="Paso por Referencia" aria-label="Paso por Referencia estándar">
+            <div class="wrap">
+                <h2 tabindex="-1">Paso por Referencia (&amp;)</h2>
+                <p class="lead">Al agregar <code>&amp;</code> al parámetro, este comparte la misma casilla en memoria que la variable original (un alias directo).</p>
+
+                <div class="two" style="align-items: start; gap: 24px;">
+                    <!-- Código y explicación -->
+                    <div>
+                        <h3 style="color: var(--accent); margin: 0 0 8px 0; font-size: 1.25rem;">Código de Ejemplo</h3>
+                        <pre class="code" style="font-size: 0.95rem; margin: 0 0 14px 0; padding: 12px;">void duplicar(int &amp;x) {
+    x = x * 2; // Modifica directamente la casilla original
+}
+
+int main() {
+    int numero = 10;
+    duplicar(numero); // Envia la referencia
+    cout &lt;&lt; "Valor final: " &lt;&lt; numero; // Imprime 20
+    return 0;
+}</pre>
+                        <p style="font-size: 1.05rem; line-height: 1.6; margin: 0 0 10px 0; color: var(--ink);">
+                            Con <code>&amp;x</code>, la función <strong>no reserva una nueva casilla</strong> en memoria. <code>x</code> es solo otro apodo para la casilla original.
+                        </p>
+                        <p style="font-size: 1rem; line-height: 1.5; margin: 0; color: var(--muted);">
+                            Cualquier cambio que haga la función afecta directamente a <code>numero</code> en <code>main()</code>.
+                        </p>
+                    </div>
+
+                    <!-- Cuadrícula 4x2 de Memoria con Alias -->
+                    <div>
+                        <div class="mem-sim-box">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                <span style="font-weight: 700; font-size: 0.95rem; color: var(--title);">Memoria del Programa (Cuadrícula 4x2)</span>
+                                <span class="sim-step-badge" id="refStepBadge">Paso 1 de 4</span>
+                            </div>
+
+                            <!-- Fila 1: Bloque de main() -->
+                            <div class="mem-block-title active" id="refTitleMain">
+                                <span>Bloque de main()</span>
+                                <span style="font-size: 0.75rem; text-transform: none; color: var(--muted);">Direcciones 0x101 - 0x104</span>
+                            </div>
+                            <div class="grid-4x2" id="refGridMain">
+                                <div class="grid-cell active-var" id="refCell0">
+                                    <div class="cell-addr">0x101</div>
+                                    <div class="cell-name">numero</div>
+                                    <div class="cell-val" id="refVal0">10</div>
+                                </div>
+                                <div class="grid-cell empty">
+                                    <div class="cell-addr">0x102</div>
+                                    <div class="cell-name">--</div>
+                                    <div class="cell-addr">libre</div>
+                                </div>
+                                <div class="grid-cell empty">
+                                    <div class="cell-addr">0x103</div>
+                                    <div class="cell-name">--</div>
+                                    <div class="cell-addr">libre</div>
+                                </div>
+                                <div class="grid-cell empty">
+                                    <div class="cell-addr">0x104</div>
+                                    <div class="cell-name">--</div>
+                                    <div class="cell-addr">libre</div>
+                                </div>
+                            </div>
+
+                            <!-- Fila 2: Bloque de duplicar() -->
+                            <div class="mem-block-title" id="refTitleFunc">
+                                <span>Bloque de duplicar()</span>
+                                <span id="refFuncStatus" style="font-size: 0.75rem; text-transform: none; color: var(--muted);">Inactivo</span>
+                            </div>
+                            <div class="grid-4x2" id="refGridFunc">
+                                <div class="grid-cell empty" id="refCellFunc0">
+                                    <div class="cell-addr">0x201</div>
+                                    <div class="cell-name" id="refFuncName0">--</div>
+                                    <div class="cell-addr" id="refFuncFree0">sin usar</div>
+                                </div>
+                                <div class="grid-cell empty">
+                                    <div class="cell-addr">0x202</div>
+                                    <div class="cell-name">--</div>
+                                    <div class="cell-addr">libre</div>
+                                </div>
+                                <div class="grid-cell empty">
+                                    <div class="cell-addr">0x203</div>
+                                    <div class="cell-name">--</div>
+                                    <div class="cell-addr">libre</div>
+                                </div>
+                                <div class="grid-cell empty">
+                                    <div class="cell-addr">0x204</div>
+                                    <div class="cell-name">--</div>
+                                    <div class="cell-addr">libre</div>
+                                </div>
+                            </div>
+
+                            <!-- Controles -->
+                            <div class="sim-controls" style="margin-bottom: 8px;">
+                                <button type="button" class="btn" id="refPrevBtn" style="padding: 4px 12px; font-size: 0.82rem;">◀ Anterior</button>
+                                <button type="button" class="btn primary" id="refNextBtn" style="padding: 4px 14px; font-size: 0.82rem;">Siguiente ▶</button>
+                                <button type="button" class="btn" id="refResetBtn" style="padding: 4px 12px; font-size: 0.82rem;">Reiniciar</button>
+                            </div>
+
+                            <!-- Explicación del paso -->
+                            <div class="sim-log-box" id="refLogBox" style="min-height: 44px;">
+                                1. <code>main()</code> inicia y reserva la casilla <code>0x101</code> para <code>numero = 10</code>.
+                            </div>
+
+                            <!-- Consola -->
+                            <div class="sim-terminal-box" style="margin-top: 6px;">
+                                <span>Salida cout:</span>
+                                <div id="refTermOut" style="font-weight: bold;">--</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 12 Formas de Referencia -->
+        <section class="slide" data-name="Formas de Referencia" aria-label="Referencia Constante y Paso por Puntero">
+            <div class="wrap">
+                <h2 tabindex="-1">Formas de Referencia: const &amp; y Punteros</h2>
+                <p class="lead">Para situaciones donde requieres optimizar rendimiento sin sacrificar seguridad, C++ provee variantes especializadas.</p>
+
+                <div class="two" style="margin-top: 20px; gap: 32px;">
+                    <!-- 1. const & -->
+                    <div>
+                        <h3 style="color: var(--accent); font-size: 1.35rem; margin: 0 0 10px 0;">1. Referencia Constante (const &amp;)</h3>
+                        <p style="font-size: 1.05rem; line-height: 1.5; margin-bottom: 8px; color: var(--ink);">
+                            Pasa la referencia para <strong>no duplicar memoria</strong>, pero con <code>const</code> prohíbe cualquier modificación accidental.
+                        </p>
+                        <pre class="code" style="font-size: 0.95rem; padding: 10px 12px; margin: 10px 0;">void imprimir(const string &amp;texto) {
+    // texto = "otro"; // ERROR: El compilador lo impide
+    cout &lt;&lt; texto;
+}
+
+int main() {
+    string mensaje = "Texto largo o estructura pesada";
+    imprimir(mensaje); // Cero copias y 100% seguro
+    return 0;
+}</pre>
+                        <ul style="font-size: 1rem; line-height: 1.6; padding-left: 20px; color: var(--muted); margin: 0;">
+                            <li><strong style="color: var(--ink);">Cero copias:</strong> Máxima velocidad al pasar <code>string</code>, arreglos o estructuras.</li>
+                            <li><strong style="color: var(--ink);">Seguridad:</strong> El compilador garantiza que la función solo puede leer el dato.</li>
+                        </ul>
+                    </div>
+
+                    <!-- 2. Punteros * -->
+                    <div>
+                        <h3 style="color: var(--accent); font-size: 1.35rem; margin: 0 0 10px 0;">2. Paso por Puntero (*) [Estilo C]</h3>
+                        <p style="font-size: 1.05rem; line-height: 1.5; margin-bottom: 8px; color: var(--ink);">
+                            La función recibe explícitamente la <strong>dirección física</strong> de memoria mediante el operador <code>&amp;</code>.
+                        </p>
+                        <pre class="code" style="font-size: 0.95rem; padding: 10px 12px; margin: 10px 0;">void duplicar(int *ptr) {
+    if (ptr != nullptr) {
+        *ptr = (*ptr) * 2; // Accede al valor con '*'
+    }
+}
+
+int main() {
+    int numero = 10;
+    duplicar(&amp;numero); // Pasamos direccion con '&'
+    cout &lt;&lt; numero; // Imprime 20
+    return 0;
+}</pre>
+                        <ul style="font-size: 1rem; line-height: 1.6; padding-left: 20px; color: var(--muted); margin: 0;">
+                            <li><strong style="color: var(--ink);">Dirección explícita:</strong> Requiere <code>&amp;</code> al llamar y <code>*</code> al manipular el valor.</li>
+                            <li><strong style="color: var(--ink);">Permite nulos:</strong> Puede recibir <code>nullptr</code> cuando el parámetro es opcional.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 13 Ejercicios -->
+        <section class="slide" data-name="33 Ejercicios" aria-label="Ejercicios de Programación">
+            <div class="wrap">
+                <h2 tabindex="-1">33 Ejercicios Prácticos (Fundamentos)</h2>
                 <p class="lead">Intenta deducir la respuesta antes de revelar el código. ¡Fíjate bien en el nombre de
                     las variables!</p>
 
@@ -1414,14 +1925,95 @@ int main() {
                 </div>
 
                 <!-- ========================================== -->
-                <!-- CATEGORÍA 5: RETOS INTEGRADORES            -->
+                <!-- CATEGORÍA 5: PASO POR VALOR Y REFERENCIA   -->
                 <!-- ========================================== -->
                 <h3
                     style="margin-top:30px; color:var(--accent); border-bottom: 2px solid var(--line); padding-bottom: 5px;">
-                    5. Retos Integradores (Combina lo aprendido)</h3>
+                    5. Paso por Valor y Referencia</h3>
 
                 <div class="exercise-card">
-                    <h4>27. Reto: Calculadora Básica <span class="exercise-level level-hard">Avanzado</span></h4>
+                    <h4>27. Duplicar valor por referencia <span class="exercise-level level-med">Intermedio</span></h4>
+                    <p class="ex-desc"><strong>Planteamiento:</strong> Crea una función <code>void duplicarValor(int &amp;valor)</code> que multiplique su argumento por 2. En el <code>main</code>, declara <code>int numero1 = 15;</code>, invoca la función e imprime <code>numero1</code> para verificar que ahora vale 30.</p>
+                    <details class="ex-solution">
+                        <summary></summary>
+                        <pre class="code">
+#include &lt;iostream&gt;
+using namespace std;
+
+void duplicarValor(int &amp;valor) {
+    valor = valor * 2; // Modifica directamente la variable original
+}
+
+int main() {
+    int numero1 = 15;
+    cout &lt;&lt; "Antes: " &lt;&lt; numero1 &lt;&lt; endl;
+    duplicarValor(numero1);
+    cout &lt;&lt; "Despues: " &lt;&lt; numero1 &lt;&lt; endl; // Imprime 30
+    return 0;
+}
+</pre>
+                    </details>
+                </div>
+
+                <div class="exercise-card">
+                    <h4>28. Intercambiar dos variables (Swap) <span class="exercise-level level-med">Intermedio</span></h4>
+                    <p class="ex-desc"><strong>Planteamiento:</strong> Crea una función <code>void intercambiar(int &amp;a, int &amp;b)</code> que intercambie los valores de dos enteros usando una variable auxiliar. En <code>main</code>, inicializa <code>int x = 4, y = 8;</code>, llama a la función e imprime los valores antes y después.</p>
+                    <details class="ex-solution">
+                        <summary></summary>
+                        <pre class="code">
+#include &lt;iostream&gt;
+using namespace std;
+
+void intercambiar(int &amp;a, int &amp;b) {
+    int temporal = a;
+    a = b;
+    b = temporal;
+}
+
+int main() {
+    int x = 4, y = 8;
+    cout &lt;&lt; "Antes: x=" &lt;&lt; x &lt;&lt; ", y=" &lt;&lt; y &lt;&lt; endl;
+    intercambiar(x, y);
+    cout &lt;&lt; "Despues: x=" &lt;&lt; x &lt;&lt; ", y=" &lt;&lt; y &lt;&lt; endl; // x=8, y=4
+    return 0;
+}
+</pre>
+                    </details>
+                </div>
+
+                <div class="exercise-card">
+                    <h4>29. Lectura con Referencia Constante <span class="exercise-level level-hard">Avanzado</span></h4>
+                    <p class="ex-desc"><strong>Planteamiento:</strong> Crea una función <code>void imprimirEncuadrado(const string &amp;texto)</code> que reciba un texto por referencia constante e imprima el texto entre corchetes <code>[texto]</code>. En <code>main</code>, declara <code>string curso = "Estructuras de Datos";</code> y pásala a la función.</p>
+                    <details class="ex-solution">
+                        <summary></summary>
+                        <pre class="code">
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+// const &amp; evita clonar el texto en memoria y protege el original
+void imprimirEncuadrado(const string &amp;texto) {
+    cout &lt;&lt; "[" &lt;&lt; texto &lt;&lt; "]" &lt;&lt; endl;
+}
+
+int main() {
+    string curso = "Estructuras de Datos";
+    imprimirEncuadrado(curso);
+    return 0;
+}
+</pre>
+                    </details>
+                </div>
+
+                <!-- ========================================== -->
+                <!-- CATEGORÍA 6: RETOS INTEGRADORES            -->
+                <!-- ========================================== -->
+                <h3
+                    style="margin-top:30px; color:var(--accent); border-bottom: 2px solid var(--line); padding-bottom: 5px;">
+                    6. Retos Integradores (Combina lo aprendido)</h3>
+
+                <div class="exercise-card">
+                    <h4>30. Reto: Calculadora Básica <span class="exercise-level level-hard">Avanzado</span></h4>
                     <p class="ex-desc"><strong>Planteamiento:</strong> Pide <code>numero1</code> y <code>numero2</code>.
                         Luego pide <code>opcionMenu1</code> (1 = Sumar, 2 = Restar). Usa condicionales para mostrar el
                         resultado.</p>
@@ -1451,7 +2043,7 @@ int main() {
                 </div>
 
                 <div class="exercise-card">
-                    <h4>28. Reto: Validador de Contraseña Iterativo <span
+                    <h4>31. Reto: Validador de Contraseña Iterativo <span
                             class="exercise-level level-hard">Avanzado</span></h4>
                     <p class="ex-desc"><strong>Planteamiento:</strong> La clave correcta es 999. Usa un bucle
                         <code>while</code> para pedir la clave. Usa una variable <code>intentos1 = 3</code> que baje
@@ -1484,7 +2076,7 @@ int main() {
                 </div>
 
                 <div class="exercise-card">
-                    <h4>29. Reto: Sistema de Aprobación por Funciones <span
+                    <h4>32. Reto: Sistema de Aprobación por Funciones <span
                             class="exercise-level level-hard">Avanzado</span></h4>
                     <p class="ex-desc"><strong>Planteamiento:</strong> Crea función <code>evaluarNota(int nota1)</code>.
                         Si es >= 60 retorna <code>true</code>. En el <code>main</code> pide la nota de un estudiante y
@@ -1517,7 +2109,7 @@ int main() {
                 </div>
 
                 <div class="exercise-card">
-                    <h4>30. Reto: Generador de Secuencia <span class="exercise-level level-hard">Avanzado</span></h4>
+                    <h4>33. Reto: Generador de Secuencia <span class="exercise-level level-hard">Avanzado</span></h4>
                     <p class="ex-desc"><strong>Planteamiento:</strong> Pide al usuario cuántos números quiere generar
                         (<code>cantidad1</code>). Usa un bucle <code>for</code> que imprima los múltiplos de 5 tantas
                         veces como el usuario haya pedido.</p>
@@ -1560,6 +2152,7 @@ int main() {
                         número exacto de veces, y <code>while</code> repite mientras haya una condición cumplida.</li>
                     <li><strong>Funciones:</strong> Trozos de código con un nombre específico (<code>void</code> o con
                         <code>return</code>) que reciben parámetros, permitiendo reutilizar lógica.</li>
+                    <li><strong>Paso por Valor vs Referencia:</strong> Por valor se trabaja con una copia protegida (la original en <code>main</code> no cambia); por referencia (<code>&amp;</code>, <code>const &amp;</code> o punteros <code>*</code>) se accede a la variable original sin duplicar memoria.</li>
                     <li><strong>El siguiente paso:</strong> Sabiendo guardar datos en variables y usar bucles, estás
                         100% listo para almacenar grandes cantidades de datos usando <strong>Arrays y Vectores</strong>.
                     </li>
@@ -1577,7 +2170,7 @@ int main() {
         <div class="track" aria-hidden="true">
             <div class="bar" id="bar"></div>
         </div>
-        <span class="count" id="count" aria-live="polite">1 / 9</span>
+        <span class="count" id="count" aria-live="polite">1 / 14</span>
         <span class="navname" id="navName">Inicio</span>
         <button class="btn primary" id="next" type="button" aria-label="Diapositiva siguiente">Siguiente</button>
     </nav>
@@ -1618,13 +2211,247 @@ int main() {
             // Navegacion por Teclado
             document.addEventListener('keydown', function (e) {
                 var t = e.target;
-                // Prevenir que interfiera si están tecleando en un hipotetico input
                 if (t.closest && t.closest('input,select,textarea')) return;
                 if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); go(cur + 1, true); }
                 else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); go(cur - 1, true); }
                 else if (e.key === 'Home') { go(0, true); }
                 else if (e.key === 'End') { go(N - 1, true); }
             });
+
+            /* ---------- Simulador Cuadrícula 4x2: Paso por Valor ---------- */
+            (function initValSimulator() {
+                var steps = [
+                    {
+                        stepNum: 'Paso 1 de 4',
+                        funcStatus: 'Inactivo',
+                        funcTitleActive: false,
+                        cell0Val: '10',
+                        cell0Class: 'grid-cell active-var',
+                        funcCell0Class: 'grid-cell empty',
+                        funcName0: '--',
+                        funcVal0: '--',
+                        showFuncVal0: false,
+                        funcFree0Text: 'libre',
+                        log: '1. <code>main()</code> inicia y reserva la casilla <code>0x101</code> para la variable <code>numero</code> con el valor <strong>10</strong>.',
+                        out: '--'
+                    },
+                    {
+                        stepNum: 'Paso 2 de 4',
+                        funcStatus: 'Ejecutando (Copia creada)',
+                        funcTitleActive: true,
+                        cell0Val: '10',
+                        cell0Class: 'grid-cell active-var',
+                        funcCell0Class: 'grid-cell active-var',
+                        funcName0: 'x (copia)',
+                        funcVal0: '10',
+                        showFuncVal0: true,
+                        funcFree0Text: '',
+                        log: '2. Se llama a <code>duplicar(numero)</code>. C++ reserva una casilla independiente (<code>0x201</code>) y copia el número <strong>10</strong>.',
+                        out: '--'
+                    },
+                    {
+                        stepNum: 'Paso 3 de 4',
+                        funcStatus: 'Ejecutando (Modificación)',
+                        funcTitleActive: true,
+                        cell0Val: '10',
+                        cell0Class: 'grid-cell active-var',
+                        funcCell0Class: 'grid-cell active-var updated',
+                        funcName0: 'x (copia)',
+                        funcVal0: '20',
+                        showFuncVal0: true,
+                        funcFree0Text: '',
+                        log: '3. <code>x = x * 2</code> duplica a <strong>20</strong> solo en la casilla <code>0x201</code>. La casilla original en <code>main()</code> sigue intacta en <strong>10</strong>.',
+                        out: '--'
+                    },
+                    {
+                        stepNum: 'Paso 4 de 4',
+                        funcStatus: 'Finalizado (Memoria liberada)',
+                        funcTitleActive: false,
+                        cell0Val: '10',
+                        cell0Class: 'grid-cell active-var',
+                        funcCell0Class: 'grid-cell freed',
+                        funcName0: 'x (liberada)',
+                        funcVal0: '20',
+                        showFuncVal0: false,
+                        funcFree0Text: 'liberada',
+                        log: '4. La función termina y su memoria se libera. Al regresar a <code>main()</code>, <code>numero</code> nunca cambió.',
+                        out: 'Valor final: 10'
+                    }
+                ];
+
+                var curStep = 0;
+                var badge = $('#valStepBadge');
+                var cell0 = $('#valCell0'), val0 = $('#valVal0');
+                var titleFunc = $('#valTitleFunc'), statusFunc = $('#valFuncStatus');
+                var cellFunc0 = $('#valCellFunc0'), nameFunc0 = $('#valFuncName0'), valFunc0 = $('#valFuncVal0'), freeFunc0 = $('#valFuncFree0');
+                var logBox = $('#valLogBox'), termOut = $('#valTermOut');
+                var prevBtn = $('#valPrevBtn'), nextBtn = $('#valNextBtn'), resetBtn = $('#valResetBtn');
+
+                if (!nextBtn) return;
+
+                function render() {
+                    var s = steps[curStep];
+                    badge.textContent = s.stepNum;
+                    statusFunc.textContent = s.funcStatus;
+                    if (s.funcTitleActive) {
+                        titleFunc.classList.add('active');
+                        statusFunc.style.color = 'var(--accent)';
+                    } else {
+                        titleFunc.classList.remove('active');
+                        statusFunc.style.color = 'var(--muted)';
+                    }
+
+                    cell0.className = s.cell0Class;
+                    val0.textContent = s.cell0Val;
+
+                    cellFunc0.className = s.funcCell0Class;
+                    nameFunc0.textContent = s.funcName0;
+                    if (s.showFuncVal0) {
+                        valFunc0.style.display = 'inline-block';
+                        valFunc0.textContent = s.funcVal0;
+                        freeFunc0.style.display = 'none';
+                    } else {
+                        valFunc0.style.display = 'none';
+                        freeFunc0.style.display = 'block';
+                        freeFunc0.textContent = s.funcFree0Text;
+                    }
+
+                    logBox.innerHTML = s.log;
+                    termOut.textContent = s.out;
+
+                    prevBtn.disabled = (curStep === 0);
+                    nextBtn.disabled = (curStep >= steps.length - 1);
+                }
+
+                prevBtn.onclick = function (e) {
+                    e.stopPropagation();
+                    if (curStep > 0) { curStep--; render(); }
+                };
+
+                nextBtn.onclick = function (e) {
+                    e.stopPropagation();
+                    if (curStep < steps.length - 1) { curStep++; render(); }
+                };
+
+                resetBtn.onclick = function (e) {
+                    e.stopPropagation();
+                    curStep = 0;
+                    render();
+                };
+
+                render();
+            })();
+
+            /* ---------- Simulador Cuadrícula 4x2: Paso por Referencia ---------- */
+            (function initRefSimulator() {
+                var steps = [
+                    {
+                        stepNum: 'Paso 1 de 4',
+                        funcStatus: 'Inactivo',
+                        funcTitleActive: false,
+                        cell0Val: '10',
+                        hasAlias: false,
+                        cell0Class: 'grid-cell active-var',
+                        funcFree0Text: 'sin usar',
+                        log: '1. En <code>main()</code> se reserva la casilla <code>0x101</code> para <code>numero = 10</code>.',
+                        out: '--'
+                    },
+                    {
+                        stepNum: 'Paso 2 de 4',
+                        funcStatus: 'Enlazado a 0x101 (Alias directo)',
+                        funcTitleActive: true,
+                        cell0Val: '10',
+                        hasAlias: true,
+                        cell0Class: 'grid-cell active-var',
+                        funcFree0Text: 'cero copias',
+                        log: '2. <strong>Alias directo:</strong> Con <code>&amp;x</code> NO se reserva ninguna casilla nueva. <code>x</code> se conecta a la misma casilla <code>0x101</code>.',
+                        out: '--'
+                    },
+                    {
+                        stepNum: 'Paso 3 de 4',
+                        funcStatus: 'Modificando 0x101',
+                        funcTitleActive: true,
+                        cell0Val: '20',
+                        hasAlias: true,
+                        cell0Class: 'grid-cell active-var updated',
+                        funcFree0Text: 'cero copias',
+                        log: '3. <code>x = x * 2</code> modifica <strong>directamente la casilla 0x101</strong>. El valor original pasa a <strong>20</strong>.',
+                        out: '--'
+                    },
+                    {
+                        stepNum: 'Paso 4 de 4',
+                        funcStatus: 'Finalizado (Alias retirado)',
+                        funcTitleActive: false,
+                        cell0Val: '20',
+                        hasAlias: false,
+                        cell0Class: 'grid-cell active-var',
+                        funcFree0Text: 'sin usar',
+                        log: '4. La función concluye. El alias se retira pero la casilla <code>0x101</code> de <code>main()</code> conserva el <strong>20</strong>.',
+                        out: 'Valor final: 20'
+                    }
+                ];
+
+                var curStep = 0;
+                var badge = $('#refStepBadge');
+                var cell0 = $('#refCell0'), val0 = $('#refVal0');
+                var titleFunc = $('#refTitleFunc'), statusFunc = $('#refFuncStatus');
+                var freeFunc0 = $('#refFuncFree0');
+                var logBox = $('#refLogBox'), termOut = $('#refTermOut');
+                var prevBtn = $('#refPrevBtn'), nextBtn = $('#refNextBtn'), resetBtn = $('#refResetBtn');
+
+                if (!nextBtn) return;
+
+                function render() {
+                    var s = steps[curStep];
+                    badge.textContent = s.stepNum;
+                    statusFunc.textContent = s.funcStatus;
+                    if (s.funcTitleActive) {
+                        titleFunc.classList.add('active');
+                        statusFunc.style.color = 'var(--accent)';
+                    } else {
+                        titleFunc.classList.remove('active');
+                        statusFunc.style.color = 'var(--muted)';
+                    }
+
+                    cell0.className = s.cell0Class;
+                    val0.textContent = s.cell0Val;
+
+                    var oldBadge = cell0.querySelector('.cell-alias-badge');
+                    if (oldBadge) oldBadge.remove();
+
+                    if (s.hasAlias) {
+                        var ab = document.createElement('span');
+                        ab.className = 'cell-alias-badge';
+                        ab.textContent = 'Alias &x';
+                        cell0.appendChild(ab);
+                    }
+
+                    freeFunc0.textContent = s.funcFree0Text;
+                    logBox.innerHTML = s.log;
+                    termOut.textContent = s.out;
+
+                    prevBtn.disabled = (curStep === 0);
+                    nextBtn.disabled = (curStep >= steps.length - 1);
+                }
+
+                prevBtn.onclick = function (e) {
+                    e.stopPropagation();
+                    if (curStep > 0) { curStep--; render(); }
+                };
+
+                nextBtn.onclick = function (e) {
+                    e.stopPropagation();
+                    if (curStep < steps.length - 1) { curStep++; render(); }
+                };
+
+                resetBtn.onclick = function (e) {
+                    e.stopPropagation();
+                    curStep = 0;
+                    render();
+                };
+
+                render();
+            })();
 
             // Inicialización de la vista
             go(0, false);
