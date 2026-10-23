@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Listas enlazadas en C++</title>
+    <style>
+        :root {
+            --bg: #fff;
+            --ink: #1b1f24;
+            --muted: #505856;
+            --line: #D6DDDB;
+            --accent: #00594E;
+            --accent-soft: #E4F0ED;
+            --code-bg: #F6F7F7;
+            --f-body: 'Segoe UI', system-ui, -apple-system, Arial, sans-serif;
+            --f-mono: Consolas, 'Courier New', ui-monospace, monospace;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: var(--bg);
+            color: var(--ink);
+            font-family: var(--f-body);
+            font-size: 18px;
+            line-height: 1.5
+        }
+
+        h1,
+        h2,
+        h3 {
+            color: var(--accent);
+            line-height: 1.15;
+            margin: 0 0 .4em
+        }
+
+        h1 {
+            font-size: clamp(2rem, 5vw, 3.2rem)
+        }
+
+        h2 {
+            font-size: clamp(1.4rem, 3vw, 1.9rem)
+        }
+
+        h3 {
+            font-size: 1.1rem;
+            color: var(--ink)
+        }
+
+        p {
+            margin: 0 0 .8em
+        }
+
+        ul,
+        ol {
+            margin: 0 0 .8em;
+            padding-left: 1.3em
+        }
+
+        li {
+            margin-bottom: .35em
+        }
+
+        .muted {
+            color: var(--muted)
+        }
+
+        .deck {
+            flex: 1;
+            min-height: 0;
+            position: relative
+        }
+
+        .slide {
+            position: absolute;
+            inset: 0;
+            overflow-y: auto;
+            display: none;
+            padding: 18px clamp(14px, 3vw, 40px)
+        }
+
+        .slide.active {
+            display: block
+        }
+
+        .wrap {
+            max-width: 1150px;
+            margin: 0 auto
+        }
+
+        .sub {
+            color: var(--muted);
+            font-size: .95rem;
+            margin: -.2em 0 1em
+        }
+
+        .two {
+            display: grid;
+            grid-template-columns: 1fr 1.15fr;
+            gap: 28px;
+            align-items: start
+        }
+
+        @media(max-width:800px) {
+            .two {
+                grid-template-columns: 1fr
+            }
+        }
+
+        pre {
+            font: .86rem/1.45 var(--f-mono);
+            background: var(--code-bg);
+            border: 1px solid var(--line);
+            border-left: 4px solid var(--accent);
+            border-radius: 6px;
+            padding: 12px 14px;
+            margin: 0 0 12px;
+            overflow-x: auto;
+            white-space: pre
+        }
+
+        .salida {
+            border-left-color: var(--muted);
+            background: #fff
+        }
+
+        .label {
+            font-weight: 600;
+            font-size: .9rem;
+            color: var(--muted);
+            margin: 0 0 4px
+        }
+
+        code {
+            font-family: var(--f-mono);
+            background: var(--code-bg);
+            padding: 1px 5px;
+            border-radius: 4px;
+            font-size: .92em
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            font-size: .95rem;
+            margin-bottom: 12px
+        }
+
+        th,
+        td {
+            border: 1px solid var(--line);
+            padding: 7px 10px;
+            text-align: left;
+            vertical-align: top
+        }
+
+        th {
+            background: var(--accent-soft);
+            color: var(--accent)
+        }
+
+        .ej {
+            padding-left: 1.2em
+        }
+
+        .ej>li {
+            margin-bottom: 18px
+        }
+
+        details {
+            margin-top: 8px
+        }
+
+        summary {
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--accent)
+        }
+
+        details pre {
+            margin-top: 8px
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px clamp(14px, 4vw, 40px);
+            border-top: 2px solid var(--accent);
+            background: #fff
+        }
+
+        .track {
+            flex: 1;
+            height: 4px;
+            background: var(--line);
+            border-radius: 2px;
+            overflow: hidden
+        }
+
+        .bar {
+            height: 100%;
+            width: 0;
+            background: var(--accent);
+            transition: width .2s
+        }
+
+        .count {
+            font: 600 .9rem var(--f-mono);
+            color: var(--muted);
+            min-width: 4.5em;
+            text-align: center
+        }
+
+        .navname {
+            font-size: .9rem;
+            color: var(--muted);
+            min-width: 9em;
+            max-width: 210px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis
+        }
+
+        @media(max-width:600px) {
+            .navname {
+                display: none
+            }
+        }
+
+        .btn {
+            font: 600 1rem var(--f-body);
+            padding: .5em 1em;
+            border-radius: 6px;
+            border: 2px solid var(--accent);
+            background: #fff;
+            color: var(--accent);
+            cursor: pointer
+        }
+
+        .btn.primary {
+            background: var(--accent);
+            color: #fff
+        }
+
+        .btn:disabled {
+            opacity: .4;
+            cursor: not-allowed
+        }
+    </style>
+</head>
+
+<body>
+    <main class="deck" id="deck">
+
+        <!-- PORTADA -->
+        <section class="slide active" data-name="Inicio">
+            <div class="wrap">
+                <h1>Listas enlazadas en C++</h1>
+                <p class="muted">Primero construidas desde cero con punteros y después con la biblioteca estándar.</p>
+                <div class="two" style="grid-template-columns:1fr 1fr">
+                    <div>
+                        <h3>Desde cero</h3>
+                        <ul>
+                            <li>Concepto y nodo</li>
+                            <li>Puntero, referencia y referencia a puntero</li>
+                            <li>Recorrer, contar y buscar</li>
+                            <li>Insertar</li>
+                            <li>Eliminar y liberar memoria</li>
+                            <li>Lista dentro de una clase</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3>Con la biblioteca moderna</h3>
+                        <ul>
+                            <li><code>std::list</code> y <code>std::forward_list</code></li>
+                            <li>Iteradores</li>
+                            <li>Pasar una lista a una función</li>
+                        </ul>
+                        <p class="muted">Cada tema tiene ejemplo en C++ y ejercicios. Avanza con las flechas del teclado
+                            o con los botones de abajo.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONCEPTO 1 -->
+        <section class="slide" data-name="Concepto (1/3)">
+            <div class="wrap">
+                <h2>Concepto y nodo (1/3): qué es una lista enlazada</h2>
+                <p class="sub">Datos unidos por punteros</p>
+                <div class="two">
+                    <div>
+                        <p>Una <strong>lista enlazada</strong> es una colección de <strong>nodos</strong>. Cada nodo
+                            guarda un dato y la dirección del siguiente nodo.</p>
+                        <ul>
+                            <li>Un puntero llamado <strong>cabeza</strong> (<code>cab</code>) apunta al primer nodo.
+                            </li>
+                            <li>El último nodo apunta a <code>nullptr</code>.</li>
+                            <li>Una lista vacía es <code>cab == nullptr</code>.</li>
+                        </ul>
+                        <p><strong>Frente a un arreglo:</strong> los nodos no están juntos en memoria, se crean con
+                            <code>new</code> cuando se necesitan, y insertar o borrar no obliga a mover los demás
+                            elementos. A cambio, no se puede saltar a la posición 5 directamente: hay que recorrer desde
+                            la cabeza.</p>
+                        <pre class="salida">cab --&gt; [10|•] --&gt; [20|•] --&gt; [30|null]</pre>
+                    </div>
+                    <div>
+                        <p class="label">Nodo y lista de 3 elementos, hecha a mano</p>
+                        <pre>#include &lt;iostream&gt;
+using namespace std;
+
+struct Nodo {
+    int   dato;
+    Nodo* sig;       // direccion del siguiente nodo
+};
+
+int main() {
+    Nodo* cab = nullptr;               // lista vacia
+
+    Nodo* a = new Nodo{10, nullptr};   // crear nodos
+    Nodo* b = new Nodo{20, nullptr};
+    Nodo* c = new Nodo{30, nullptr};
+
+    a-&gt;sig = b;                        // enlazarlos
+    b-&gt;sig = c;
+    cab = a;                           // la cabeza es el primero
+
+    for (Nodo* p = cab; p != nullptr; p = p-&gt;sig)
+        cout &lt;&lt; p-&gt;dato &lt;&lt; " ";        // 10 20 30
+    return 0;
+}</pre>
+                        <p class="muted">Con un puntero se accede a un campo con <code>-&gt;</code>:
+                            <code>p-&gt;dato</code> es lo mismo que <code>(*p).dato</code>.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONCEPTO 2 -->
+        <section class="slide" data-name="Concepto (2/3)">
+            <div class="wrap">
+                <h2>Concepto y nodo (2/3): puntero, referencia y referencia a puntero</h2>
+                <p class="sub">Qué recibe la función y qué puede cambiar</p>
+                <div class="two">
+                    <div>
+                        <p>Cuando pasas <code>cab</code> a una función, hay tres opciones:</p>
+                        <ul>
+                            <li><strong><code>Nodo* p</code> (puntero por valor):</strong> la función recibe una
+                                <strong>copia</strong> de la dirección. Puede leer los nodos y cambiar sus datos
+                                (<code>p-&gt;dato = 5</code>), pero si hace <code>p = otro</code>, solo cambia su copia.
+                            </li>
+                            <li><strong><code>Nodo*&amp; cab</code> (referencia a puntero):</strong> la función recibe
+                                la <strong>misma variable</strong> <code>cab</code> con otro nombre. Si cambia
+                                <code>cab</code>, cambia también el de quien llamó.</li>
+                            <li><strong><code>Nodo** cab</code> (puntero a puntero):</strong> es la forma de C para lo
+                                mismo. Obliga a escribir <code>*cab</code> en todas partes. En C++ se prefiere
+                                <code>Nodo*&amp;</code>.</li>
+                        </ul>
+                        <p><strong>Regla:</strong> si la función puede cambiar <em>a quién apunta la cabeza</em> (lista
+                            vacía, insertar o borrar el primero), usa <code>Nodo*&amp;</code>. Si solo recorre o
+                            modifica nodos que ya existen, basta <code>Nodo*</code>.</p>
+                    </div>
+                    <div>
+                        <p class="label">El error típico: insertar al inicio con puntero por valor</p>
+                        <pre>// MAL: cab es una copia
+void insertarInicioMal(Nodo* cab, int x) {
+    Nodo* nuevo = new Nodo{x, cab};
+    cab = nuevo;       // cambia solo la copia local
+}
+
+// BIEN: cab es la variable original
+void insertarInicio(Nodo*&amp; cab, int x) {
+    cab = new Nodo{x, cab};
+}
+
+int main() {
+    Nodo* l1 = nullptr;
+    insertarInicioMal(l1, 5);
+    // l1 sigue en nullptr: el nodo se perdio (fuga de memoria)
+
+    Nodo* l2 = nullptr;
+    insertarInicio(l2, 5);
+    // l2 ahora apunta al nodo con 5
+    return 0;
+}</pre>
+                        <pre class="salida">main:   cab ---&gt; [10|•] ---&gt; null
+
+f(Nodo* cab)    cab' es una COPIA de la direccion
+                cambiar cab' no cambia cab
+
+f(Nodo*&amp; cab)   cab' ES cab (otro nombre)
+                cambiar cab' cambia cab</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONCEPTO 3 -->
+        <section class="slide" data-name="Concepto (3/3)">
+            <div class="wrap">
+                <h2>Concepto y nodo (3/3): ¿cuál uso en cada operación?</h2>
+                <p class="sub">Guía rápida para decidir el parámetro</p>
+                <div class="two" style="grid-template-columns:1.3fr 1fr">
+                    <div>
+                        <table>
+                            <tr>
+                                <th>La función...</th>
+                                <th>Parámetro</th>
+                                <th>Ejemplos</th>
+                            </tr>
+                            <tr>
+                                <td>Solo lee la lista</td>
+                                <td><code>const Nodo* cab</code></td>
+                                <td>mostrar, contar</td>
+                            </tr>
+                            <tr>
+                                <td>Recorre y devuelve un nodo, o cambia datos de nodos</td>
+                                <td><code>Nodo* cab</code></td>
+                                <td>buscar</td>
+                            </tr>
+                            <tr>
+                                <td>Ya tiene el nodo y trabaja desde él</td>
+                                <td><code>Nodo* p</code></td>
+                                <td>insertarDespues</td>
+                            </tr>
+                            <tr>
+                                <td>Puede cambiar la cabeza</td>
+                                <td><code>Nodo*&amp; cab</code></td>
+                                <td>insertarInicio, insertarFinal, eliminar, liberar, invertir</td>
+                            </tr>
+                            <tr>
+                                <td>Devuelve un dato por parámetro</td>
+                                <td><code>int&amp; x</code></td>
+                                <td>obtener el dato de la cabeza</td>
+                            </tr>
+                            <tr>
+                                <td>Estilo C (no recomendado)</td>
+                                <td><code>Nodo** cab</code></td>
+                                <td>igual que <code>Nodo*&amp;</code></td>
+                            </tr>
+                        </table>
+                        <p class="muted">El <code>int x</code> que se va a insertar se pasa por valor: la función solo
+                            necesita su valor.</p>
+                    </div>
+                    <div>
+                        <p class="label">Ejemplos de firmas</p>
+                        <pre>void mostrar(const Nodo* cab);
+int  contar(const Nodo* cab);
+Nodo* buscar(Nodo* cab, int x);
+
+void insertarDespues(Nodo* p, int x);
+
+void insertarInicio(Nodo*&amp; cab, int x);
+void insertarFinal(Nodo*&amp; cab, int x);
+bool eliminarValor(Nodo*&amp; cab, int x);
+void liberar(Nodo*&amp; cab);
+
+bool primero(const Nodo* cab, int&amp; x);</pre>
+                        <p class="muted">Pregunta para decidir: ¿puede esta función dejar a <code>cab</code> apuntando a
+                            otro nodo? Si la respuesta es sí, referencia a puntero.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- RECORRER 1 -->
+        <section class="slide" data-name="Recorrer (1/2)">
+            <div class="wrap">
+                <h2>Recorrer, contar y buscar (1/2)</h2>
+                <p class="sub">La cabeza no cambia, así que se pasa por valor</p>
+                <div class="two">
+                    <div>
+                        <p>Para recorrer se usa un puntero auxiliar <code>p</code> que empieza en la cabeza y avanza con
+                            <code>p = p-&gt;sig</code> hasta llegar a <code>nullptr</code>.</p>
+                        <ul>
+                            <li>Nunca se mueve <code>cab</code> mismo: se perdería el inicio de la lista. Se usa una
+                                copia (<code>p</code>).</li>
+                            <li>Como la función no cambia la cabeza, el parámetro es <code>Nodo*</code> (o
+                                <code>const Nodo*</code> si solo lee).</li>
+                            <li><code>buscar</code> devuelve el puntero al nodo, o <code>nullptr</code> si no lo
+                                encuentra.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <p class="label">Mostrar, contar y buscar</p>
+                        <pre>void mostrar(const Nodo* cab) {
+    for (const Nodo* p = cab; p != nullptr; p = p-&gt;sig)
+        cout &lt;&lt; p-&gt;dato &lt;&lt; " -&gt; ";
+    cout &lt;&lt; "null" &lt;&lt; endl;
+}
+
+int contar(const Nodo* cab) {
+    int n = 0;
+    for (const Nodo* p = cab; p != nullptr; p = p-&gt;sig)
+        n++;
+    return n;
+}
+
+Nodo* buscar(Nodo* cab, int x) {
+    for (Nodo* p = cab; p != nullptr; p = p-&gt;sig)
+        if (p-&gt;dato == x) return p;
+    return nullptr;
+}
+
+// uso
+Nodo* n = buscar(cab, 20);
+if (n != nullptr) n-&gt;dato = 25;   // cambiar el dato del nodo</pre>
+                        <p class="muted">Cambiar <code>n-&gt;dato</code> funciona con puntero por valor: se modifica el
+                            nodo, no la cabeza.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- RECORRER 2 -->
+        <section class="slide" data-name="Recorrer (2/2)">
+            <div class="wrap">
+                <h2>Recorrer, contar y buscar (2/2): ejercicios</h2>
+                <p class="muted">Se asume el <code>struct Nodo</code> con <code>dato</code> y <code>sig</code>, y la
+                    función <code>insertarFinal</code> (siguiente tema).</p>
+                <ol class="ej">
+                    <li>Escribe <code>int sumar(const Nodo* cab)</code> y <code>int mayor(const Nodo* cab)</code>
+                        (suponiendo la lista no vacía).
+                        <details>
+                            <summary>Ver solución</summary>
+                            <pre>int sumar(const Nodo* cab) {
+    int s = 0;
+    for (const Nodo* p = cab; p != nullptr; p = p-&gt;sig)
+        s += p-&gt;dato;
+    return s;
+}
+
+int mayor(const Nodo* cab) {
+    int m = cab-&gt;dato;
+    for (const Nodo* p = cab-&gt;sig; p != nullptr; p = p-&gt;sig)
+        if (p-&gt;dato &gt; m) m = p-&gt;dato;
+    return m;
+}</pre>
+                        </details>
+                    </li>
+
+                    <li>Escribe <code>int posicion(const Nodo* cab, int x)</code> que devuelva el índice (desde 0) del
+                        valor, o -1 si no está.
+                        <details>
+                            <summary>Ver solución</summary>
+                            <pre>int posicion(const Nodo* cab, int x) {
+    int i = 0;
+    for (const Nodo* p = cab; p != nullptr; p = p-&gt;sig) {
+        if (p-&gt;dato == x) return i;
+        i++;
+    }
+    return -1;
+}</pre>
+                        </details>
+                    </li>
+
+                    <li>Invierte la lista cambiando los enlaces (sin crear nodos nuevos). ¿Qué tipo de parámetro
+                        necesita y por qué?
+                        <details>
+                            <summary>Ver solución</summary>
+                            <pre>// Nodo*&amp; porque al final la cabeza pasa a ser el ultimo nodo
+void invertir(Nodo*&amp; cab) {
+    Nodo* ant = nullptr;
+    Nodo* act = cab;
+    while (act != nullptr) {
+        Nodo* sig = act-&gt;sig;   // guardar el siguiente
+        act-&gt;sig = ant;         // apuntar hacia atras
+        ant = act;
+        act = sig;
+    }
+    cab = ant;                  // nueva cabeza
+}
+// 10 -&gt; 20 -&gt; 30   queda   30 -&gt; 20 -&gt; 10</pre>
+                        </details>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- INSERTAR 1 -->
+        <section class="slide" data-name="Insertar (1/3)">
+            <div class="wrap">
+                <h2>Insertar (1/3): al inicio y al final</h2>
+                <p class="sub">Ambas pueden cambiar la cabeza, así que usan Nodo*&amp;</p>
+                <div class="two">
+                    <div>
+                        <p><strong>Al inicio:</strong></p>
+                        <ol>
+                            <li>Crear el nodo nuevo, con <code>sig</code> apuntando a la cabeza actual.</li>
+                            <li>La cabeza pasa a ser el nodo nuevo.</li>
+                        </ol>
+                        <p>Es la operación más rápida: no recorre nada.</p>
+                        <p><strong>Al final:</strong></p>
+                        <ol>
+                            <li>Crear el nodo nuevo con <code>sig = nullptr</code>.</li>
+                            <li>Si la lista está vacía, el nuevo es la cabeza. <em>Aquí cambia <code>cab</code>: por eso
+                                    se necesita <code>Nodo*&amp;</code>.</em></li>
+                            <li>Si no, recorrer hasta el último nodo y enlazarlo.</li>
+                        </ol>
+                    </div>
+                    <div>
+                        <p class="label">Programa en C++</p>
+                        <pre>void insertarInicio(Nodo*&amp; cab, int x) {
+    cab = new Nodo{x, cab};
+}
+
+void insertarFinal(Nodo*&amp; cab, int x) {
+    Nodo* nuevo = new Nodo{x, nullptr};
+    if (cab == nullptr) {       // lista vacia: cambia cab
+        cab = nuevo;
+        return;
+    }
+    Nodo* p = cab;
+    while (p-&gt;sig != nullptr)   // llegar al ultimo
+        p = p-&gt;sig;
+    p-&gt;sig = nuevo;
+}
+
+int main() {
+    Nodo* cab = nullptr;
+    insertarFinal(cab, 20);
+    insertarFinal(cab, 30);
+    insertarInicio(cab, 10);
+    mostrar(cab);               // 10 -&gt; 20 -&gt; 30 -&gt; null
+    return 0;
+}</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- INSERTAR 2 -->
+        <section class="slide" data-name="Insertar (2/3)">
+            <div class="wrap">
+                <h2>Insertar (2/3): después de un nodo, en una posición y ordenada</h2>
+                <p class="sub">Cuándo basta Nodo* y cuándo hace falta Nodo*&amp;</p>
+                <div class="two">
+                    <div>
+                        <ul>
+                            <li><strong>Después de un nodo <code>p</code>:</strong> el nodo ya existe y la cabeza no
+                                cambia. Basta <code>Nodo* p</code>. Se enlaza primero el nuevo con el siguiente y
+                                después <code>p</code> con el nuevo.</li>
+                            <li><strong>En una posición:</strong> si la posición es 0 cambia la cabeza, por eso usa
+                                <code>Nodo*&amp;</code>. Si no, se avanza hasta el nodo anterior.</li>
+                            <li><strong>Ordenada:</strong> se inserta antes del primer elemento mayor. Si el nuevo es
+                                menor que la cabeza (o la lista está vacía) cambia la cabeza: <code>Nodo*&amp;</code>.
+                            </li>
+                        </ul>
+                        <p class="muted">Orden importante al enlazar: primero <code>nuevo-&gt;sig</code>, después
+                            <code>p-&gt;sig</code>. Al revés se pierde el resto de la lista.</p>
+                    </div>
+                    <div>
+                        <p class="label">Programa en C++</p>
+                        <pre>void insertarDespues(Nodo* p, int x) {
+    if (p == nullptr) return;
+    p-&gt;sig = new Nodo{x, p-&gt;sig};
+}
+
+bool insertarEnPosicion(Nodo*&amp; cab, int pos, int x) {
+    if (pos &lt; 0) return false;
+    if (pos == 0) {                 // cambia la cabeza
+        cab = new Nodo{x, cab};
+        return true;
+    }
+    Nodo* p = cab;
+    for (int i = 0; i &lt; pos - 1 &amp;&amp; p != nullptr; i++)
+        p = p-&gt;sig;                 // nodo anterior a pos
+    if (p == nullptr) return false; // posicion fuera de la lista
+    p-&gt;sig = new Nodo{x, p-&gt;sig};
+    return true;
+}
+
+void insertarOrdenado(Nodo*&amp; cab, int x) {
+    if (cab == nullptr || x &lt; cab-&gt;dato) {
+        cab = new Nodo{x, cab};     // va primero
+        return;
+    }
+    Nodo* p = cab;
+    while (p-&gt;sig != nullptr &amp;&amp; p-&gt;sig-&gt;dato &lt; x)
+        p = p-&gt;sig;
+    p-&gt;sig = new Nodo{x, p-&gt;sig};
+}</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- INSERTAR 3 -->
+        <section class="slide" data-name="Insertar (3/3)">
+            <div class="wrap">
+                <h2>Insertar (3/3): ejercicios</h2>
+                <ol class="ej">
+                    <li>Inserta los números del 1 al 5 al final con un ciclo y muestra la lista.
+                        <details>
+                            <summary>Ver solución</summary>
+                            <pre>int main() {
+    Nodo* cab = nullptr;
+    for (int i = 1; i &lt;= 5; i++)
+        insertarFinal(cab, i);
+    mostrar(cab);     // 1 -&gt; 2 -&gt; 3 -&gt; 4 -&gt; 5 -&gt; null
+    return 0;
+}</pre>
+                        </details>
+                    </li>
+
+                    <li>Pide un valor <code>x</code> y un valor <code>nuevo</code>; inserta <code>nuevo</code> justo
+                        después del nodo que contiene <code>x</code>. Si <code>x</code> no está, avisa.
+                        <details>
+                            <summary>Ver solución</summary>
+                            <pre>void insertarDespuesDeValor(Nodo* cab, int x, int nuevo) {
+    Nodo* p = buscar(cab, x);       // de "Recorrer (1/2)"
+    if (p == nullptr)
+        cout &lt;&lt; "El valor " &lt;&lt; x &lt;&lt; " no esta en la lista\n";
+    else
+        insertarDespues(p, nuevo);
+}
+// Basta Nodo* porque la cabeza nunca cambia</pre>
+                        </details>
+                    </li>
+
+                    <li>Inserta 40, 10, 30 y 20 (en ese orden) con <code>insertarOrdenado</code> y muestra la lista.
+                        <details>
+                            <summary>Ver solución</summary>
+                            <pre>int main() {
+    Nodo* cab = nullptr;
+    int datos[] = {40, 10, 30, 20};
+    for (int x : datos)
+        insertarOrdenado(cab, x);
+    mostrar(cab);     // 10 -&gt; 20 -&gt; 30 -&gt; 40 -&gt; null
+    return 0;
+}</pre>
+                        </details>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- ELIMINAR 1 -->
+        <section class="slide" data-name="Eliminar (1/3)">
+            <div class="wrap">
+                <h2>Eliminar (1/3): el primero y por valor</h2>
+                <p class="sub">Pueden cambiar la cabeza, así que usan Nodo*&amp;</p>
+                <div class="two">
+                    <div>
+                        <p><strong>Eliminar el primero:</strong></p>
+                        <ol>
+                            <li>Guardar el nodo en un puntero temporal <code>t</code>.</li>
+                            <li>Mover la cabeza al siguiente.</li>
+                            <li><code>delete t</code>.</li>
+                        </ol>
+                        <p><strong>Eliminar por valor:</strong></p>
+                        <ol>
+                            <li>Si la lista está vacía, no hay nada que hacer.</li>
+                            <li>Si el valor está en la cabeza, se elimina el primero (cambia <code>cab</code>).</li>
+                            <li>Si no, se busca el nodo <strong>anterior</strong> al que se quiere borrar, se salta el
+                                nodo (<code>p-&gt;sig = t-&gt;sig</code>) y se hace <code>delete t</code>.</li>
+                        </ol>
+                    </div>
+                    <div>
+                        <p class="label">Programa en C++</p>
+                        <pre>void eliminarInicio(Nodo*&amp; cab) {
+    if (cab == nullptr) return;
+    Nodo* t = cab;
+    cab = cab-&gt;sig;          // la cabeza avanza
+    delete t;                // liberar el nodo
+}
+
+bool eliminarValor(Nodo*&amp; cab, int x) {
+    if (cab == nullptr) return false;
+    if (cab-&gt;dato == x) {    // esta en la cabeza
+        eliminarInicio(cab);
+        return true;
+    }
+    Nodo* p = cab;
+    while (p-&gt;sig != nullptr &amp;&amp; p-&gt;sig-&gt;dato != x)
+        p = p-&gt;sig;          // p = nodo anterior
+    if (p-&gt;sig == nullptr) return false;   // no esta
+    Nodo* t = p-&gt;sig;
+    p-&gt;sig = t-&gt;sig;         // saltar el nodo
+    delete t;
+    return true;
+}</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ELIMINAR 2 -->
+        <section class="slide" data-name="Eliminar (2/3)">
+            <div class="wrap">
+                <h2>Eliminar (2/3): liberar la memoria</h2>
+                <p class="sub">Todo new necesita su delete</p>
+                <div class="two">
+                    <div>
+                        <p>Cada nodo creado con <code>new</code> se debe liberar con <code>delete</code>. Si el programa
+                            termina o pierde la cabeza sin hacerlo, hay una <strong>fuga de memoria</strong>.</p>
+                        <ul>
+                            <li>Al borrar un nodo, primero se guarda lo que se necesita (<code>t-&gt;sig</code>) y
+                                <strong>después</strong> se hace <code>delete t</code>. Leer <code>t-&gt;sig</code>
+                                después del <code>delete</code> es un error.</li>
+                            <li><code>liberar</code> usa <code>Nodo*&amp;</code> para que, al terminar, la
+                                <code>cab</code> de quien llamó quede en <code>nullptr</code> y no apunte a memoria ya
+                                liberada.</li>
+                            <li>Se llama a <code>liberar(cab)</code> al final de <code>main</code>.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <p class="label">Liberar toda la lista</p>
+                        <pre>void liberar(Nodo*&amp; cab) {
+    while (cab != nullptr) {
+        Nodo* t = cab;
+        cab = cab-&gt;sig;      // avanzar ANTES de borrar
+        delete t;
+    }
+}   // al salir, cab == nullptr
+
+int main() {
+    Nodo* cab = nullptr;
+    insertarFinal(cab, 1);
+    insertarFinal(cab, 2);
+    insertarFinal(cab, 3);
+    mostrar(cab);
+    liberar(cab);
+    mostrar(cab);            // null (lista vacia)
+    return 0;
+}</pre>
+                        <p class="label">Error: usar el nodo después de borrarlo</p>
+                        <pre>delete t;
+cab = t-&gt;sig;     // MAL: t ya no existe</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ELIMINAR 3 -->
+        <section class="slide" data-name="Eliminar (3/3)">
+            <div class="wrap">
+                <h2>Eliminar (3/3): ejercicios</h2>
+                <ol class="ej">
+                    <li>Escribe <code>eliminarFinal</code>, que borra el último nodo. Piensa en los casos: lista vacía,
+                        un solo nodo y varios.
+                        <details>
+                            <summary>Ver solución</summary>
+                            <pre>void eliminarFinal(Nodo*&amp; cab) {
+    if (cab == nullptr) return;
+    if (cab-&gt;sig == nullptr) {     // un solo nodo: cambia cab
+        delete cab;
+        cab = nullptr;
+        return;
+    }
+    Nodo* p = cab;
+    while (p-&gt;sig-&gt;sig != nullptr)   // p = penultimo
+        p = p-&gt;sig;
+    delete p-&gt;sig;
+    p-&gt;sig = nullptr;
+}</pre>
+                        </details>
+                    </li>
+
+                    <li>Escribe <code>eliminarTodos(Nodo*&amp; cab, int x)</code> que borre todas las apariciones de
+                        <code>x</code>.
+                        <details>
+                            <summary>Ver solución</summary>
+                            <pre>void eliminarTodos(Nodo*&amp; cab, int x) {
+    while (cab != nullptr &amp;&amp; cab-&gt;dato == x) {   // las de la cabeza
+        Nodo* t = cab;
+        cab = cab-&gt;sig;
+        delete t;
+    }
+    Nodo* p = cab;
+    while (p != nullptr &amp;&amp; p-&gt;sig != nullptr) {
+        if (p-&gt;sig-&gt;dato == x) {
+            Nodo* t = p-&gt;sig;
+            p-&gt;sig = t-&gt;sig;
+            delete t;                     // no avanza p
+        } else {
+            p = p-&gt;sig;
+        }
+    }
+}</pre>
+                        </details>
+                    </li>
+
+                    <li>Escribe <code>bool eliminarPosicion(Nodo*&amp; cab, int pos)</code> (posición desde 0).
+                        <details>
+                            <summary>Ver solución</summary>
+                            <pre>bool eliminarPosicion(Nodo*&amp; cab, int pos) {
+    if (cab == nullptr || pos &lt; 0) return false;
+    if (pos == 0) {
+        Nodo* t = cab;
+        cab = cab-&gt;sig;
+        delete t;
+        return true;
+    }
+    Nodo* p = cab;
+    for (int i = 0; i &lt; pos - 1 &amp;&amp; p-&gt;sig != nullptr; i++)
+        p = p-&gt;sig;                      // anterior a pos
+    if (p-&gt;sig == nullptr) return false; // pos fuera de la lista
+    Nodo* t = p-&gt;sig;
+    p-&gt;sig = t-&gt;sig;
+    delete t;
+    return true;
+}</pre>
+                        </details>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- CLASE 1 -->
+        <section class="slide" data-name="Clase (1/2)">
+            <div class="wrap">
+                <h2>Lista dentro de una clase (1/2)</h2>
+                <p class="sub">Si la cabeza es un atributo, ya no se pasa como parámetro</p>
+                <div class="two">
+                    <div>
+                        <p>Al encapsular la lista en una <code>class</code>, la cabeza <code>cab</code> es un
+                            <strong>atributo privado</strong>. Los métodos pueden cambiarla directamente, así que
+                            desaparece el problema de pasar <code>Nodo*&amp;</code>.</p>
+                        <ul>
+                            <li>El usuario de la clase llama <code>lista.insertarFinal(5)</code> y no ve punteros.</li>
+                            <li>El <strong>destructor</strong> libera los nodos solo, al terminar el objeto.</li>
+                            <li>Se prohíbe copiar la lista (<code>= delete</code>): una copia compartiría los mismos
+                                nodos y se liberarían dos veces.</li>
+                            <li>Dentro de los métodos, el recorrido sigue usando un puntero auxiliar <code>p</code>.
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <p class="label">Programa en C++</p>
+                        <pre>class Lista {
+    struct Nodo {
+        int   dato;
+        Nodo* sig;
+    };
+    Nodo* cab = nullptr;      // atributo de la clase
+
+public:
+    Lista() {}
+    ~Lista() { limpiar(); }
+    Lista(const Lista&amp;) = delete;
+    Lista&amp; operator=(const Lista&amp;) = delete;
+
+    void insertarInicio(int x) {
+        cab = new Nodo{x, cab};
+    }
+
+    void insertarFinal(int x) {
+        Nodo* nuevo = new Nodo{x, nullptr};
+        if (cab == nullptr) { cab = nuevo; return; }
+        Nodo* p = cab;
+        while (p-&gt;sig != nullptr) p = p-&gt;sig;
+        p-&gt;sig = nuevo;
+    }
+
+    void mostrar() const {
+        for (Nodo* p = cab; p != nullptr; p = p-&gt;sig)
+            cout &lt;&lt; p-&gt;dato &lt;&lt; " ";
+        cout &lt;&lt; endl;
+    }
+
+    void limpiar() {
+        while (cab != nullptr) {
+            Nodo* t = cab;
+            cab = cab-&gt;sig;
+            delete t;
+        }
+    }
+};
+
+int main() {
+    Lista l;
+    l.insertarFinal(2);
+    l.insertarInicio(1);
+    l.mostrar();           // 1 2
+    return 0;
+}   // el destructor libera los nodos</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CLASE 2 -->
+        <section class="slide" data-name="Clase (2/2)">
+            <div class="wrap">
+                <h2>Lista dentro de una clase (2/2): ejercicios</h2>
+                <ol class="ej">
+                    <li>Agrega a la clase el método <code>int contar() const</code>.
+                        <details>
+                            <summary>Ver solución</summary>
+                            <pre>int contar() const {
+    int n = 0;
+    for (Nodo* p = cab; p != nullptr; p = p-&gt;sig)
+        n++;
+    return n;
+}</pre>
+                        </details>
+                    </li>
+
+                    <li>Agrega <code>bool eliminar(int x)</code>. ¿Por qué aquí no hace falta <code>Nodo*&amp;</code>?
+                        <details>
+                            <summary>Ver solución</summary>
+                            <pre>bool eliminar(int x) {
+    if (cab == nullptr) return false;
+    if (cab-&gt;dato == x) {
+        Nodo* t = cab;
+        cab = cab-&gt;sig;       // cab es atributo: se cambia directo
+        delete t;
+        return true;
+    }
+    Nodo* p = cab;
+    while (p-&gt;sig != nullptr &amp;&amp; p-&gt;sig-&gt;dato != x)
+        p = p-&gt;sig;
+    if (p-&gt;sig == nullptr) return false;
+    Nodo* t = p-&gt;sig;
+    p-&gt;sig = t-&gt;sig;
+    delete t;
+    return true;
+}
+// No hace falta Nodo*&amp;: cab pertenece al objeto, no se pasa como parametro.</pre>
+                        </details>
+                    </li>
+
+                    <li>Agrega <code>void insertarOrdenado(int x)</code>.
+                        <details>
+                            <summary>Ver solución</summary>
+                            <pre>void insertarOrdenado(int x) {
+    if (cab == nullptr || x &lt; cab-&gt;dato) {
+        cab = new Nodo{x, cab};
+        return;
+    }
+    Nodo* p = cab;
+    while (p-&gt;sig != nullptr &amp;&amp; p-&gt;sig-&gt;dato &lt; x)
+        p = p-&gt;sig;
+    p-&gt;sig = new Nodo{x, p-&gt;sig};
+}</pre>
+                        </details>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- STD::LIST 1 -->
+        <section class="slide" data-name="std::list (1/3)">
+            <div class="wrap">
+                <h2>Biblioteca moderna: std::list (1/3)</h2>
+                <p class="sub">La lista ya hecha, con memoria automática</p>
+                <div class="two">
+                    <div>
+                        <p><code>std::list</code> (de <code>&lt;list&gt;</code>) es una lista <strong>doblemente
+                                enlazada</strong>: cada nodo conoce al anterior y al siguiente. Ya trae todas las
+                            operaciones:</p>
+                        <ul>
+                            <li>Sin <code>new</code>, sin <code>delete</code> y sin punteros: la memoria se libera sola.
+                            </li>
+                            <li>Insertar y borrar al inicio y al final es inmediato.</li>
+                            <li>Se recorre con <code>for (int x : l)</code>.</li>
+                        </ul>
+                        <p><code>std::forward_list</code> (de <code>&lt;forward_list&gt;</code>) es la versión
+                            <strong>simplemente enlazada</strong>, igual que la que construimos, pero más ligera. No
+                            tiene <code>size()</code> ni <code>push_back()</code>; inserta y borra con
+                            <code>insert_after</code> y <code>erase_after</code>.</p>
+                    </div>
+                    <div>
+                        <p class="label">Operaciones básicas</p>
+                        <pre>#include &lt;iostream&gt;
+#include &lt;list&gt;
+using namespace std;
+
+int main() {
+    list&lt;int&gt; l;
+    l.push_back(20);
+    l.push_back(30);
+    l.push_front(10);            // 10 20 30
+
+    for (int x : l) cout &lt;&lt; x &lt;&lt; " ";
+    cout &lt;&lt; endl;
+
+    cout &lt;&lt; l.size()  &lt;&lt; endl;    // 3
+    cout &lt;&lt; l.front() &lt;&lt; endl;    // 10
+    cout &lt;&lt; l.back()  &lt;&lt; endl;    // 30
+
+    l.pop_front();               // 20 30
+    l.pop_back();                // 20
+    l.push_back(5);              // 20 5
+    l.remove(20);                // borra los nodos con valor 20
+    l.push_back(8);              // 5 8
+    l.reverse();                 // 8 5
+    l.sort();                    // 5 8
+    cout &lt;&lt; (l.empty() ? "vacia" : "con datos");
+    l.clear();                   // vacia la lista
+    return 0;
+}</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- STD::LIST 2 -->
+        <section class="slide" data-name="std::list (2/3)">
+            <div class="wrap">
+                <h2>Biblioteca moderna: std::list (2/3)</h2>
+                <p class="sub">Iteradores y paso a funciones</p>
+                <div class="two">
+                    <div>
+                        <p>Para insertar, borrar o buscar en el medio se usa un <strong>iterador</strong>: un objeto que
+                            se comporta como un puntero a un nodo.</p>
+                        <ul>
+                            <li><code>l.begin()</code> apunta al primero y <code>l.end()</code> está
+                                <strong>después</strong> del último.</li>
+                            <li><code>*it</code> es el dato. <code>++it</code> avanza.</li>
+                            <li><code>l.insert(it, x)</code> inserta <strong>antes</strong> de <code>it</code>.</li>
+                            <li><code>it = l.erase(it)</code> borra ese nodo y devuelve el siguiente. Tras borrar, el
+                                iterador viejo ya no sirve.</li>
+                            <li><code>find(l.begin(), l.end(), x)</code> (de <code>&lt;algorithm&gt;</code>) devuelve un
+                                iterador; si no lo halla, devuelve <code>l.end()</code>.</li>
+                        </ul>
+                        <p><strong>Referencias aquí:</strong> la lista es un objeto, así que no hace falta referencia a
+                            puntero. <code>list&lt;int&gt;&amp;</code> si la función la modifica, y
+                            <code>const list&lt;int&gt;&amp;</code> si solo la lee. Por valor se copiaría toda la lista.
+                        </p>
+                    </div>
+                    <div>
+                        <p class="label">Iteradores</p>
+                        <pre>list&lt;int&gt; l = {10, 20, 30, 40};
+
+auto it = l.begin();
+advance(it, 2);              // avanzar 2 (de &lt;iterator&gt;)
+l.insert(it, 99);            // 10 20 99 30 40
+
+it = find(l.begin(), l.end(), 20);
+if (it != l.end())
+    it = l.erase(it);        // 10 99 30 40, it apunta a 99</pre>
+                        <p class="label">Paso a funciones</p>
+                        <pre>void mostrar(const list&lt;int&gt;&amp; l) {
+    for (int x : l) cout &lt;&lt; x &lt;&lt; " ";
+    cout &lt;&lt; endl;
+}
+
+void agregar(list&lt;int&gt;&amp; l, int x) {
+    l.push_back(x);          // cambia la lista de main
+}
+
+// Recorrer con iterador y borrar los pares
+for (auto it = l.begin(); it != l.end(); ) {
+    if (*it % 2 == 0) it = l.erase(it);
+    else              ++it;
+}</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- STD::LIST 3 -->
+        <section class="slide" data-name="std::list (3/3)">
+            <div class="wrap">
+                <h2>Biblioteca moderna: std::list (3/3): ejercicios</h2>
+                <p class="muted">Todos usan <code>#include &lt;iostream&gt;</code>, <code>#include &lt;list&gt;</code> y
+                    <code>using namespace std;</code>.</p>
+                <ol class="ej">
+                    <li>Lee 5 números, guárdalos en una <code>list&lt;int&gt;</code>, muéstralos y calcula su suma.
+                        <details>
+                            <summary>Ver solución</summary>
+                            <pre>int main() {
+    list&lt;int&gt; l;
+    int x, suma = 0;
+    for (int i = 1; i &lt;= 5; i++) {
+        cout &lt;&lt; "Numero " &lt;&lt; i &lt;&lt; ": ";
+        cin &gt;&gt; x;
+        l.push_back(x);
+    }
+    for (int v : l) {
+        cout &lt;&lt; v &lt;&lt; " ";
+        suma += v;
+    }
+    cout &lt;&lt; "\nSuma: " &lt;&lt; suma;
+    return 0;
+}</pre>
+                        </details>
+                    </li>
+
+                    <li>Elimina todos los números pares de una lista de dos formas: con un iterador y con
+                        <code>remove_if</code>.
+                        <details>
+                            <summary>Ver solución</summary>
+                            <pre>int main() {
+    list&lt;int&gt; a = {1, 2, 3, 4, 5, 6};
+    list&lt;int&gt; b = a;
+
+    // Forma 1: iterador
+    for (auto it = a.begin(); it != a.end(); ) {
+        if (*it % 2 == 0) it = a.erase(it);
+        else              ++it;
+    }
+
+    // Forma 2: remove_if con una funcion lambda
+    b.remove_if([](int x) { return x % 2 == 0; });
+
+    for (int x : a) cout &lt;&lt; x &lt;&lt; " ";   // 1 3 5
+    cout &lt;&lt; endl;
+    for (int x : b) cout &lt;&lt; x &lt;&lt; " ";   // 1 3 5
+    return 0;
+}</pre>
+                        </details>
+                    </li>
+
+                    <li>Ordena una lista y quita los duplicados. Escribe una función que reciba la lista por referencia.
+                        <details>
+                            <summary>Ver solución</summary>
+                            <pre>void ordenarSinRepetidos(list&lt;int&gt;&amp; l) {
+    l.sort();      // unique solo quita repetidos que estan juntos
+    l.unique();
+}
+
+int main() {
+    list&lt;int&gt; l = {4, 1, 4, 2, 1, 3};
+    ordenarSinRepetidos(l);
+    for (int x : l) cout &lt;&lt; x &lt;&lt; " ";   // 1 2 3 4
+    return 0;
+}</pre>
+                        </details>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- RESUMEN -->
+        <section class="slide" data-name="Resumen">
+            <div class="wrap">
+                <h2>Resumen</h2>
+                <table>
+                    <tr>
+                        <th>Tema</th>
+                        <th>Idea clave</th>
+                    </tr>
+                    <tr>
+                        <td>Nodo</td>
+                        <td><code>struct Nodo { int dato; Nodo* sig; }</code>. La lista vacía es
+                            <code>cab == nullptr</code>.</td>
+                    </tr>
+                    <tr>
+                        <td>Puntero por valor <code>Nodo*</code></td>
+                        <td>Copia de la dirección. Sirve para recorrer y cambiar datos de nodos, no para cambiar la
+                            cabeza.</td>
+                    </tr>
+                    <tr>
+                        <td>Referencia a puntero <code>Nodo*&amp;</code></td>
+                        <td>La misma variable <code>cab</code>. Obligatoria si la función puede cambiar la cabeza
+                            (insertar, eliminar, liberar, invertir).</td>
+                    </tr>
+                    <tr>
+                        <td>Recorrer</td>
+                        <td>Puntero auxiliar <code>p = p-&gt;sig</code>. Nunca mover <code>cab</code>.</td>
+                    </tr>
+                    <tr>
+                        <td>Insertar</td>
+                        <td>Enlazar primero el nuevo con lo que sigue y después el anterior con el nuevo.</td>
+                    </tr>
+                    <tr>
+                        <td>Eliminar</td>
+                        <td>Guardar el nodo en <code>t</code>, saltarlo y hacer <code>delete t</code>. No usar
+                            <code>t</code> después.</td>
+                    </tr>
+                    <tr>
+                        <td>Clase</td>
+                        <td>La cabeza es atributo: los métodos la cambian sin referencias. Destructor y copia prohibida.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><code>std::list</code></td>
+                        <td>Sin punteros ni <code>delete</code>. Iteradores para el medio.
+                            <code>list&lt;int&gt;&amp;</code> al pasarla a funciones.</td>
+                    </tr>
+                </table>
+                <p>Errores comunes: usar <code>Nodo*</code> en lugar de <code>Nodo*&amp;</code> al insertar o borrar el
+                    primero, mover <code>cab</code> al recorrer, olvidar <code>delete</code>, y leer un nodo después de
+                    borrarlo.</p>
+                <p><button class="btn primary" type="button" id="home">Volver al inicio</button></p>
+            </div>
+        </section>
+
+    </main>
+
+    <nav class="nav" aria-label="Navegación de diapositivas">
+        <button class="btn" id="prev" type="button">Anterior</button>
+        <div class="track" aria-hidden="true">
+            <div class="bar" id="bar"></div>
+        </div>
+        <span class="count" id="count">1 / 1</span>
+        <span class="navname" id="navName"></span>
+        <button class="btn primary" id="next" type="button">Siguiente</button>
+    </nav>
+
+    <script>
+        (function () {
+            var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+            var N = slides.length, cur = 0;
+            function go(i) {
+                i = Math.max(0, Math.min(N - 1, i));
+                slides[cur].classList.remove('active');
+                cur = i;
+                var s = slides[cur];
+                s.classList.add('active');
+                s.scrollTop = 0;
+                document.getElementById('bar').style.width = ((cur + 1) / N * 100) + '%';
+                document.getElementById('count').textContent = (cur + 1) + ' / ' + N;
+                document.getElementById('navName').textContent = s.getAttribute('data-name') || '';
+                document.getElementById('prev').disabled = cur === 0;
+                document.getElementById('next').disabled = cur === N - 1;
+            }
+            document.getElementById('prev').onclick = function () { go(cur - 1); };
+            document.getElementById('next').onclick = function () { go(cur + 1); };
+            document.getElementById('home').onclick = function () { go(0); };
+            document.addEventListener('keydown', function (e) {
+                if (e.target.closest && e.target.closest('input,select,textarea')) return;
+                if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); go(cur + 1); }
+                else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); go(cur - 1); }
+                else if (e.key === 'Home') { go(0); }
+                else if (e.key === 'End') { go(N - 1); }
+            });
+            go(0);
+        })();
+    </script>
+</body>
+
+</html>
