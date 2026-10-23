@@ -3,57 +3,32 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <title>3. Estructuras de datos: Ordenamiento y Búsqueda</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=JetBrains+Mono:wght@400;600&family=Public+Sans:wght@400;500;600&display=swap"
-        rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>3. Ordenamiento</title>
     <style>
-        /* Estilos Base (Plantilla original) */
         :root {
-            color-scheme: light;
-            --bg: #FFFFFF;
-            --surface: #FFFFFF;
-            --ink: #141414;
-            --muted: #505856;
-            --line: #D6DDDB;
-            --title: #00594E;
+            --bg: #fff;
+            --ink: #1b1f24;
+            --muted: #5a636e;
+            --line: #d5dbe3;
             --accent: #00594E;
             --accent-soft: #E4F0ED;
-            --on-accent: #FFFFFF;
-            --hot: #B5A160;
-            --hot-soft: #F6F1E0;
-            --ok: #00594E;
-            --ok-soft: #DCEEE9;
-            --bad: #B3412F;
-            --bad-soft: #F8E1DC;
-            --code-bg: #F6F7F7;
-            --mem-bg: #E8ECEB;
-            --f-head: 'Bricolage Grotesque', 'Segoe UI', system-ui, sans-serif;
-            --f-body: 'Public Sans', 'Segoe UI', system-ui, sans-serif;
-            --f-mono: 'JetBrains Mono', ui-monospace, Consolas, monospace;
+            --code-bg: #f3f5f8;
+            --f-body: 'Segoe UI', system-ui, -apple-system, Arial, sans-serif;
+            --f-mono: Consolas, 'Courier New', ui-monospace, monospace;
         }
 
-        :root {
-            box-sizing: border-box;
-            padding-top: env(safe-area-inset-top, 0px);
-            padding-bottom: env(safe-area-inset-bottom, 0px)
+        * {
+            box-sizing: border-box
         }
 
-        html {
+        html,
+        body {
             height: 100%;
-            scroll-padding-top: env(safe-area-inset-top, 0px)
-        }
-
-        *,
-        *::before,
-        *::after {
-            box-sizing: inherit
+            margin: 0
         }
 
         body {
-            margin: 0;
-            height: 100%;
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -61,63 +36,52 @@
             color: var(--ink);
             font-family: var(--f-body);
             font-size: 18px;
-            line-height: 1.55
+            line-height: 1.5
         }
 
         [hidden] {
             display: none !important
         }
 
-        [tabindex="-1"]:focus {
-            outline: none
-        }
-
         h1,
         h2,
         h3 {
-            font-family: var(--f-head);
-            line-height: 1.1;
-            margin: 0 0 .35em;
-            letter-spacing: -.015em;
-            font-weight: 700;
-            color: var(--title)
+            color: var(--accent);
+            line-height: 1.15;
+            margin: 0 0 .4em
         }
 
         h1 {
-            font-size: clamp(2.1rem, 6vw, 3.8rem);
-            letter-spacing: -.03em;
-            font-weight: 800
+            font-size: clamp(2rem, 5vw, 3.2rem)
         }
 
         h2 {
-            font-size: clamp(1.6rem, 3.4vw, 2.3rem)
+            font-size: clamp(1.5rem, 3vw, 2rem)
         }
 
         h3 {
-            font-size: 1.25rem;
-            letter-spacing: -.005em
+            font-size: 1.15rem;
+            color: var(--ink)
         }
 
         p {
             margin: 0 0 .8em
         }
 
-        .lead {
-            font-size: clamp(1.1rem, 2vw, 1.35rem);
+        ul,
+        ol {
+            margin: 0 0 .8em;
+            padding-left: 1.3em
+        }
+
+        li {
+            margin-bottom: .35em
+        }
+
+        .muted {
             color: var(--muted)
         }
 
-        .hint {
-            color: var(--muted);
-            font-size: .95rem
-        }
-
-        code,
-        .mono {
-            font-family: var(--f-mono)
-        }
-
-        /* Contenedores de Diapositivas */
         .deck {
             flex: 1;
             min-height: 0;
@@ -129,41 +93,116 @@
             inset: 0;
             overflow-y: auto;
             display: none;
-            flex-direction: column;
-            padding: clamp(10px, 1.6vw, 16px) clamp(14px, 3vw, 36px) clamp(14px, 2.4vw, 24px)
+            padding: 18px clamp(14px, 3vw, 40px)
         }
 
         .slide.active {
-            display: flex;
-            animation: enter .22s ease-out
+            display: block
         }
 
         .wrap {
+            max-width: 1150px;
+            margin: 0 auto
+        }
+
+        .sub {
+            color: var(--muted);
+            font-size: .95rem;
+            margin: -.2em 0 1em
+        }
+
+        .two {
+            display: grid;
+            grid-template-columns: 1fr 1.15fr;
+            gap: 28px;
+            align-items: start
+        }
+
+        @media(max-width:800px) {
+            .two {
+                grid-template-columns: 1fr
+            }
+        }
+
+        pre {
+            font: .88rem/1.45 var(--f-mono);
+            background: var(--code-bg);
+            border: 1px solid var(--line);
+            border-left: 4px solid var(--accent);
+            border-radius: 6px;
+            padding: 12px 14px;
+            margin: 0 0 12px;
+            overflow-x: auto;
+            white-space: pre
+        }
+
+        .salida {
+            border-left-color: var(--muted);
+            background: #fff
+        }
+
+        .label {
+            font-weight: 600;
+            font-size: .9rem;
+            color: var(--muted);
+            margin: 0 0 4px
+        }
+
+        code {
+            font-family: var(--f-mono);
+            background: var(--code-bg);
+            padding: 1px 5px;
+            border-radius: 4px;
+            font-size: .92em
+        }
+
+        table {
+            border-collapse: collapse;
             width: 100%;
-            margin: 0 auto;
-            max-width: 1200px;
+            font-size: .98rem
         }
 
-        @keyframes enter {
-            from {
-                opacity: 0;
-                transform: translateY(8px)
-            }
-
-            to {
-                opacity: 1;
-                transform: none
-            }
+        th,
+        td {
+            border: 1px solid var(--line);
+            padding: 8px 10px;
+            text-align: left
         }
 
-        /* Navegación */
+        th {
+            background: var(--accent-soft);
+            color: var(--accent)
+        }
+
+        .ej {
+            padding-left: 1.2em
+        }
+
+        .ej>li {
+            margin-bottom: 18px
+        }
+
+        details {
+            margin-top: 8px
+        }
+
+        summary {
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--accent)
+        }
+
+        details pre {
+            margin-top: 8px
+        }
+
         .nav {
             display: flex;
             align-items: center;
             gap: 12px;
             padding: 10px clamp(14px, 4vw, 40px);
-            border-top: 3px solid var(--hot);
-            background: var(--surface)
+            border-top: 2px solid var(--accent);
+            background: #fff
         }
 
         .track {
@@ -178,7 +217,7 @@
             height: 100%;
             width: 0;
             background: var(--accent);
-            transition: width .25s ease
+            transition: width .2s
         }
 
         .count {
@@ -188,1829 +227,876 @@
             text-align: center
         }
 
-        /* Controles y Botones */
-        .btn {
-            font: 600 1rem var(--f-body);
-            padding: .55em 1em;
-            border-radius: 8px;
-            border: 2px solid var(--ink);
-            background: var(--surface);
-            color: var(--ink);
-            cursor: pointer;
-            line-height: 1.2;
-            transition: all 0.2s;
+        .navname {
+            font-size: .9rem;
+            color: var(--muted);
+            min-width: 8em
         }
 
-        .btn:hover {
-            background: var(--accent-soft)
+        @media(max-width:600px) {
+            .navname {
+                display: none
+            }
+        }
+
+        .btn {
+            font: 600 1rem var(--f-body);
+            padding: .5em 1em;
+            border-radius: 6px;
+            border: 2px solid var(--accent);
+            background: #fff;
+            color: var(--accent);
+            cursor: pointer
         }
 
         .btn.primary {
             background: var(--accent);
-            border-color: var(--accent);
-            color: var(--on-accent)
-        }
-
-        .btn.primary:hover {
-            filter: brightness(1.08)
-        }
-
-        .btn.action {
-            background: var(--hot);
-            border-color: var(--hot);
-            color: var(--ink);
+            color: #fff
         }
 
         .btn:disabled {
-            opacity: .45;
+            opacity: .4;
             cursor: not-allowed
-        }
-
-        .row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            align-items: center
-        }
-
-        .row.top {
-            margin-top: 16px
-        }
-
-        /* Layouts y Paneles */
-        .panel {
-            background: var(--surface);
-            border: 1px solid var(--line);
-            border-radius: 14px;
-            padding: clamp(14px, 2.4vw, 24px);
-            margin-bottom: 15px;
-        }
-
-        .code {
-            font: .95rem/1.5 var(--f-mono);
-            background: var(--code-bg);
-            border: 1px solid var(--line);
-            border-radius: 8px;
-            padding: 10px 14px;
-            min-height: 2.8em;
-            white-space: pre-wrap;
-            overflow-x: auto
-        }
-
-        .two {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 28px
-        }
-
-        @media (max-width:760px) {
-            .two {
-                grid-template-columns: 1fr
-            }
-        }
-
-        /* Etiquetas de Complejidad (Big O) */
-        .big-o-badge {
-            display: inline-block;
-            background: var(--code-bg);
-            border: 1px solid var(--line);
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-family: var(--f-mono);
-            font-size: 0.85rem;
-            font-weight: bold;
-            color: var(--accent);
-            margin-bottom: 5px;
-            margin-right: 5px;
-        }
-
-        .big-o-badge.bad {
-            color: var(--bad);
-        }
-
-        .big-o-badge.warn {
-            color: #8A7222;
-            background: var(--hot-soft);
-            border-color: var(--hot);
-        }
-
-        /* --- ANIMACIONES DE ORDENAMIENTO (Sin Solapamientos) --- */
-        .sort-container {
-            background: var(--mem-bg);
-            padding: 20px;
-            border-radius: 10px;
-            border: 2px dashed var(--muted);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 220px;
-            gap: 20px;
-        }
-
-        .array-flex {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            align-items: flex-end;
-            height: 120px;
-        }
-
-        .sort-box {
-            width: 50px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-end;
-            transition: transform 0.4s ease, background 0.3s ease;
-            position: relative;
-        }
-
-        .sort-bar {
-            width: 100%;
-            background: var(--ink);
-            border-radius: 4px 4px 0 0;
-            transition: background 0.3s ease;
-            display: flex;
-            align-items: flex-start;
-            justify-content: center;
-            padding-top: 5px;
-            color: white;
-            font-family: var(--f-mono);
-            font-weight: bold;
-            font-size: 1.1rem;
-        }
-
-        /* Estados de los bloques al ordenar */
-        .sort-box.compare .sort-bar {
-            background: var(--hot);
-        }
-
-        .sort-box.swap .sort-bar {
-            background: var(--bad);
-        }
-
-        .sort-box.sorted .sort-bar {
-            background: var(--accent);
-        }
-
-        .sort-box.pivot .sort-bar {
-            background: var(--hot);
-        }
-
-        /* Memoria Auxiliar (Para MergeSort) */
-        .aux-array-flex {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            align-items: flex-end;
-            height: 60px;
-            padding-top: 10px;
-            border-top: 2px dashed var(--muted);
-            margin-top: 10px;
-            width: 100%;
-        }
-
-        .aux-bar {
-            width: 50px;
-            background: var(--muted);
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-family: var(--f-mono);
-            font-weight: bold;
-            opacity: 0.5;
-            height: 40px;
-        }
-
-        .aux-bar.active {
-            background: var(--accent);
-            opacity: 1;
-            transform: scale(1.05);
-            transition: all 0.3s ease;
-        }
-
-        .status-log {
-            font-family: var(--f-mono);
-            font-size: 0.9rem;
-            background: var(--code-bg);
-            color: var(--ink);
-            border: 1px solid var(--line);
-            border-left: 4px solid var(--accent);
-            padding: 10px;
-            border-radius: 6px;
-            min-height: 40px;
-            margin-top: 10px;
-            width: 100%;
-            text-align: center;
-        }
-
-        /* Tarjetas de Ejercicios */
-        .exercise-card {
-            border: 1px solid var(--line);
-            border-radius: 10px;
-            margin-bottom: 16px;
-            background: var(--surface);
-            padding: 16px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
-        }
-
-        .exercise-card h4 {
-            margin: 0 0 8px 0;
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .ex-desc {
-            margin-bottom: 12px;
-            font-size: 0.95rem;
-            color: var(--muted);
-        }
-
-        .exercise-level {
-            display: inline-block;
-            padding: 3px 10px;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .level-easy {
-            background: var(--ok-soft);
-            color: var(--ok);
-        }
-
-        .level-med {
-            background: var(--hot-soft);
-            color: #8A7222;
-        }
-
-        /* Estilos de Búsqueda y Bases de Datos */
-        .search-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-        }
-
-        .search-flex {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin: 20px 0 15px;
-        }
-
-        .search-box {
-            width: 58px;
-            height: 64px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid var(--line);
-            border-radius: 8px;
-            background: var(--surface);
-            font-family: var(--f-mono);
-            font-weight: 700;
-            font-size: 1.15rem;
-            color: var(--ink);
-            transition: all 0.25s ease;
-            position: relative;
-        }
-
-        .search-box .search-idx {
-            font-size: 0.72rem;
-            font-weight: 500;
-            color: var(--muted);
-            margin-top: 2px;
-        }
-
-        .search-box.checking {
-            background: var(--hot-soft);
-            border-color: var(--hot);
-            color: #8A7222;
-            transform: scale(1.08);
-        }
-
-        .search-box.found {
-            background: var(--ok-soft);
-            border-color: var(--ok);
-            color: var(--ok);
-            transform: scale(1.12);
-            box-shadow: 0 0 0 4px var(--ok-soft);
-        }
-
-        .search-box.discarded {
-            opacity: 0.25;
-            background: #f1f3f3;
-            border-color: #d8dedc;
-            text-decoration: line-through;
-        }
-
-        .search-box.bound {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 2px var(--accent-soft);
-        }
-
-        .search-box.mid {
-            background: var(--accent-soft);
-            border-color: var(--accent);
-            color: var(--accent);
-            transform: scale(1.1);
-        }
-
-        .tech-card {
-            border: 1px solid var(--line);
-            border-radius: 10px;
-            padding: 16px;
-            background: var(--surface);
-            margin-bottom: 14px;
-        }
-
-        .tech-card h4 {
-            margin: 0 0 6px 0;
-            color: var(--title);
-            font-size: 1.05rem;
-        }
-
-        details.ex-solution {
-            margin-top: 10px;
-        }
-
-        details.ex-solution summary {
-            font-weight: 600;
-            padding: 8px 14px;
-            background: var(--accent-soft);
-            color: var(--accent);
-            border-radius: 6px;
-            cursor: pointer;
-            list-style: none;
-            display: inline-flex;
-            align-items: center;
-            font-size: 0.9rem;
-            transition: background 0.2s;
-        }
-
-        details.ex-solution summary:hover {
-            background: #d0e7e1;
-        }
-
-        details.ex-solution summary::-webkit-details-marker {
-            display: none;
-        }
-
-        details.ex-solution summary::before {
-            content: '▶ Ver solución';
-            margin-right: 6px;
-            font-size: 0.85em;
-        }
-
-        details.ex-solution[open] summary::before {
-            content: '▼ Ocultar solución';
-        }
-
-        details.ex-solution .code {
-            margin-top: 12px;
         }
     </style>
 </head>
 
 <body>
-
     <main class="deck" id="deck">
 
-        <!-- 1 Portada -->
-        <section class="slide active" data-name="Inicio" aria-label="Portada">
-            <div class="wrap hero">
-                <h1 tabindex="-1">3. Ordenamiento y Búsqueda en C++</h1>
-                <p class="lead">Algoritmos clásicos: Burbuja, Shell, Quicksort, Mergesort y Búsqueda (Lineal y Binaria). Análisis de rendimiento temporal, memoria RAM y aplicaciones en bases de datos e industria.</p>
-
-                <div class="panel" style="margin-top: 30px; text-align: center; border-color: var(--accent);">
-                    <h3 style="color: var(--accent);">¿Por qué estudiar cómo ordenar?</h3>
-                    <p>Ordenar datos es una de las operaciones más costosas computacionalmente. Elegir el algoritmo
-                        correcto según el volumen de datos y la memoria disponible es clave en el desarrollo de software
-                        profesional.</p>
-                </div>
-                <p class="hint row top">Avanza con las flechas del teclado o los botones inferiores.</p>
+        <!-- PORTADA -->
+        <section class="slide active" data-name="Inicio">
+            <div class="wrap">
+                <h1>3. Ordenamiento</h1>
+                <p class="muted">Cada tema tiene el concepto, un ejemplo en C++ y ejercicios.</p>
+                <ul>
+                    <li>3.1 Tipos de ordenamiento</li>
+                    <li>3.2 Burbuja</li>
+                    <li>3.3 Shell</li>
+                    <li>3.4 Quicksort</li>
+                    <li>3.5 Mergesort</li>
+                    <li>Ejemplos con algoritmo y lenguaje de programación, y ejercicios de cada método</li>
+                </ul>
+                <p class="muted">Avanza con las flechas del teclado o con los botones de abajo.</p>
             </div>
         </section>
 
-        <!-- 2 Tipos de Ordenamiento (Conceptos) -->
-        <section class="slide" data-name="3.1 Tipos" aria-label="Tipos de Ordenamiento">
+        <!-- 3.1 TIPOS 1 -->
+        <section class="slide" data-name="3.1 Tipos (1/3)">
             <div class="wrap">
-                <h2 tabindex="-1">3.1. Tipos de Ordenamiento (Conceptos)</h2>
-                <p class="def">No todos los algoritmos son iguales. Se clasifican principalmente por cómo manejan la
-                    memoria y si mantienen el orden original de datos duplicados.</p>
-
+                <h2>3.1 Tipos de ordenamiento (1/3): ¿qué es ordenar?</h2>
+                <p class="sub">Concepto y orden ascendente o descendente</p>
                 <div class="two">
-                    <div class="panel" style="border-left: 4px solid var(--accent);">
-                        <h3>Por Uso de Memoria (Espacio)</h3>
+                    <div>
+                        <p><strong>Ordenar</strong> es reorganizar los elementos de una lista (arreglo) siguiendo un
+                            criterio.</p>
                         <ul>
-                            <li><strong>In-place (En el lugar):</strong> Ordenan los datos modificando el array original
-                                sin requerir arrays adicionales grandes. Son muy eficientes en memoria (Costo espacial:
-                                <code>O(1)</code>).<br><em>Ej: Burbuja, Shell, Quicksort.</em>
-                            </li>
-                            <li style="margin-top: 10px;"><strong>Out-of-place (Con memoria extra):</strong> Requieren
-                                crear arrays temporales para copiar datos. Si tienes 1GB de datos, necesitarás 1GB extra
-                                de RAM (Costo espacial: <code>O(N)</code>).<br><em>Ej: Mergesort.</em></li>
+                            <li><strong>Ascendente:</strong> de menor a mayor (1, 2, 5, 9) o de la A a la Z.</li>
+                            <li><strong>Descendente:</strong> de mayor a menor (9, 5, 2, 1) o de la Z a la A.</li>
                         </ul>
-                    </div>
-                    <div class="panel" style="border-left: 4px solid var(--accent);">
-                        <h3>Por Estabilidad</h3>
+                        <p>Los métodos que veremos son:</p>
                         <ul>
-                            <li><strong>Estables:</strong> Si dos elementos tienen el <strong>mismo valor</strong>, conservan el orden relativo en el que aparecieron originalmente.<br><em>Ej: Burbuja, Mergesort.</em></li>
-                            <li style="margin-top: 10px;"><strong>Inestables:</strong> No garantizan conservar el orden relativo entre elementos iguales. Al dar saltos grandes o particiones, los pueden invertir.<br><em>Ej: Quicksort, Shell Sort.</em></li>
+                            <li><strong>Burbuja y Shell:</strong> comparan e intercambian elementos.</li>
+                            <li><strong>Quicksort y Mergesort:</strong> dividen el arreglo en partes más pequeñas y las
+                                resuelven (divide y vencerás).</li>
                         </ul>
+                        <p>Antes de verlos, C++ ya trae un método listo: <code>sort</code>.</p>
                     </div>
-                </div>
+                    <div>
+                        <p class="label">Ejemplo en C++</p>
+                        <pre>#include &lt;iostream&gt;
+#include &lt;algorithm&gt;
+#include &lt;functional&gt;
+using namespace std;
 
-                <!-- Ejemplo visual exclusivo de estabilidad -->
-                <div class="panel" style="margin-top: 18px; background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--accent);">
-                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap;">
-                        <span style="background: var(--accent); color: var(--on-accent); font-weight: 700; font-size: 0.76rem; padding: 3px 9px; border-radius: 4px; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 5px;">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-                            EJEMPLO PRÁCTICO: CRITERIO DE ESTABILIDAD
-                        </span>
-                        <span style="font-size: 0.84rem; color: var(--muted);">(Aclaración: No aplica al uso de memoria; demuestra únicamente el orden de datos duplicados)</span>
-                    </div>
+int main() {
+    int a[] = {5, 2, 9, 1};
 
-                    <h3 style="color: var(--title); margin: 0 0 6px; font-size: 1.25rem;">Demostración del Criterio de Estabilidad: ¿Qué ocurre con dos datos de igual valor?</h3>
-                    <p style="font-size: 0.95rem; margin-bottom: 14px; color: var(--muted); border-left: 3px solid var(--accent); padding-left: 10px;">
-                        Imagina ordenar una lista de estudiantes por nota. Si dos estudiantes tienen la misma nota (5), ¿cuál de los dos queda primero en la lista ordenada? Observa qué ocurre con <span style="background: var(--accent-soft); color: var(--accent); font-weight: bold; padding: 2px 7px; border-radius: 4px; border: 1px solid var(--accent);">5ₐ (primer registro)</span> y <span style="background: var(--code-bg); color: var(--ink); font-weight: bold; padding: 2px 7px; border-radius: 4px; border: 1px solid var(--line);">5ᵦ (segundo registro)</span>:
-                    </p>
+    sort(a, a + 4);                  // ascendente
+    for (int x : a) cout &lt;&lt; x &lt;&lt; " ";
+    cout &lt;&lt; endl;
 
-                    <div style="display: flex; gap: 8px; align-items: center; justify-content: center; margin-bottom: 14px; flex-wrap: wrap;">
-                        <span style="font-weight: 700; font-size: 0.9rem; color: var(--muted);">Lista Inicial:</span>
-                        <span style="width: 42px; height: 42px; display: inline-flex; align-items: center; justify-content: center; border: 2px solid var(--line); background: var(--surface); border-radius: 6px; font-family: var(--f-mono); font-weight: bold;">3</span>
-                        <span style="width: 42px; height: 42px; display: inline-flex; align-items: center; justify-content: center; border: 2px solid var(--accent); background: var(--accent-soft); color: var(--accent); border-radius: 6px; font-family: var(--f-mono); font-weight: bold;">5ₐ</span>
-                        <span style="width: 42px; height: 42px; display: inline-flex; align-items: center; justify-content: center; border: 2px solid var(--line); background: var(--surface); border-radius: 6px; font-family: var(--f-mono); font-weight: bold;">1</span>
-                        <span style="width: 42px; height: 42px; display: inline-flex; align-items: center; justify-content: center; border: 2px solid var(--line); background: var(--code-bg); color: var(--ink); border-radius: 6px; font-family: var(--f-mono); font-weight: bold;">5ᵦ</span>
-                    </div>
-
-                    <div class="two" style="gap: 16px;">
-                        <div style="background: var(--surface); border: 2px solid var(--accent); border-radius: 8px; padding: 14px; text-align: center;">
-                            <p style="font-weight: bold; color: var(--accent); margin: 0 0 8px; display: flex; align-items: center; justify-content: center; gap: 6px;">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                                Algoritmo ESTABLE (Burbuja, Mergesort)
-                            </p>
-                            <div style="display: flex; gap: 6px; justify-content: center; margin-bottom: 10px;">
-                                <span style="padding: 6px 10px; border: 1px solid var(--line); border-radius: 4px; font-family: var(--f-mono);">1</span>
-                                <span style="padding: 6px 10px; border: 1px solid var(--line); border-radius: 4px; font-family: var(--f-mono);">3</span>
-                                <span style="padding: 6px 10px; border: 2px solid var(--accent); background: var(--accent-soft); color: var(--accent); border-radius: 4px; font-family: var(--f-mono); font-weight: bold;">5ₐ</span>
-                                <span style="padding: 6px 10px; border: 1px solid var(--line); background: var(--code-bg); color: var(--ink); border-radius: 4px; font-family: var(--f-mono); font-weight: bold;">5ᵦ</span>
-                            </div>
-                            <p style="font-size: 0.88rem; color: var(--muted); margin: 0; line-height: 1.4;">
-                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                                <strong>5ₐ</strong> estaba antes que <strong>5ᵦ</strong> al inicio y <strong>permanece antes</strong> al terminar. Conserva intacto el orden de llegada original.
-                            </p>
-                        </div>
-
-                        <div style="background: var(--surface); border: 2px solid var(--line); border-radius: 8px; padding: 14px; text-align: center;">
-                            <p style="font-weight: bold; color: var(--muted); margin: 0 0 8px; display: flex; align-items: center; justify-content: center; gap: 6px;">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-                                Algoritmo INESTABLE (Quicksort, Shell)
-                            </p>
-                            <div style="display: flex; gap: 6px; justify-content: center; margin-bottom: 10px;">
-                                <span style="padding: 6px 10px; border: 1px solid var(--line); border-radius: 4px; font-family: var(--f-mono);">1</span>
-                                <span style="padding: 6px 10px; border: 1px solid var(--line); border-radius: 4px; font-family: var(--f-mono);">3</span>
-                                <span style="padding: 6px 10px; border: 1px solid var(--line); background: var(--code-bg); color: var(--ink); border-radius: 4px; font-family: var(--f-mono); font-weight: bold;">5ᵦ</span>
-                                <span style="padding: 6px 10px; border: 2px solid var(--accent); background: var(--accent-soft); color: var(--accent); border-radius: 4px; font-family: var(--f-mono); font-weight: bold;">5ₐ</span>
-                            </div>
-                            <p style="font-size: 0.88rem; color: var(--muted); margin: 0; line-height: 1.4;">
-                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                                Al dar saltos o particiones, <strong>5ᵦ</strong> se cruzó y quedó ubicado antes que <strong>5ₐ</strong>. Aunque ambos valen 5, se alteró su orden relativo inicial.
-                            </p>
-                        </div>
+    sort(a, a + 4, greater&lt;int&gt;());  // descendente
+    for (int x : a) cout &lt;&lt; x &lt;&lt; " ";
+    return 0;
+}</pre>
+                        <p class="label">Salida</p>
+                        <pre class="salida">1 2 5 9
+9 5 2 1</pre>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- 3 Burbuja -->
-        <section class="slide" data-name="3.2 Burbuja" aria-label="Burbuja">
+        <!-- 3.1 TIPOS 2 -->
+        <section class="slide" data-name="3.1 Tipos (2/3)">
             <div class="wrap">
-                <h2 tabindex="-1">3.2. Ordenamiento Burbuja (Bubble Sort)</h2>
-                <p>Compara elementos adyacentes y los intercambia si están en el orden equivocado. Los valores más
-                    grandes "burbujean" hacia el final del array en cada pasada.</p>
-
+                <h2>3.1 Tipos de ordenamiento (2/3): memoria y estabilidad</h2>
+                <p class="sub">Dos formas de clasificar los métodos</p>
                 <div class="two">
                     <div>
-                        <div class="big-o-badge bad">Tiempo Promedio: O(N²) - Muy Lento</div>
-                        <div class="big-o-badge">Memoria (Espacio): O(1) - In-place</div>
-                        <div class="big-o-badge">Estable: Sí</div>
-
-                        <p><strong>Uso:</strong> Solo con fines educativos o para arrays extremadamente pequeños. En
-                            C++, es muy ineficiente porque usa bucles anidados evaluando absolutamente todo una y otra
-                            vez.</p>
+                        <h3>Por uso de memoria</h3>
+                        <ul>
+                            <li><strong>En el lugar (in-place):</strong> ordenan dentro del mismo arreglo, sin copiarlo.
+                                Ejemplos: Burbuja, Shell, Quicksort.</li>
+                            <li><strong>Con memoria extra:</strong> necesitan un arreglo auxiliar del mismo tamaño.
+                                Ejemplo: Mergesort.</li>
+                        </ul>
+                        <h3>Por estabilidad</h3>
+                        <ul>
+                            <li><strong>Estable:</strong> si dos elementos son iguales, mantienen su orden original.
+                                Ejemplos: Burbuja, Mergesort.</li>
+                            <li><strong>Inestable:</strong> pueden cambiar el orden de los iguales. Ejemplos: Shell,
+                                Quicksort.</li>
+                        </ul>
+                        <p>Esto importa al ordenar registros: si ordenas estudiantes por nota, los que tienen la misma
+                            nota deberían seguir en el orden en que llegaron.</p>
                     </div>
-
-                    <div class="panel">
-                        <div class="row" style="margin-bottom: 15px; justify-content: center;">
-                            <button class="btn action" id="btn-bubble-step">Siguiente Paso</button>
-                            <button class="btn" id="btn-bubble-reset">Reiniciar</button>
-                        </div>
-
-                        <div class="sort-container">
-                            <div class="array-flex" id="bubble-array">
-                                <!-- Renderizado por JS -->
-                            </div>
-                            <div class="status-log" id="bubble-log">Haz clic en Siguiente Paso para comenzar.</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 4 Shell -->
-        <section class="slide" data-name="3.3 Shell" aria-label="Shell Sort">
-            <div class="wrap">
-                <h2 tabindex="-1">3.3. Ordenamiento Shell (Shell Sort)</h2>
-                <p>Mejora de la inserción. En lugar de comparar elementos adyacentes, compara elementos separados por un
-                    "hueco" (gap) que se va reduciendo hasta llegar a 1. Esto permite dar saltos largos.</p>
-
-                <div class="two">
                     <div>
-                        <div class="big-o-badge warn">Tiempo Promedio: O(N log N) a O(N^1.5)</div>
-                        <div class="big-o-badge">Memoria (Espacio): O(1) - In-place</div>
-                        <div class="big-o-badge bad">Estable: No</div>
-
-                        <p><strong>Comportamiento en Memoria:</strong> Sigue siendo <em>In-place</em> (no crea arrays
-                            nuevos), pero al dar "saltos", altera el orden original de datos duplicados (inestable).</p>
-                    </div>
-
-                    <div class="panel">
-                        <div class="row" style="margin-bottom: 15px; justify-content: center;">
-                            <button class="btn action" id="btn-shell-step">Siguiente Paso (Gap)</button>
-                            <button class="btn" id="btn-shell-reset">Reiniciar</button>
-                        </div>
-
-                        <div class="sort-container">
-                            <div class="array-flex" id="shell-array">
-                                <!-- Renderizado por JS -->
-                            </div>
-                            <div class="status-log" id="shell-log">Haz clic en Siguiente Paso para comenzar con Gap = 3.
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 5 Quicksort -->
-        <section class="slide" data-name="3.4 Quicksort" aria-label="Quicksort">
-            <div class="wrap">
-                <h2 tabindex="-1">3.4. Ordenamiento Rápido (Quicksort)</h2>
-                <p>Utiliza la técnica "Divide y Vencerás". Elige un elemento llamado <strong>Pivote</strong>, y mueve
-                    todos los números menores a su izquierda y los mayores a su derecha. Luego repite el proceso
-                    recursivamente en cada mitad.</p>
-
-                <div class="two">
-                    <div>
-                        <div class="big-o-badge">Tiempo Promedio: O(N log N) - Muy Rápido</div>
-                        <div class="big-o-badge bad">Tiempo Peor Caso: O(N²)</div>
-                        <div class="big-o-badge warn">Memoria (Espacio): O(log N) - En la pila (Stack)</div>
-                        <div class="big-o-badge bad">Estable: No</div>
-
-                        <p><strong>Comportamiento en Memoria:</strong> El array se modifica <em>In-place</em> (no
-                            requiere arreglos paralelos gigantes). Sin embargo, al ser recursivo, cada llamada a la
-                            función consume un poco de memoria en el Stack de llamadas.</p>
-                    </div>
-
-                    <div class="panel">
-                        <div class="row" style="margin-bottom: 15px; justify-content: center;">
-                            <button class="btn action" id="btn-quick-step">Siguiente Paso (Pivote)</button>
-                            <button class="btn" id="btn-quick-reset">Reiniciar</button>
-                        </div>
-
-                        <div class="sort-container">
-                            <div class="array-flex" id="quick-array">
-                                <!-- Renderizado por JS -->
-                            </div>
-                            <div class="status-log" id="quick-log">Haz clic en Siguiente Paso para elegir un Pivote y
-                                particionar.</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 6 Mergesort -->
-        <section class="slide" data-name="3.5 Mergesort" aria-label="Mergesort">
-            <div class="wrap">
-                <h2 tabindex="-1">3.5. Ordenamiento por Mezcla (Mergesort)</h2>
-                <p>Divide el array por la mitad una y otra vez hasta tener elementos individuales. Luego, los va
-                    mezclando (merge) de vuelta pero de forma ordenada. Garantiza el mismo rendimiento sin importar qué
-                    tan desordenado esté el array.</p>
-
-                <div class="two">
-                    <div>
-                        <div class="big-o-badge">Tiempo Garantizado: O(N log N) - Estable y Rápido</div>
-                        <div class="big-o-badge bad">Memoria (Espacio): O(N) - Out-of-place</div>
-                        <div class="big-o-badge">Estable: Sí</div>
-
-                        <p><strong>El Costo en Memoria:</strong> Su gran desventaja en C++ es que requiere
-                            <strong>memoria auxiliar</strong>. Para mezclar las mitades ordenadas, necesita crear un
-                            <em>Array Temporal</em>. Si ordenas 1 GB de datos, Mergesort consumirá 1 GB adicional de
-                            memoria RAM.
-                        </p>
-                    </div>
-
-                    <div class="panel">
-                        <div class="row" style="margin-bottom: 15px; justify-content: center;">
-                            <button class="btn action" id="btn-merge-step">Siguiente Paso (Mezclar)</button>
-                            <button class="btn" id="btn-merge-reset">Reiniciar</button>
-                        </div>
-
-                        <div class="sort-container"
-                            style="min-height: 260px; justify-content: flex-start; padding-top: 10px;">
-                            <!-- Array Principal -->
-                            <div class="array-flex" id="merge-array">
-                                <!-- Renderizado por JS -->
-                            </div>
-
-                            <!-- Memoria Auxiliar (Visualización del costo O(N)) -->
-                            <div class="aux-array-flex" id="merge-aux-array">
-                                <div style="position: absolute; color: var(--muted); font-size: 0.8rem; top: 130px;">
-                                    Memoria Auxiliar O(N) (Heap)</div>
-                                <!-- Renderizado por JS -->
-                            </div>
-
-                            <div class="status-log" id="merge-log" style="margin-top: 5px;">Haz clic en Siguiente Paso
-                                para ver cómo usa la memoria auxiliar para mezclar.</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 3.6 Industria y Bases de Datos -->
-        <section class="slide" data-name="3.6 Industria y BD" aria-label="Ordenamiento en la Industria y Bases de Datos">
-            <div class="wrap">
-                <h2 tabindex="-1">3.6. Ordenamiento en la Industria y Bases de Datos</h2>
-                <p class="lead">¿Cómo ordenan sistemas gigantescos como PostgreSQL, MySQL o Google cuando los datos no caben en la memoria RAM?</p>
-
-                <div class="two">
-                    <div>
-                        <div class="tech-card" style="border-left: 4px solid var(--accent);">
-                            <h4>1. External Merge Sort (Ordenamiento Externo)</h4>
-                            <p>Cuando un dataset (ej. <strong>100 GB</strong>) supera la memoria RAM disponible (ej. <strong>8 GB</strong>), Quicksort no puede usarse directamente porque no puede hacer intercambios aleatorios en disco duro.</p>
-                            <ul>
-                                <li><strong>Fase 1 (Generación de Runs):</strong> Se leen bloques de datos que sí caben en RAM (ej. de 4 GB), se ordenan en memoria con Quicksort y se guardan temporalmente en disco como archivos ordenados llamados <em>Runs</em>.</li>
-                                <li><strong>Fase 2 (K-Way Merge):</strong> Con varios <em>runs</em> en disco, se cargan pequeños búferes de lectura en RAM y se fusionan ordenadamente hacia el archivo final (exactamente el principio de <strong>Mergesort</strong>).</li>
-                            </ul>
-                        </div>
-
-                        <div class="tech-card" style="border-left: 4px solid var(--hot);">
-                            <h4>2. Índices B-Tree en Bases de Datos Relacionales</h4>
-                            <p>En motores SQL (PostgreSQL, MySQL, SQLite), ejecutar <code>SELECT * FROM Estudiantes ORDER BY codigo;</code> no ordena la tabla desde cero en cada consulta. En su lugar, el motor mantiene un <strong>Índice en Árbol B+ (B+Tree)</strong> donde las claves ya residen ordenadas en páginas de almacenamiento, permitiendo lecturas secuenciales ultrarrápidas.</p>
-                        </div>
-                    </div>
-
-                    <div>
-                        <div class="tech-card" style="border-left: 4px solid var(--accent);">
-                            <h4>3. Algoritmos Híbridos en Producción</h4>
-                            <p>En los compiladores y lenguajes profesionales casi nunca se usa un solo algoritmo puro; se combinan los mejores enfoques:</p>
-                            <ul>
-                                <li><strong>Introsort (C++ <code>std::sort</code>):</strong> Comienza con <strong>Quicksort</strong> por su velocidad in-place. Si la recursión se vuelve muy profunda (riesgo de caer en $O(N^2)$), conmuta automáticamente a <strong>Heapsort</strong> garantizando $O(N \log N)$. Si el subarreglo tiene menos de 16 elementos, conmuta a <strong>Insertion Sort</strong>.</li>
-                                <li><strong>Timsort (Python, Java, Android, Rust):</strong> Diseñado por Tim Peters. Aprovecha secuencias que ya vienen ordenadas en datos de la vida real (<em>runs naturales</em>) y las fusiona usando principios de Mergesort e Inserción.</li>
-                            </ul>
-                        </div>
-
-                        <div class="panel" style="background: var(--code-bg); text-align: center;">
-                            <p style="font-weight: 600; color: var(--accent); margin-bottom: 6px;">Regla de Oro en la Industria</p>
-                            <p class="hint" style="margin: 0;"><em>"Ordena una sola vez con un buen algoritmo ($O(N \log N)$), o indexa con un B-Tree, para que luego todas las búsquedas sean casi instantáneas ($O(\log N)$)."</em></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 3.7 Algoritmos de Búsqueda -->
-        <section class="slide" data-name="3.7 Búsqueda" aria-label="Algoritmos de Búsqueda: Lineal y Binaria">
-            <div class="wrap">
-                <h2 tabindex="-1">3.7. Algoritmos de Búsqueda: Lineal y Binaria</h2>
-                <p class="lead">El propósito principal de ordenar un array es acelerar drásticamente la búsqueda de información.</p>
-
-                <div class="two">
-                    <div>
-                        <div class="big-o-badge warn">Búsqueda Lineal: O(N) — Datos sin ordenar</div>
-                        <div class="big-o-badge">Búsqueda Binaria: O(log N) — Requiere Array Ordenado</div>
-
-                        <div class="panel" style="margin-top: 14px;">
-                            <h4 style="margin: 0 0 8px; color: var(--title);">La Diferencia Matemática</h4>
-                            <p style="font-size: 0.95rem;">Si tienes <strong>1,000,000 de registros</strong>:</p>
-                            <ul style="font-size: 0.92rem; padding-left: 20px;">
-                                <li><strong>Búsqueda Lineal:</strong> Recorre uno a uno desde el inicio. Peor caso: <strong>1,000,000 de comparaciones</strong>.</li>
-                                <li><strong>Búsqueda Binaria:</strong> Descarta la mitad en cada paso ($medio = (inicio + fin) / 2$). Peor caso: <strong>¡Solo 20 comparaciones!</strong> ($\log_2 1,000,000 \approx 19.9$).</li>
-                            </ul>
-                            <p class="hint" style="margin-top: 10px;">¡Prueba el simulador de la derecha con el mismo número y compara la cantidad de pasos que toma cada una!</p>
-                        </div>
-                    </div>
-
-                    <div class="panel">
-                        <div class="row" style="margin-bottom: 12px; justify-content: center; gap: 8px;">
-                            <label for="sel-search-target" style="font-weight: 600;">Buscar:</label>
-                            <select id="sel-search-target" style="padding: 5px 10px; font-weight: bold;">
-                                <option value="48" selected>48 (En el medio)</option>
-                                <option value="12">12 (Al inicio)</option>
-                                <option value="91">91 (Al final)</option>
-                                <option value="34">34 (Posición 2)</option>
-                                <option value="79">79 (Posición 6)</option>
-                                <option value="50">50 (No existe)</option>
-                            </select>
-                        </div>
-
-                        <div class="row" style="margin-bottom: 12px; justify-content: center; gap: 8px;">
-                            <button class="btn" id="btn-lin-step" style="border-color: var(--hot);">Paso Lineal</button>
-                            <button class="btn action" id="btn-bin-step">Paso Binaria</button>
-                            <button class="btn" id="btn-search-reset">Reiniciar</button>
-                        </div>
-
-                        <div class="search-container">
-                            <div class="search-flex" id="search-array">
-                                <!-- Renderizado por JS -->
-                            </div>
-                            <div class="status-log" id="search-log">Elige un valor y avanza paso a paso.</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 3.8 Caso Práctico de Búsqueda -->
-        <section class="slide" data-name="3.8 Caso Práctico" aria-label="Caso Práctico de Búsqueda en C++">
-            <div class="wrap">
-                <h2 tabindex="-1">3.8. Caso Práctico de Búsqueda en C++ (Evaluación)</h2>
-                <p class="lead">Implementación en consola de un caso típico para evaluación práctica en salas de cómputo: Sistema de Estudiantes con búsqueda lineal y binaria.</p>
-
-                <div class="panel" style="margin-bottom: 16px;">
-                    <h3 style="color: var(--accent); margin-bottom: 6px;">Caso: Registro de Notas de Estudiantes Unitrópico</h3>
-                    <p style="font-size: 0.95rem; margin-bottom: 10px;">En este ejercicio resolvemos el flujo completo evaluado en laboratorio: 1) Estructura de datos <code>struct</code>, 2) Búsqueda Lineal sobre datos desordenados, 3) Ordenamiento por código, y 4) Búsqueda Binaria para consultas ultrarrápidas.</p>
-
-                    <pre class="code" style="max-height: 380px; overflow-y: auto;">
-#include &lt;iostream&gt;
+                        <p class="label">Ejemplo en C++: orden estable por nota</p>
+                        <pre>#include &lt;iostream&gt;
 #include &lt;string&gt;
+#include &lt;algorithm&gt;
 using namespace std;
 
-struct Estudiante {
-    int codigo;
-    string nombre;
-    float nota;
-};
+struct Est { string nombre; int nota; };
 
-// 1. Busqueda Lineal O(N): Funciona con el arreglo tal como viene (desordenado)
-int busquedaLineal(Estudiante arr[], int n, int codigoBuscado, int &comparaciones) {
-    comparaciones = 0;
-    for (int i = 0; i &lt; n; i++) {
-        comparaciones++;
-        if (arr[i].codigo == codigoBuscado) {
-            return i; // Encontrado en indice i
-        }
-    }
-    return -1; // No existe
-}
-
-// 2. Ordenamiento por Codigo (Burbuja optimizada con bandera)
-void ordenarPorCodigo(Estudiante arr[], int n) {
-    for (int i = 0; i &lt; n - 1; i++) {
-        bool huboCambio = false;
-        for (int j = 0; j &lt; n - i - 1; j++) {
-            if (arr[j].codigo &gt; arr[j + 1].codigo) {
-                Estudiante temp = arr[j];
-                arr[j] = arr[j + 1];
-                arr[j + 1] = temp;
-                huboCambio = true;
-            }
-        }
-        if (!huboCambio) break; // Ya ordenado
-    }
-}
-
-// 3. Busqueda Binaria O(log N): Requiere que arr[] este PREVIAMENTE ORDENADO
-int busquedaBinaria(Estudiante arr[], int n, int codigoBuscado, int &comparaciones) {
-    int inicio = 0;
-    int fin = n - 1;
-    comparaciones = 0;
-
-    while (inicio &lt;= fin) {
-        comparaciones++;
-        int medio = inicio + (fin - inicio) / 2; // Evita desbordamiento de enteros
-
-        if (arr[medio].codigo == codigoBuscado) {
-            return medio; // Encontrado
-        }
-        if (arr[medio].codigo &lt; codigoBuscado) {
-            inicio = medio + 1; // Descartar mitad izquierda
-        } else {
-            fin = medio - 1;    // Descartar mitad derecha
-        }
-    }
-    return -1; // No encontrado
-}
+bool porNota(Est a, Est b) { return a.nota &lt; b.nota; }
 
 int main() {
-    const int TOTAL = 5;
-    Estudiante grupo[TOTAL] = {
-        {1050, "Carlos Perez", 4.2},
-        {1010, "Ana Gomez",    4.8},
-        {1090, "Laura Rios",   3.9},
-        {1030, "David Castro", 4.5},
-        {1070, "Sofia Rojas",  3.5}
-    };
+    Est v[] = {{"Ana", 5}, {"Beto", 3}, {"Carla", 5}};
 
-    int codigoTarget = 1030;
-    int comps = 0;
+    stable_sort(v, v + 3, porNota);   // estable
 
-    cout &lt;&lt; "--- 1. BUSQUEDA LINEAL (SIN ORDENAR) ---\n";
-    int idxLin = busquedaLineal(grupo, TOTAL, codigoTarget, comps);
-    if (idxLin != -1) {
-        cout &lt;&lt; "Estudiante: " &lt;&lt; grupo[idxLin].nombre &lt;&lt; " | Nota: " &lt;&lt; grupo[idxLin].nota
-             &lt;&lt; " (Comparaciones: " &lt;&lt; comps &lt;&lt; ")\n\n";
-    }
-
-    cout &lt;&lt; "--- 2. ORDENANDO POR CODIGO INSTITUCIONAL ---\n";
-    ordenarPorCodigo(grupo, TOTAL);
-    for (int i = 0; i &lt; TOTAL; i++) {
-        cout &lt;&lt; "[" &lt;&lt; grupo[i].codigo &lt;&lt; "] " &lt;&lt; grupo[i].nombre &lt;&lt; "\n";
-    }
-
-    cout &lt;&lt; "\n--- 3. BUSQUEDA BINARIA (SOBRE ARRAY ORDENADO) ---\n";
-    int idxBin = busquedaBinaria(grupo, TOTAL, codigoTarget, comps);
-    if (idxBin != -1) {
-        cout &lt;&lt; "Estudiante: " &lt;&lt; grupo[idxBin].nombre &lt;&lt; " | Nota: " &lt;&lt; grupo[idxBin].nota
-             &lt;&lt; " (Comparaciones: " &lt;&lt; comps &lt;&lt; ")\n";
-    }
-
+    for (Est e : v)
+        cout &lt;&lt; e.nombre &lt;&lt; " " &lt;&lt; e.nota &lt;&lt; endl;
     return 0;
-}
-</pre>
+}</pre>
+                        <p class="label">Salida</p>
+                        <pre class="salida">Beto 3
+Ana 5
+Carla 5</pre>
+                        <p class="muted">Ana y Carla tienen nota 5 y Ana sigue antes que Carla: el orden estable se
+                            conservó.</p>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- 7 Ejercicios -->
-        <section class="slide" data-name="30 Ejercicios" aria-label="Ejercicios de Programación">
+        <!-- 3.1 TIPOS 3 -->
+        <section class="slide" data-name="3.1 Tipos (3/3)">
             <div class="wrap">
-                <h2 tabindex="-1">Ejercicios Prácticos: Ordenamiento y Búsqueda</h2>
-                <p class="lead">Soluciones en C++ implementando paso a paso algoritmos de ordenamiento (Burbuja, Shell, Quick, Merge) y algoritmos de búsqueda (Lineal y Binaria).</p>
-
-                <!-- CATEGORÍA 1: BURBUJA -->
-                <h3
-                    style="margin-top:20px; color:var(--accent); border-bottom: 2px solid var(--line); padding-bottom: 5px;">
-                    1. Ordenamiento Burbuja (Bubble Sort)</h3>
-
-                <div class="exercise-card">
-                    <h4>1. Burbuja Clásico <span class="exercise-level level-easy">Básico</span></h4>
-                    <p class="ex-desc"><strong>Planteamiento:</strong> Implementa el algoritmo de Burbuja clásico con
-                        dos bucles <code>for</code> anidados para ordenar un array de 5 números de menor a mayor.</p>
-                    <details class="ex-solution">
-                        <summary></summary>
-                        <pre class="code">
-#include &lt;iostream&gt;
-using namespace std;
-
-int main() {
-    int arreglo1[] = {50, 20, 40, 10, 30};
-    int tamano1 = 5;
-    int temporal1;
-    
-    for(int i = 0; i < tamano1 - 1; i++) {
-        for(int j = 0; j < tamano1 - i - 1; j++) {
-            if(arreglo1[j] > arreglo1[j+1]) {
-                // Intercambio (Swap)
-                temporal1 = arreglo1[j];
-                arreglo1[j] = arreglo1[j+1];
-                arreglo1[j+1] = temporal1;
-            }
-        }
-    }
-    for(int i = 0; i < tamano1; i++) cout &lt;&lt; arreglo1[i] &lt;&lt; " ";
-    return 0;
-}
-</pre>
-                    </details>
-                </div>
-
-                <div class="exercise-card">
-                    <h4>2. Burbuja de Mayor a Menor <span class="exercise-level level-easy">Básico</span></h4>
-                    <p class="ex-desc"><strong>Planteamiento:</strong> Modifica el algoritmo anterior para que los
-                        números más grandes queden al principio (orden descendente).</p>
-                    <details class="ex-solution">
-                        <summary></summary>
-                        <pre class="code">
-#include &lt;iostream&gt;
-using namespace std;
-
-int main() {
-    int arreglo1[] = {15, 3, 9, 8, 20};
-    int temporal1;
-    
-    for(int i = 0; i < 4; i++) {
-        for(int j = 0; j < 4 - i; j++) {
-            if(arreglo1[j] < arreglo1[j+1]) { // Cambio de > a <
-                temporal1 = arreglo1[j];
-                arreglo1[j] = arreglo1[j+1];
-                arreglo1[j+1] = temporal1;
-            }
-        }
-    }
-    return 0;
-}
-</pre>
-                    </details>
-                </div>
-
-                <div class="exercise-card">
-                    <h4>3. Burbuja Optimizado (Bandera) <span class="exercise-level level-med">Intermedio</span></h4>
-                    <p class="ex-desc"><strong>Planteamiento:</strong> Añade una variable
-                        <code>bool huboIntercambio1</code>. Si en una pasada entera no hubo cambios, el array ya está
-                        ordenado y podemos romper el bucle con <code>break</code> para ahorrar tiempo.
-                    </p>
-                    <details class="ex-solution">
-                        <summary></summary>
-                        <pre class="code">
-#include &lt;iostream&gt;
-using namespace std;
-
-int main() {
-    int arreglo1[] = {10, 20, 30, 50, 40}; // Casi ordenado
-    int tamano1 = 5, temporal1;
-    bool huboIntercambio1;
-    
-    for(int i = 0; i < tamano1 - 1; i++) {
-        huboIntercambio1 = false;
-        for(int j = 0; j < tamano1 - i - 1; j++) {
-            if(arreglo1[j] > arreglo1[j+1]) {
-                temporal1 = arreglo1[j];
-                arreglo1[j] = arreglo1[j+1];
-                arreglo1[j+1] = temporal1;
-                huboIntercambio1 = true;
-            }
-        }
-        if(huboIntercambio1 == false) break; // Optimización
-    }
-    return 0;
-}
-</pre>
-                    </details>
-                </div>
-
-                <div class="exercise-card">
-                    <h4>4. Burbuja con std::swap <span class="exercise-level level-med">Intermedio</span></h4>
-                    <p class="ex-desc"><strong>Planteamiento:</strong> Reescribe el método de Burbuja, pero esta vez usa
-                        la función nativa <code>swap()</code> de C++ en lugar de crear una variable temporal manual.</p>
-                    <details class="ex-solution">
-                        <summary></summary>
-                        <pre class="code">
-#include &lt;iostream&gt;
-#include &lt;algorithm&gt; // Contiene swap
-using namespace std;
-
-int main() {
-    int arreglo1[] = {9, 2, 7};
-    
-    for(int i = 0; i < 2; i++) {
-        for(int j = 0; j < 2 - i; j++) {
-            if(arreglo1[j] > arreglo1[j+1]) {
-                swap(arreglo1[j], arreglo1[j+1]); // C++ hace la magia
-            }
-        }
-    }
-    return 0;
-}
-</pre>
-                    </details>
-                </div>
-
-                <div class="exercise-card">
-                    <h4>5. Burbuja en un std::vector <span class="exercise-level level-med">Intermedio</span></h4>
-                    <p class="ex-desc"><strong>Planteamiento:</strong> Aplica Burbuja dinámico. Usa un
-                        <code>vector&lt;int&gt;</code> y su función <code>.size()</code> para definir los límites de los
-                        bucles.
-                    </p>
-                    <details class="ex-solution">
-                        <summary></summary>
-                        <pre class="code">
-#include &lt;iostream&gt;
-#include &lt;vector&gt;
-using namespace std;
-
-int main() {
-    vector&lt;int&gt; v1 = {88, 11, 44, 22};
-    
-    for(int i = 0; i < v1.size() - 1; i++) {
-        for(int j = 0; j < v1.size() - i - 1; j++) {
-            if(v1[j] > v1[j+1]) {
-                swap(v1[j], v1[j+1]);
-            }
-        }
-    }
-    return 0;
-}
-</pre>
-                    </details>
-                </div>
-
-                <div class="exercise-card">
-                    <h4>6. Contar Intercambios de Burbuja <span class="exercise-level level-med">Intermedio</span></h4>
-                    <p class="ex-desc"><strong>Planteamiento:</strong> Ordena un array e imprime exactamente cuántas
-                        veces se ejecutó la acción de intercambiar datos (swap).</p>
-                    <details class="ex-solution">
-                        <summary></summary>
-                        <pre class="code">
-#include &lt;iostream&gt;
-using namespace std;
-
-int main() {
-    int arreglo1[] = {5, 4, 3, 2, 1}; // Peor caso
-    int contadorSwaps1 = 0;
-    
-    for(int i = 0; i < 4; i++) {
-        for(int j = 0; j < 4 - i; j++) {
-            if(arreglo1[j] > arreglo1[j+1]) {
-                swap(arreglo1[j], arreglo1[j+1]);
-                contadorSwaps1++;
-            }
-        }
-    }
-    cout &lt;&lt; "Intercambios: " &lt;&lt; contadorSwaps1; // Sera 10
-    return 0;
-}
-</pre>
-                    </details>
-                </div>
-
-                <div class="exercise-card">
-                    <h4>7. Burbuja de Textos (Strings) <span class="exercise-level level-med">Intermedio</span></h4>
-                    <p class="ex-desc"><strong>Planteamiento:</strong> El Burbuja también funciona con letras (orden
-                        alfabético). Ordena un array de 3 nombres (strings).</p>
-                    <details class="ex-solution">
-                        <summary></summary>
-                        <pre class="code">
-#include &lt;iostream&gt;
-#include &lt;string&gt;
-using namespace std;
-
-int main() {
-    string nombres1[] = {"Zacarias", "Ana", "Beto"};
-    
-    for(int i = 0; i < 2; i++) {
-        for(int j = 0; j < 2 - i; j++) {
-            if(nombres1[j] > nombres1[j+1]) {
-                swap(nombres1[j], nombres1[j+1]);
-            }
-        }
-    }
-    // Resultado: Ana, Beto, Zacarias
-    return 0;
-}
-</pre>
-                    </details>
-                </div>
-
-                <!-- CATEGORÍA 2: SHELL SORT -->
-                <h3
-                    style="margin-top:30px; color:var(--accent); border-bottom: 2px solid var(--line); padding-bottom: 5px;">
-                    2. Ordenamiento Shell (Shell Sort)</h3>
-
-                <div class="exercise-card">
-                    <h4>8. Shell Sort Clásico <span class="exercise-level level-hard">Avanzado</span></h4>
-                    <p class="ex-desc"><strong>Planteamiento:</strong> Implementa Shell Sort dividiendo repetidamente el
-                        "gap" (espacio) a la mitad (N/2) hasta que el gap sea 1.</p>
-                    <details class="ex-solution">
-                        <summary></summary>
-                        <pre class="code">
-#include &lt;iostream&gt;
-using namespace std;
-
-int main() {
-    int arr[] = {12, 34, 54, 2, 3};
-    int n = 5;
-    
-    // El salto (gap) inicia a la mitad del array
-    for (int gap = n/2; gap > 0; gap /= 2) {
-        for (int i = gap; i < n; i += 1) {
-            int temporal1 = arr[i];
-            int j;
-            for (j = i; j >= gap && arr[j - gap] > temporal1; j -= gap) {
-                arr[j] = arr[j - gap];
-            }
-            arr[j] = temporal1;
-        }
-    }
-    return 0;
-}
-</pre>
-                    </details>
-                </div>
-
-                <div class="exercise-card">
-                    <h4>9. Función de Shell Sort <span class="exercise-level level-hard">Avanzado</span></h4>
-                    <p class="ex-desc"><strong>Planteamiento:</strong> Mueve la lógica del Shell Sort a una función
-                        <code>void ordenarShell(int arr[], int n)</code> y llámala desde main.
-                    </p>
-                    <details class="ex-solution">
-                        <summary></summary>
-                        <pre class="code">
-#include &lt;iostream&gt;
-using namespace std;
-
-void ordenarShell(int arreglo1[], int tamano1) {
-    for (int gap = tamano1/2; gap > 0; gap /= 2) {
-        for (int i = gap; i < tamano1; i++) {
-            int temporal = arreglo1[i];
-            int j;
-            for (j = i; j >= gap && arreglo1[j - gap] > temporal; j -= gap) {
-                arreglo1[j] = arreglo1[j - gap];
-            }
-            arreglo1[j] = temporal;
-        }
-    }
-}
-
-int main() {
-    int nums[] = {9, 1, 8, 2, 7, 3};
-    ordenarShell(nums, 6);
-    return 0;
-}
-</pre>
-                    </details>
-                </div>
-
-                <div class="exercise-card">
-                    <h4>10-15. Variaciones de Shell Sort <span class="exercise-level level-hard">Avanzado</span></h4>
-                    <p class="ex-desc"><strong>Planteamiento (Ejercicios 10 al 15 consolidados):</strong> Para dominar
-                        Shell Sort, modifícalo para: 10) Orden Descendente. 11) Usarlo con un Vector. 12) Ordenar Chars.
-                        13) Usar una secuencia de Knuth (gap = gap*3 + 1). 14) Contar los "saltos". 15) Aplicarlo a un
-                        struct básico. (El código muestra la versión Descendente con vector).</p>
-                    <details class="ex-solution">
-                        <summary></summary>
-                        <pre class="code">
-#include &lt;iostream&gt;
-#include &lt;vector&gt;
-using namespace std;
-
-int main() {
-    vector&lt;int&gt; v = {10, 5, 80, 20};
-    int n = v.size();
-    
-    for (int gap = n/2; gap > 0; gap /= 2) {
-        for (int i = gap; i < n; i++) {
-            int temp = v[i];
-            int j;
-            // Para descendente cambiamos > por < en la comprobación
-            for (j = i; j >= gap && v[j - gap] < temp; j -= gap) {
-                v[j] = v[j - gap];
-            }
-            v[j] = temp;
-        }
-    }
-    return 0;
-}
-</pre>
-                    </details>
-                </div>
-
-                <!-- CATEGORÍA 3: QUICKSORT -->
-                <h3
-                    style="margin-top:30px; color:var(--accent); border-bottom: 2px solid var(--line); padding-bottom: 5px;">
-                    3. Ordenamiento Rápido (Quicksort)</h3>
-
-                <div class="exercise-card">
-                    <h4>16. Función Partición de Quicksort <span class="exercise-level level-hard">Avanzado</span></h4>
-                    <p class="ex-desc"><strong>Planteamiento:</strong> Crea la función <code>particionar</code> que
-                        elige el último elemento como Pivote y acomoda los menores a su izquierda. Retorna el índice
-                        final del pivote.</p>
-                    <details class="ex-solution">
-                        <summary></summary>
-                        <pre class="code">
-#include &lt;iostream&gt;
-using namespace std;
-
-int particionar(int arr[], int bajo, int alto) {
-    int pivote1 = arr[alto];
-    int i = (bajo - 1);
-    
-    for (int j = bajo; j <= alto - 1; j++) {
-        if (arr[j] < pivote1) {
-            i++;
-            swap(arr[i], arr[j]);
-        }
-    }
-    swap(arr[i + 1], arr[alto]);
-    return (i + 1);
-}
-</pre>
-                    </details>
-                </div>
-
-                <div class="exercise-card">
-                    <h4>17. Quicksort Recursivo Clásico <span class="exercise-level level-hard">Avanzado</span></h4>
-                    <p class="ex-desc"><strong>Planteamiento:</strong> Utilizando la función particionar del ejercicio
-                        anterior, crea la función recursiva <code>quickSort()</code> completa.</p>
-                    <details class="ex-solution">
-                        <summary></summary>
-                        <pre class="code">
-#include &lt;iostream&gt;
-using namespace std;
-
-int particionar(int arr[], int bajo, int alto) { /* Codigo Ejercicio 16 */ return 0; }
-
-void quickSort(int arr[], int bajo, int alto) {
-    if (bajo < alto) {
-        // pi = Indice del pivote ya acomodado
-        int pi = particionar(arr, bajo, alto);
-        
-        // Llamada recursiva a la mitad izquierda
-        quickSort(arr, bajo, pi - 1);
-        // Llamada recursiva a la mitad derecha
-        quickSort(arr, pi + 1, alto);
-    }
-}
-</pre>
-                    </details>
-                </div>
-
-                <div class="exercise-card">
-                    <h4>18-22. Variaciones de Quicksort <span class="exercise-level level-hard">Avanzado</span></h4>
-                    <p class="ex-desc"><strong>Planteamiento (Ejercicios 18 al 22 consolidados):</strong> Para
-                        perfeccionar QuickSort: 18) Ordena una lista de salarios. 19) Elige el primer elemento como
-                        pivote en vez del último. 20) Calcula e imprime la profundidad de la recursión (Stack usage).
-                        21) Aplica Quicksort en un std::vector. 22) Optimiza casos pequeños usando Burbuja cuando el
-                        subarray es menor a 10. (Código: Quicksort sobre Vector).</p>
-                    <details class="ex-solution">
-                        <summary></summary>
-                        <pre class="code">
-#include &lt;iostream&gt;
-#include &lt;vector&gt;
-using namespace std;
-
-int particionarVector(vector&lt;int&gt;& arr, int bajo, int alto) {
-    int pivote = arr[alto];
-    int i = (bajo - 1);
-    for (int j = bajo; j <= alto - 1; j++) {
-        if (arr[j] < pivote) {
-            i++; swap(arr[i], arr[j]);
-        }
-    }
-    swap(arr[i + 1], arr[alto]);
-    return (i + 1);
-}
-void quickSortVector(vector&lt;int&gt;& arr, int bajo, int alto) {
-    if (bajo < alto) {
-        int pi = particionarVector(arr, bajo, alto);
-        quickSortVector(arr, bajo, pi - 1);
-        quickSortVector(arr, pi + 1, alto);
-    }
-}
-</pre>
-                    </details>
-                </div>
-
-                <!-- CATEGORÍA 4: MERGESORT -->
-                <h3
-                    style="margin-top:30px; color:var(--accent); border-bottom: 2px solid var(--line); padding-bottom: 5px;">
-                    4. Ordenamiento por Mezcla (Mergesort)</h3>
-
-                <div class="exercise-card">
-                    <h4>23. Función Merge (Mezclar) Out-of-place <span class="exercise-level level-hard">Avanzado</span>
-                    </h4>
-                    <p class="ex-desc"><strong>Planteamiento:</strong> Escribe la función <code>mezclar()</code> que
-                        recibe dos mitades de un array y utiliza arreglos temporales (memoria auxiliar) para ordenarlas
-                        de vuelta en el array original.</p>
-                    <details class="ex-solution">
-                        <summary></summary>
-                        <pre class="code">
-#include &lt;iostream&gt;
-using namespace std;
-
-void mezclar(int arr[], int inicio, int medio, int final) {
-    int n1 = medio - inicio + 1;
-    int n2 = final - medio;
-    
-    // Memoria Auxiliar (Out-of-place)
-    int izq[n1], der[n2];
-    for (int i = 0; i < n1; i++) izq[i] = arr[inicio + i];
-    for (int j = 0; j < n2; j++) der[j] = arr[medio + 1 + j];
-    
-    int i = 0, j = 0, k = inicio;
-    while (i < n1 && j < n2) {
-        if (izq[i] <= der[j]) { arr[k] = izq[i]; i++; }
-        else { arr[k] = der[j]; j++; }
-        k++;
-    }
-    while (i < n1) { arr[k] = izq[i]; i++; k++; }
-    while (j < n2) { arr[k] = der[j]; j++; k++; }
-}
-</pre>
-                    </details>
-                </div>
-
-                <div class="exercise-card">
-                    <h4>24. Función Recursiva de Mergesort <span class="exercise-level level-hard">Avanzado</span></h4>
-                    <p class="ex-desc"><strong>Planteamiento:</strong> Utilizando el <code>mezclar()</code> anterior,
-                        escribe la función recursiva que divide repetidamente el array a la mitad.</p>
-                    <details class="ex-solution">
-                        <summary></summary>
-                        <pre class="code">
-#include &lt;iostream&gt;
-using namespace std;
-
-void mezclar(int arr[], int inicio, int medio, int final); // Ejer. 23
-
-void mergeSort(int arr[], int inicio, int final) {
-    if (inicio >= final) return; // Caso base
-    
-    int medio = inicio + (final - inicio) / 2;
-    
-    // Divide y Venceras
-    mergeSort(arr, inicio, medio);
-    mergeSort(arr, medio + 1, final);
-    
-    // Une los resultados usando memoria auxiliar
-    mezclar(arr, inicio, medio, final);
-}
-</pre>
-                    </details>
-                </div>
-
-                <div class="exercise-card">
-                    <h4>25-30. Variaciones de Mergesort y Librería Estándar <span
-                            class="exercise-level level-hard">Avanzado</span></h4>
-                    <p class="ex-desc"><strong>Planteamiento (Ejercicios 25 al 30 consolidados):</strong> Aplica tus
-                        conocimientos: 25) Mergesort en un std::vector (evita crear arrays crudos). 26) Ordena
-                        Alfabéticamente. 27) Usa std::sort de la librería <code>&lt;algorithm&gt;</code> (que
-                        internamente usa IntroSort: mezcla de Quick y Heap). 28) std::stable_sort (que internamente usa
-                        Mergesort para conservar el orden). 29) Ordena una estructura personalizada de Estudiantes. 30)
-                        Mide el tiempo de ejecución entre Bubble y std::sort.</p>
-                    <details class="ex-solution">
-                        <summary></summary>
-                        <pre class="code">
-#include &lt;iostream&gt;
-#include &lt;vector&gt;
-#include &lt;algorithm&gt; // std::sort usa IntroSort
-using namespace std;
-
-// Ejercicio 27 y 28: El estandar moderno
-int main() {
-    vector&lt;int&gt; v = {9, 2, 7, 5, 2};
-    
-    // Quicksort hibrido (Super rapido, in-place, Inestable)
-    sort(v.begin(), v.end());
-    
-    // Mergesort (Rapido, usa memoria auxiliar, ESTABLE)
-    // Conservaria el orden original de los dos '2'
-    vector&lt;int&gt; v2 = {9, 2, 7, 5, 2};
-    stable_sort(v2.begin(), v2.end());
-    
-    return 0;
-}
-</pre>
-                <!-- CATEGORÍA 5: ALGORITMOS DE BÚSQUEDA -->
-                <h3
-                    style="margin-top:20px; color:var(--accent); border-bottom: 2px solid var(--line); padding-bottom: 5px;">
-                    5. Algoritmos de Búsqueda (Lineal y Binaria)</h3>
-
-                <div class="exercise-card">
-                    <h4>Búsqueda Binaria Recursiva <span class="exercise-level level-med">Intermedio</span></h4>
-                    <p class="ex-desc"><strong>Planteamiento:</strong> Implementa la versión recursiva de la búsqueda binaria en C++. Si el elemento central coincide, retorna el índice; si es menor, llama recursivamente a la mitad izquierda; si es mayor, a la mitad derecha.</p>
-                    <details class="ex-solution">
-                        <summary></summary>
-                        <pre class="code">
-#include &lt;iostream&gt;
-using namespace std;
-
-int busquedaBinariaRec(int arr[], int inicio, int fin, int valor) {
-    if (inicio &gt; fin) return -1; // Caso base: no encontrado
-
-    int medio = inicio + (fin - inicio) / 2;
-
-    if (arr[medio] == valor) return medio; // Caso base: encontrado
-
-    if (valor &lt; arr[medio]) {
-        return busquedaBinariaRec(arr, inicio, medio - 1, valor); // Mitad izquierda
-    } else {
-        return busquedaBinariaRec(arr, medio + 1, fin, valor);     // Mitad derecha
-    }
-}
-
-int main() {
-    int ordenado[] = {10, 25, 32, 45, 58, 63, 77, 89, 94};
-    int n = 9;
-    int objetivo = 58;
-    int idx = busquedaBinariaRec(ordenado, 0, n - 1, objetivo);
-    if (idx != -1) cout &lt;&lt; "Valor " &lt;&lt; objetivo &lt;&lt; " encontrado en indice " &lt;&lt; idx;
-    return 0;
-}
-</pre>
-                    </details>
-                </div>
-
-                <div class="exercise-card">
-                    <h4>Búsqueda en Colecciones con &lt;algorithm&gt; <span class="exercise-level level-easy">Básico</span></h4>
-                    <p class="ex-desc"><strong>Planteamiento:</strong> Compara el uso de <code>std::binary_search</code> (retorna bool) con <code>std::lower_bound</code> (retorna la posición/iterador) de la biblioteca estándar de C++.</p>
-                    <details class="ex-solution">
-                        <summary></summary>
-                        <pre class="code">
-#include &lt;iostream&gt;
-#include &lt;vector&gt;
+                <h2>3.1 Tipos de ordenamiento (3/3): ejercicios</h2>
+                <ol class="ej">
+                    <li>Ordena de forma ascendente el arreglo <code>{42, 7, 19, 3, 25}</code> usando <code>sort</code> y
+                        muéstralo.
+                        <details>
+                            <summary>Ver solución</summary>
+                            <pre>#include &lt;iostream&gt;
 #include &lt;algorithm&gt;
 using namespace std;
 
 int main() {
-    vector&lt;int&gt; v = {5, 12, 18, 25, 33, 47, 52};
-    int dato = 25;
-
-    // binary_search solo confirma existencia (true/false)
-    if (binary_search(v.begin(), v.end(), dato)) {
-        cout &lt;&lt; dato &lt;&lt; " existe en el vector.\n";
-    }
-
-    // lower_bound nos da la posicion exacta
-    auto it = lower_bound(v.begin(), v.end(), dato);
-    if (it != v.end() && *it == dato) {
-        int indice = distance(v.begin(), it);
-        cout &lt;&lt; "Ubicado en la posicion (indice): " &lt;&lt; indice &lt;&lt; endl;
-    }
+    int a[] = {42, 7, 19, 3, 25};
+    sort(a, a + 5);
+    for (int x : a) cout &lt;&lt; x &lt;&lt; " ";   // 3 7 19 25 42
     return 0;
-}
-</pre>
-                    </details>
-                </div>
+}</pre>
+                        </details>
+                    </li>
 
+                    <li>Ordena de la Z a la A (descendente) los nombres <code>"Luis", "Ana", "Pedro", "Maria"</code>.
+                        <details>
+                            <summary>Ver solución</summary>
+                            <pre>#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;algorithm&gt;
+#include &lt;functional&gt;
+using namespace std;
+
+int main() {
+    string n[] = {"Luis", "Ana", "Pedro", "Maria"};
+    sort(n, n + 4, greater&lt;string&gt;());
+    for (string s : n) cout &lt;&lt; s &lt;&lt; " ";   // Pedro Maria Luis Ana
+    return 0;
+}</pre>
+                        </details>
+                    </li>
+
+                    <li>Con la estructura <code>Est</code> de la diapositiva anterior, ordena por nota de mayor a menor
+                        usando <code>stable_sort</code> y comprueba que Ana sigue antes que Carla.
+                        <details>
+                            <summary>Ver solución</summary>
+                            <pre>bool porNotaDesc(Est a, Est b) { return a.nota &gt; b.nota; }
+
+// en main:
+stable_sort(v, v + 3, porNotaDesc);
+// Resultado: Ana 5, Carla 5, Beto 3</pre>
+                        </details>
+                    </li>
+                </ol>
             </div>
         </section>
 
-        <!-- 8 Resumen -->
-        <section class="slide" data-name="Resumen" aria-label="Resumen de Ordenamiento">
+        <!-- 3.2 BURBUJA 1 -->
+        <section class="slide" data-name="3.2 Burbuja (1/3)">
             <div class="wrap">
-                <h2 tabindex="-1">Resumen y Mejores Prácticas</h2>
-                <ul class="sum">
-                    <li><strong>Burbuja:</strong> Lento (O(N²)) y puramente didáctico. In-place y Estable.</li>
-                    <li><strong>Shell Sort:</strong> Un gran avance (O(N log N) a O(N^1.5)). In-place pero Inestable por sus saltos largos.</li>
-                    <li><strong>Quicksort:</strong> El más veloz en memoria RAM promedio (O(N log N)). In-place e Inestable.</li>
-                    <li><strong>Mergesort:</strong> Tiempo O(N log N) garantizado y Estable, a costa de memoria auxiliar O(N) (Out-of-place).</li>
-                    <li><strong>Bases de Datos e Industria:</strong> Cuando los datos no caben en RAM (Big Data), se usa <em>External Merge Sort</em> en disco. Para evitar ordenar en cada consulta, los motores SQL crean <em>Índices B-Tree</em>.</li>
-                    <li><strong>Búsqueda Lineal vs. Binaria:</strong> Buscamos linealmente en datos desordenados (O(N)). Si el arreglo está ordenado, la Búsqueda Binaria reduce millones de operaciones a solo un puñado de pasos (O(log N)).</li>
-                    <li><strong>En C++ Moderno:</strong> En la práctica se usa <code>std::sort()</code> (Introsort: híbrido de Quick, Heap e Inserción) o <code>std::stable_sort()</code> (Mergesort) desde <code>&lt;algorithm&gt;</code>.</li>
-                </ul>
-                <div class="row top">
-                    <button class="btn primary" type="button" data-go="1">Volver al inicio</button>
+                <h2>3.2 Burbuja (1/3): idea del método</h2>
+                <p class="sub">Bubble Sort</p>
+                <div class="two">
+                    <div>
+                        <p>Recorre el arreglo comparando <strong>pares vecinos</strong>. Si están en mal orden, los
+                            intercambia.</p>
+                        <p>Después de cada pasada, el mayor de los elementos que faltan por ordenar queda en su lugar al
+                            final, como una burbuja que sube.</p>
+                        <p><strong>Pasos del algoritmo:</strong></p>
+                        <ol>
+                            <li>Comparar <code>a[j]</code> con <code>a[j+1]</code>.</li>
+                            <li>Si <code>a[j] &gt; a[j+1]</code>, intercambiarlos.</li>
+                            <li>Repetir hasta el final del arreglo (una pasada).</li>
+                            <li>Repetir las pasadas hasta que todo quede ordenado.</li>
+                        </ol>
+                        <p class="muted">Tiempo O(N²). En el lugar. Estable.</p>
+                    </div>
+                    <div>
+                        <p class="label">Una sola pasada en C++</p>
+                        <pre>int a[] = {40, 10, 30, 20};
+int n = 4;
+
+for (int j = 0; j &lt; n - 1; j++) {
+    if (a[j] &gt; a[j + 1]) {
+        swap(a[j], a[j + 1]);
+    }
+}
+// Después de una pasada: 10 30 20 40</pre>
+                        <p class="muted">El 40, que era el mayor, ya quedó al final.</p>
+                    </div>
                 </div>
+            </div>
+        </section>
+
+        <!-- 3.2 BURBUJA 2 -->
+        <section class="slide" data-name="3.2 Burbuja (2/3)">
+            <div class="wrap">
+                <h2>3.2 Burbuja (2/3): algoritmo completo</h2>
+                <p class="sub">Con dos ciclos: pasadas y comparaciones</p>
+                <div class="two">
+                    <div>
+                        <p><strong>Seguimiento</strong> con <code>{40, 10, 30, 20}</code>:</p>
+                        <pre class="salida">Pasada 1: 10 30 20 40
+Pasada 2: 10 20 30 40
+Pasada 3: 10 20 30 40  (sin cambios, termina)</pre>
+                        <ul>
+                            <li>El ciclo externo <code>i</code> cuenta las pasadas.</li>
+                            <li>El ciclo interno <code>j</code> compara pares; cada pasada llega una posición antes
+                                (<code>n - i - 1</code>).</li>
+                            <li>La variable <code>hubo</code> permite terminar antes si ya no hay intercambios.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <p class="label">Programa completo</p>
+                        <pre>#include &lt;iostream&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+
+void burbuja(int a[], int n) {
+    for (int i = 0; i &lt; n - 1; i++) {
+        bool hubo = false;
+        for (int j = 0; j &lt; n - i - 1; j++) {
+            if (a[j] &gt; a[j + 1]) {
+                swap(a[j], a[j + 1]);
+                hubo = true;
+            }
+        }
+        if (!hubo) break;
+    }
+}
+
+int main() {
+    int a[] = {40, 10, 30, 20};
+    burbuja(a, 4);
+    for (int x : a) cout &lt;&lt; x &lt;&lt; " ";   // 10 20 30 40
+    return 0;
+}</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3.2 BURBUJA 3 -->
+        <section class="slide" data-name="3.2 Burbuja (3/3)">
+            <div class="wrap">
+                <h2>3.2 Burbuja (3/3): ejercicios</h2>
+                <ol class="ej">
+                    <li>Modifica Burbuja para ordenar de mayor a menor.
+                        <details>
+                            <summary>Ver solución</summary>
+                            <pre>// Solo cambia la condición de &gt; a &lt;
+if (a[j] &lt; a[j + 1]) {
+    swap(a[j], a[j + 1]);
+}</pre>
+                        </details>
+                    </li>
+
+                    <li>Cuenta cuántos intercambios hace Burbuja con <code>{5, 4, 3, 2, 1}</code>.
+                        <details>
+                            <summary>Ver solución</summary>
+                            <pre>int a[] = {5, 4, 3, 2, 1};
+int n = 5, cambios = 0;
+
+for (int i = 0; i &lt; n - 1; i++) {
+    for (int j = 0; j &lt; n - i - 1; j++) {
+        if (a[j] &gt; a[j + 1]) {
+            swap(a[j], a[j + 1]);
+            cambios++;
+        }
+    }
+}
+cout &lt;&lt; "Intercambios: " &lt;&lt; cambios;   // 10</pre>
+                        </details>
+                    </li>
+
+                    <li>Ordena alfabéticamente un arreglo de textos con Burbuja.
+                        <details>
+                            <summary>Ver solución</summary>
+                            <pre>string nombres[] = {"Zacarias", "Ana", "Beto"};
+int n = 3;
+
+for (int i = 0; i &lt; n - 1; i++) {
+    for (int j = 0; j &lt; n - i - 1; j++) {
+        if (nombres[j] &gt; nombres[j + 1]) {
+            swap(nombres[j], nombres[j + 1]);
+        }
+    }
+}
+// Ana Beto Zacarias</pre>
+                        </details>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- 3.3 SHELL 1 -->
+        <section class="slide" data-name="3.3 Shell (1/3)">
+            <div class="wrap">
+                <h2>3.3 Shell (1/3): idea del método</h2>
+                <p class="sub">Shell Sort</p>
+                <div class="two">
+                    <div>
+                        <p>Shell mejora el ordenamiento por inserción. En vez de comparar solo vecinos, compara
+                            elementos separados por un <strong>salto (gap)</strong>.</p>
+                        <p>El salto empieza grande y se reduce a la mitad hasta llegar a 1. Así los elementos se acercan
+                            rápido a su lugar y la última pasada (gap = 1) ya encuentra el arreglo casi ordenado.</p>
+                        <p><strong>Pasos del algoritmo:</strong></p>
+                        <ol>
+                            <li>Calcular <code>gap = n / 2</code>.</li>
+                            <li>Ordenar por inserción los elementos que están a distancia <code>gap</code>.</li>
+                            <li>Reducir <code>gap = gap / 2</code>.</li>
+                            <li>Repetir hasta terminar con <code>gap = 1</code>.</li>
+                        </ol>
+                        <p class="muted">Mejor que Burbuja. En el lugar. Inestable.</p>
+                    </div>
+                    <div>
+                        <p class="label">Los saltos para n = 8, en C++</p>
+                        <pre>int n = 8;
+
+for (int gap = n / 2; gap &gt; 0; gap /= 2) {
+    cout &lt;&lt; "gap = " &lt;&lt; gap &lt;&lt; endl;
+}</pre>
+                        <p class="label">Salida</p>
+                        <pre class="salida">gap = 4
+gap = 2
+gap = 1</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3.3 SHELL 2 -->
+        <section class="slide" data-name="3.3 Shell (2/3)">
+            <div class="wrap">
+                <h2>3.3 Shell (2/3): algoritmo completo</h2>
+                <p class="sub">Inserción con saltos</p>
+                <div class="two">
+                    <div>
+                        <p><strong>Seguimiento</strong> con <code>{50, 20, 40, 10}</code>:</p>
+                        <pre class="salida">gap = 2: compara posiciones 0-2 y 1-3
+         40 20 50 10
+         40 10 50 20
+gap = 1: inserción normal
+         10 20 40 50</pre>
+                        <ul>
+                            <li>Con <code>gap = 2</code>, el 50 y el 40 se intercambian de una vez aunque no son
+                                vecinos.</li>
+                            <li>Con <code>gap = 1</code> el arreglo ya está casi ordenado y termina rápido.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <p class="label">Programa completo</p>
+                        <pre>#include &lt;iostream&gt;
+using namespace std;
+
+void shell(int a[], int n) {
+    for (int gap = n / 2; gap &gt; 0; gap /= 2) {
+        for (int i = gap; i &lt; n; i++) {
+            int temp = a[i];
+            int j = i;
+            while (j &gt;= gap &amp;&amp; a[j - gap] &gt; temp) {
+                a[j] = a[j - gap];
+                j -= gap;
+            }
+            a[j] = temp;
+        }
+    }
+}
+
+int main() {
+    int a[] = {50, 20, 40, 10};
+    shell(a, 4);
+    for (int x : a) cout &lt;&lt; x &lt;&lt; " ";   // 10 20 40 50
+    return 0;
+}</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3.3 SHELL 3 -->
+        <section class="slide" data-name="3.3 Shell (3/3)">
+            <div class="wrap">
+                <h2>3.3 Shell (3/3): ejercicios</h2>
+                <ol class="ej">
+                    <li>Modifica Shell para ordenar de mayor a menor.
+                        <details>
+                            <summary>Ver solución</summary>
+                            <pre>// Solo cambia la comparación del while de &gt; a &lt;
+while (j &gt;= gap &amp;&amp; a[j - gap] &lt; temp) {
+    a[j] = a[j - gap];
+    j -= gap;
+}</pre>
+                        </details>
+                    </li>
+
+                    <li>Muestra el arreglo después de terminar cada valor de gap, usando
+                        <code>{9, 1, 8, 2, 7, 3}</code>.
+                        <details>
+                            <summary>Ver solución</summary>
+                            <pre>// Dentro de shell(), al final del ciclo de gap:
+for (int k = 0; k &lt; n; k++) cout &lt;&lt; a[k] &lt;&lt; " ";
+cout &lt;&lt; "(gap " &lt;&lt; gap &lt;&lt; ")" &lt;&lt; endl;</pre>
+                        </details>
+                    </li>
+
+                    <li>Adapta Shell para recibir un <code>vector&lt;int&gt;</code>.
+                        <details>
+                            <summary>Ver solución</summary>
+                            <pre>#include &lt;vector&gt;
+
+void shell(vector&lt;int&gt;&amp; v) {
+    int n = v.size();
+    for (int gap = n / 2; gap &gt; 0; gap /= 2) {
+        for (int i = gap; i &lt; n; i++) {
+            int temp = v[i];
+            int j = i;
+            while (j &gt;= gap &amp;&amp; v[j - gap] &gt; temp) {
+                v[j] = v[j - gap];
+                j -= gap;
+            }
+            v[j] = temp;
+        }
+    }
+}</pre>
+                        </details>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- 3.4 QUICK 1 -->
+        <section class="slide" data-name="3.4 Quicksort (1/3)">
+            <div class="wrap">
+                <h2>3.4 Quicksort (1/3): idea del método</h2>
+                <p class="sub">Divide y vencerás</p>
+                <div class="two">
+                    <div>
+                        <p>Quicksort elige un elemento llamado <strong>pivote</strong> y reorganiza el arreglo:</p>
+                        <ul>
+                            <li>Los menores al pivote quedan a su izquierda.</li>
+                            <li>Los mayores quedan a su derecha.</li>
+                        </ul>
+                        <p>El pivote queda en su posición final. Luego se repite lo mismo, con recursividad, en la parte
+                            izquierda y en la derecha.</p>
+                        <p><strong>Pasos del algoritmo:</strong></p>
+                        <ol>
+                            <li>Elegir el pivote (aquí, el último elemento).</li>
+                            <li>Particionar: menores a la izquierda, mayores a la derecha.</li>
+                            <li>Aplicar Quicksort a la parte izquierda y a la derecha.</li>
+                            <li>Si una parte tiene 0 o 1 elementos, ya está ordenada.</li>
+                        </ol>
+                        <p class="muted">Promedio O(N log N), peor caso O(N²). En el lugar. Inestable.</p>
+                    </div>
+                    <div>
+                        <p class="label">La función que particiona, en C++</p>
+                        <pre>int particionar(int a[], int bajo, int alto) {
+    int pivote = a[alto];
+    int i = bajo - 1;
+
+    for (int j = bajo; j &lt; alto; j++) {
+        if (a[j] &lt; pivote) {
+            i++;
+            swap(a[i], a[j]);
+        }
+    }
+    swap(a[i + 1], a[alto]);  // pivote a su lugar
+    return i + 1;             // posición del pivote
+}</pre>
+                        <p class="muted">Devuelve la posición final del pivote.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3.4 QUICK 2 -->
+        <section class="slide" data-name="3.4 Quicksort (2/3)">
+            <div class="wrap">
+                <h2>3.4 Quicksort (2/3): algoritmo completo</h2>
+                <p class="sub">Partición más recursividad</p>
+                <div class="two">
+                    <div>
+                        <p><strong>Seguimiento</strong> con <code>{35, 50, 15, 20}</code>:</p>
+                        <pre class="salida">Pivote = 20
+35 no es menor, 50 no es menor
+15 es menor: se mueve al inicio
+15 50 35 20
+Pivote a su lugar:
+15 20 35 50
+Izquierda {15}: listo
+Derecha {35, 50}: se ordena igual</pre>
+                        <p>Cada llamada recursiva trabaja sobre una parte más pequeña. El caso base es
+                            <code>bajo &gt;= alto</code>.</p>
+                    </div>
+                    <div>
+                        <p class="label">Programa completo</p>
+                        <pre>#include &lt;iostream&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+
+int particionar(int a[], int bajo, int alto) {
+    int pivote = a[alto];
+    int i = bajo - 1;
+    for (int j = bajo; j &lt; alto; j++) {
+        if (a[j] &lt; pivote) {
+            i++;
+            swap(a[i], a[j]);
+        }
+    }
+    swap(a[i + 1], a[alto]);
+    return i + 1;
+}
+
+void quickSort(int a[], int bajo, int alto) {
+    if (bajo &lt; alto) {
+        int p = particionar(a, bajo, alto);
+        quickSort(a, bajo, p - 1);
+        quickSort(a, p + 1, alto);
+    }
+}
+
+int main() {
+    int a[] = {35, 50, 15, 20};
+    quickSort(a, 0, 3);
+    for (int x : a) cout &lt;&lt; x &lt;&lt; " ";   // 15 20 35 50
+    return 0;
+}</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3.4 QUICK 3 -->
+        <section class="slide" data-name="3.4 Quicksort (3/3)">
+            <div class="wrap">
+                <h2>3.4 Quicksort (3/3): ejercicios</h2>
+                <ol class="ej">
+                    <li>Modifica Quicksort para ordenar de mayor a menor.
+                        <details>
+                            <summary>Ver solución</summary>
+                            <pre>// En particionar, cambia la condición:
+if (a[j] &gt; pivote) {
+    i++;
+    swap(a[i], a[j]);
+}</pre>
+                        </details>
+                    </li>
+
+                    <li>Usa el primer elemento como pivote en lugar del último.
+                        <details>
+                            <summary>Ver solución</summary>
+                            <pre>int particionar(int a[], int bajo, int alto) {
+    swap(a[bajo], a[alto]);   // el primero pasa al final
+    int pivote = a[alto];     // el resto es igual
+    int i = bajo - 1;
+    for (int j = bajo; j &lt; alto; j++) {
+        if (a[j] &lt; pivote) {
+            i++;
+            swap(a[i], a[j]);
+        }
+    }
+    swap(a[i + 1], a[alto]);
+    return i + 1;
+}</pre>
+                        </details>
+                    </li>
+
+                    <li>Imprime el arreglo y la posición del pivote después de cada partición.
+                        <details>
+                            <summary>Ver solución</summary>
+                            <pre>void quickSort(int a[], int n, int bajo, int alto) {
+    if (bajo &lt; alto) {
+        int p = particionar(a, bajo, alto);
+        cout &lt;&lt; "Pivote en " &lt;&lt; p &lt;&lt; ": ";
+        for (int k = 0; k &lt; n; k++) cout &lt;&lt; a[k] &lt;&lt; " ";
+        cout &lt;&lt; endl;
+        quickSort(a, n, bajo, p - 1);
+        quickSort(a, n, p + 1, alto);
+    }
+}</pre>
+                        </details>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- 3.5 MERGE 1 -->
+        <section class="slide" data-name="3.5 Mergesort (1/3)">
+            <div class="wrap">
+                <h2>3.5 Mergesort (1/3): idea del método</h2>
+                <p class="sub">Dividir y mezclar</p>
+                <div class="two">
+                    <div>
+                        <p>Mergesort divide el arreglo por la mitad una y otra vez hasta que cada parte tiene un solo
+                            elemento (que ya está ordenado). Después <strong>mezcla</strong> las partes de dos en dos,
+                            de forma ordenada.</p>
+                        <p><strong>Pasos del algoritmo:</strong></p>
+                        <ol>
+                            <li>Dividir el arreglo en dos mitades.</li>
+                            <li>Ordenar cada mitad con Mergesort (recursividad).</li>
+                            <li>Mezclar las dos mitades ya ordenadas en un solo arreglo ordenado.</li>
+                        </ol>
+                        <p>La mezcla compara el primer elemento de cada mitad y toma el menor. Para eso copia las
+                            mitades en arreglos temporales (<strong>memoria extra</strong>).</p>
+                        <p class="muted">Siempre O(N log N). Usa memoria extra O(N). Estable.</p>
+                    </div>
+                    <div>
+                        <p class="label">La función que mezcla, en C++</p>
+                        <pre>void mezclar(int a[], int ini, int med, int fin) {
+    vector&lt;int&gt; izq(a + ini, a + med + 1);
+    vector&lt;int&gt; der(a + med + 1, a + fin + 1);
+
+    int i = 0, j = 0, k = ini;
+    while (i &lt; izq.size() &amp;&amp; j &lt; der.size()) {
+        if (izq[i] &lt;= der[j]) a[k++] = izq[i++];
+        else                  a[k++] = der[j++];
+    }
+    while (i &lt; izq.size()) a[k++] = izq[i++];
+    while (j &lt; der.size()) a[k++] = der[j++];
+}</pre>
+                        <p class="muted">Los vectores <code>izq</code> y <code>der</code> son la memoria extra.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3.5 MERGE 2 -->
+        <section class="slide" data-name="3.5 Mergesort (2/3)">
+            <div class="wrap">
+                <h2>3.5 Mergesort (2/3): algoritmo completo</h2>
+                <p class="sub">Recursividad más mezcla</p>
+                <div class="two">
+                    <div>
+                        <p><strong>Seguimiento</strong> con <code>{38, 27, 43, 3}</code>:</p>
+                        <pre class="salida">Dividir:  [38 27] [43 3]
+Dividir:  [38] [27] [43] [3]
+Mezclar:  [27 38] [3 43]
+Mezclar:  [3 27 38 43]</pre>
+                        <p>El caso base es <code>ini &gt;= fin</code>: una parte con un solo elemento no necesita
+                            ordenarse.</p>
+                    </div>
+                    <div>
+                        <p class="label">Programa completo</p>
+                        <pre>#include &lt;iostream&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+void mezclar(int a[], int ini, int med, int fin) {
+    vector&lt;int&gt; izq(a + ini, a + med + 1);
+    vector&lt;int&gt; der(a + med + 1, a + fin + 1);
+    int i = 0, j = 0, k = ini;
+    while (i &lt; izq.size() &amp;&amp; j &lt; der.size()) {
+        if (izq[i] &lt;= der[j]) a[k++] = izq[i++];
+        else                  a[k++] = der[j++];
+    }
+    while (i &lt; izq.size()) a[k++] = izq[i++];
+    while (j &lt; der.size()) a[k++] = der[j++];
+}
+
+void mergeSort(int a[], int ini, int fin) {
+    if (ini &gt;= fin) return;
+    int med = (ini + fin) / 2;
+    mergeSort(a, ini, med);
+    mergeSort(a, med + 1, fin);
+    mezclar(a, ini, med, fin);
+}
+
+int main() {
+    int a[] = {38, 27, 43, 3};
+    mergeSort(a, 0, 3);
+    for (int x : a) cout &lt;&lt; x &lt;&lt; " ";   // 3 27 38 43
+    return 0;
+}</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3.5 MERGE 3 -->
+        <section class="slide" data-name="3.5 Mergesort (3/3)">
+            <div class="wrap">
+                <h2>3.5 Mergesort (3/3): ejercicios</h2>
+                <ol class="ej">
+                    <li>Modifica Mergesort para ordenar de mayor a menor.
+                        <details>
+                            <summary>Ver solución</summary>
+                            <pre>// En mezclar, cambia &lt;= por &gt;=
+if (izq[i] &gt;= der[j]) a[k++] = izq[i++];
+else                  a[k++] = der[j++];</pre>
+                        </details>
+                    </li>
+
+                    <li>Cuenta cuántas comparaciones hace Mergesort con 8 números.
+                        <details>
+                            <summary>Ver solución</summary>
+                            <pre>int comparaciones = 0;   // variable global
+
+// En mezclar, dentro del while principal:
+while (i &lt; izq.size() &amp;&amp; j &lt; der.size()) {
+    comparaciones++;
+    if (izq[i] &lt;= der[j]) a[k++] = izq[i++];
+    else                  a[k++] = der[j++];
+}
+// Al final, en main: cout &lt;&lt; comparaciones;</pre>
+                        </details>
+                    </li>
+
+                    <li>Ordena alfabéticamente un arreglo de textos con Mergesort.
+                        <details>
+                            <summary>Ver solución</summary>
+                            <pre>// Cambia int por string en mezclar y mergeSort:
+void mezclar(string a[], int ini, int med, int fin) {
+    vector&lt;string&gt; izq(a + ini, a + med + 1);
+    vector&lt;string&gt; der(a + med + 1, a + fin + 1);
+    int i = 0, j = 0, k = ini;
+    while (i &lt; izq.size() &amp;&amp; j &lt; der.size()) {
+        if (izq[i] &lt;= der[j]) a[k++] = izq[i++];
+        else                  a[k++] = der[j++];
+    }
+    while (i &lt; izq.size()) a[k++] = izq[i++];
+    while (j &lt; der.size()) a[k++] = der[j++];
+}
+// mergeSort(string a[], int ini, int fin) queda igual</pre>
+                        </details>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- RESUMEN -->
+        <section class="slide" data-name="Resumen">
+            <div class="wrap">
+                <h2>Resumen</h2>
+                <table>
+                    <tr>
+                        <th>Método</th>
+                        <th>Idea</th>
+                        <th>Tiempo</th>
+                        <th>Memoria extra</th>
+                        <th>Estable</th>
+                    </tr>
+                    <tr>
+                        <td>Burbuja</td>
+                        <td>Compara vecinos e intercambia</td>
+                        <td>O(N²)</td>
+                        <td>No</td>
+                        <td>Sí</td>
+                    </tr>
+                    <tr>
+                        <td>Shell</td>
+                        <td>Inserción con saltos (gap)</td>
+                        <td>Mejor que O(N²)</td>
+                        <td>No</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td>Quicksort</td>
+                        <td>Pivote y partición</td>
+                        <td>O(N log N) promedio</td>
+                        <td>No</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td>Mergesort</td>
+                        <td>Dividir y mezclar</td>
+                        <td>O(N log N)</td>
+                        <td>Sí</td>
+                        <td>Sí</td>
+                    </tr>
+                </table>
+                <p style="margin-top:16px">En C++ se usa <code>sort</code> en la práctica y <code>stable_sort</code>
+                    cuando se necesita conservar el orden de los iguales.</p>
+                <p><button class="btn primary" type="button" id="home">Volver al inicio</button></p>
             </div>
         </section>
 
     </main>
 
-    <!-- Barra de Navegación Inferior -->
     <nav class="nav" aria-label="Navegación de diapositivas">
-        <button class="btn" id="prev" type="button" aria-label="Diapositiva anterior">Anterior</button>
+        <button class="btn" id="prev" type="button">Anterior</button>
         <div class="track" aria-hidden="true">
             <div class="bar" id="bar"></div>
         </div>
-        <span class="count" id="count" aria-live="polite">1 / 8</span>
-        <span class="navname" id="navName">Inicio</span>
-        <button class="btn primary" id="next" type="button" aria-label="Diapositiva siguiente">Siguiente</button>
+        <span class="count" id="count">1 / 1</span>
+        <span class="navname" id="navName"></span>
+        <button class="btn primary" id="next" type="button">Siguiente</button>
     </nav>
 
     <script>
         (function () {
-            'use strict';
-            var $ = function (s) { return document.querySelector(s) };
-            var $$ = function (s) { return Array.prototype.slice.call(document.querySelectorAll(s)) };  /* ---------- Navegación ---------- */ var slides = $$('.slide'), N = slides.length, cur = 0;
-            function go(i, focus) {
+            var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+            var N = slides.length, cur = 0;
+            function go(i) {
                 i = Math.max(0, Math.min(N - 1, i));
                 slides[cur].classList.remove('active');
                 cur = i;
                 var s = slides[cur];
                 s.classList.add('active');
                 s.scrollTop = 0;
-                $('#bar').style.width = ((cur + 1) / N * 100) + '%';
-                $('#count').textContent = (cur + 1) + ' / ' + N;
-                $('#navName').textContent = s.getAttribute('data-name') || '';
-                $('#prev').disabled = cur === 0;
-                $('#next').disabled = cur === N - 1;
-                if (focus) { var h = s.querySelector('h1,h2'); if (h) h.focus({ preventScroll: true }); }
+                document.getElementById('bar').style.width = ((cur + 1) / N * 100) + '%';
+                document.getElementById('count').textContent = (cur + 1) + ' / ' + N;
+                document.getElementById('navName').textContent = s.getAttribute('data-name') || '';
+                document.getElementById('prev').disabled = cur === 0;
+                document.getElementById('next').disabled = cur === N - 1;
             }
-            $('#prev').onclick = function () { go(cur - 1, true) };
-            $('#next').onclick = function () { go(cur + 1, true) };
-            document.addEventListener('click', function (e) {
-                var b = e.target.closest && e.target.closest('[data-go]');
-                if (b) go(parseInt(b.getAttribute('data-go'), 10) - 1, true);
-            });
+            document.getElementById('prev').onclick = function () { go(cur - 1); };
+            document.getElementById('next').onclick = function () { go(cur + 1); };
+            document.getElementById('home').onclick = function () { go(0); };
             document.addEventListener('keydown', function (e) {
-                var t = e.target;
-                if (t.closest && t.closest('input,select,textarea')) return;
-                if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); go(cur + 1, true); }
-                else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); go(cur - 1, true); }
-                else if (e.key === 'Home') { go(0, true); }
-                else if (e.key === 'End') { go(N - 1, true); }
+                if (e.target.closest && e.target.closest('input,select,textarea')) return;
+                if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); go(cur + 1); }
+                else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); go(cur - 1); }
+                else if (e.key === 'Home') { go(0); }
+                else if (e.key === 'End') { go(N - 1); }
             });
-            go(0, false);
-
-            /* ---------- Utilidades Generales de Dibujo ---------- */
-            function drawBars(containerId, array, highlights = [], sorted = [], pivot = -1) {
-                var c = $('#' + containerId);
-                if (!c) return;
-                c.innerHTML = '';
-                array.forEach((val, index) => {
-                    var box = document.createElement('div');
-                    box.className = 'sort-box';
-                    var isSwap = highlights.length > 0 && highlights[0] === 'swap' && (highlights[1] === index || highlights[2] === index);
-                    var isComp = highlights.length > 0 && highlights[0] === 'comp' && (highlights[1] === index || highlights[2] === index);
-
-                    if (isComp) box.classList.add('compare');
-                    if (isSwap) box.classList.add('swap');
-                    if (sorted.includes(index)) box.classList.add('sorted');
-                    if (index === pivot) box.classList.add('pivot');
-
-                    box.innerHTML = `<div class="sort-bar" style="height: ${val * 1.5}px;">${val}</div>`;
-                    c.appendChild(box);
-                });
-            }
-
-            /* ---------- 1. Animación BURBUJA ---------- */
-            var bubbleFrames = [
-                { a: [40, 10, 30, 20], h: [], s: [], msg: "Array original." },
-                { a: [40, 10, 30, 20], h: ['comp', 0, 1], s: [], msg: "¿40 > 10? Sí, intercambiar." },
-                { a: [10, 40, 30, 20], h: ['swap', 0, 1], s: [], msg: "Intercambio realizado." },
-                { a: [10, 40, 30, 20], h: ['comp', 1, 2], s: [], msg: "¿40 > 30? Sí, intercambiar." },
-                { a: [10, 30, 40, 20], h: ['swap', 1, 2], s: [], msg: "Intercambio realizado." },
-                { a: [10, 30, 40, 20], h: ['comp', 2, 3], s: [], msg: "¿40 > 20? Sí, intercambiar." },
-                { a: [10, 30, 20, 40], h: ['swap', 2, 3], s: [3], msg: "El 40 burbujeó a su posición final. O(1) memoria." },
-                { a: [10, 30, 20, 40], h: ['comp', 0, 1], s: [3], msg: "Siguiente pasada: ¿10 > 30? No." },
-                { a: [10, 30, 20, 40], h: ['comp', 1, 2], s: [3], msg: "¿30 > 20? Sí, intercambiar." },
-                { a: [10, 20, 30, 40], h: ['swap', 1, 2], s: [2, 3], msg: "El 30 burbujeó a su posición final." },
-                { a: [10, 20, 30, 40], h: [], s: [0, 1, 2, 3], msg: "Array ordenado. (In-place completado)" }
-            ];
-            var bubbleStep = 0;
-            if ($('#btn-bubble-step')) {
-                drawBars('bubble-array', bubbleFrames[0].a, bubbleFrames[0].h, bubbleFrames[0].s);
-                $('#btn-bubble-step').onclick = function () {
-                    bubbleStep++;
-                    if (bubbleStep >= bubbleFrames.length) bubbleStep = bubbleFrames.length - 1;
-                    var f = bubbleFrames[bubbleStep];
-                    drawBars('bubble-array', f.a, f.h, f.s);
-                    $('#bubble-log').textContent = f.msg;
-                };
-                $('#btn-bubble-reset').onclick = function () {
-                    bubbleStep = 0;
-                    drawBars('bubble-array', bubbleFrames[0].a, bubbleFrames[0].h, bubbleFrames[0].s);
-                    $('#bubble-log').textContent = bubbleFrames[0].msg;
-                };
-            }
-
-            /* ---------- 2. Animación SHELL SORT ---------- */
-            var shellFrames = [
-                { a: [50, 20, 40, 10], h: [], msg: "Array original. Calculando Gap: N/2 = 2." },
-                { a: [50, 20, 40, 10], h: ['comp', 0, 2], msg: "Gap = 2: Compara índices 0 y 2 (50 y 40). Intercambia." },
-                { a: [40, 20, 50, 10], h: ['swap', 0, 2], msg: "Intercambio realizado a distancia." },
-                { a: [40, 20, 50, 10], h: ['comp', 1, 3], msg: "Gap = 2: Compara índices 1 y 3 (20 y 10). Intercambia." },
-                { a: [40, 10, 50, 20], h: ['swap', 1, 3], msg: "Intercambio realizado. Se reduce Gap a 1." },
-                { a: [40, 10, 50, 20], h: ['comp', 0, 1], msg: "Gap = 1 (Burbuja optimizada): Compara 40 y 10." },
-                { a: [10, 40, 50, 20], h: ['swap', 0, 1], msg: "Intercambio." },
-                { a: [10, 40, 50, 20], h: ['comp', 2, 3], msg: "Gap = 1: Compara 50 y 20." },
-                { a: [10, 40, 20, 50], h: ['swap', 2, 3], msg: "Intercambio. 20 se mueve hacia atrás." },
-                { a: [10, 20, 40, 50], h: ['swap', 1, 2], msg: "20 retrocede a su posición final (Inserción)." },
-                { a: [10, 20, 40, 50], h: [], msg: "Ordenado. Dio saltos largos ahorrando tiempo. In-place." }
-            ];
-            var shellStep = 0;
-            if ($('#btn-shell-step')) {
-                drawBars('shell-array', shellFrames[0].a, shellFrames[0].h);
-                $('#btn-shell-step').onclick = function () {
-                    shellStep++;
-                    if (shellStep >= shellFrames.length) shellStep = shellFrames.length - 1;
-                    var f = shellFrames[shellStep];
-                    drawBars('shell-array', f.a, f.h);
-                    $('#shell-log').textContent = f.msg;
-                };
-                $('#btn-shell-reset').onclick = function () {
-                    shellStep = 0;
-                    drawBars('shell-array', shellFrames[0].a, shellFrames[0].h);
-                    $('#shell-log').textContent = shellFrames[0].msg;
-                };
-            }
-
-            /* ---------- 3. Animación QUICKSORT ---------- */
-            var quickFrames = [
-                { a: [35, 50, 15, 20], h: [], p: -1, msg: "Array original." },
-                { a: [35, 50, 15, 20], h: [], p: 3, msg: "Pivote elegido: 20 (Último elemento). Buscamos menores a 20." },
-                { a: [35, 50, 15, 20], h: ['comp', 0, 3], p: 3, msg: "¿35 < 20? No." },
-                { a: [35, 50, 15, 20], h: ['comp', 1, 3], p: 3, msg: "¿50 < 20? No." },
-                { a: [35, 50, 15, 20], h: ['comp', 2, 3], p: 3, msg: "¿15 < 20? Sí. Lo movemos al principio." },
-                { a: [15, 50, 35, 20], h: ['swap', 0, 2], p: 3, msg: "Intercambio de 15 y 35." },
-                { a: [15, 20, 35, 50], h: ['swap', 1, 3], p: 1, msg: "Movemos el pivote (20) a su lugar final entre menores y mayores." },
-                { a: [15, 20, 35, 50], h: [], p: -1, msg: "Mitades divididas. La memoria usada es solo el Stack recursivo." }
-            ];
-            var quickStep = 0;
-            if ($('#btn-quick-step')) {
-                drawBars('quick-array', quickFrames[0].a, quickFrames[0].h, [], quickFrames[0].p);
-                $('#btn-quick-step').onclick = function () {
-                    quickStep++;
-                    if (quickStep >= quickFrames.length) quickStep = quickFrames.length - 1;
-                    var f = quickFrames[quickStep];
-                    drawBars('quick-array', f.a, f.h, [], f.p);
-                    $('#quick-log').textContent = f.msg;
-                };
-                $('#btn-quick-reset').onclick = function () {
-                    quickStep = 0;
-                    drawBars('quick-array', quickFrames[0].a, quickFrames[0].h, [], quickFrames[0].p);
-                    $('#quick-log').textContent = quickFrames[0].msg;
-                };
-            }
-
-            /* ---------- 4. Animación MERGESORT ---------- */
-            // Para Mergesort, manejaremos las barras auxiliares manualmente
-            var mMain = $('#merge-array');
-            var mAux = $('#merge-aux-array');
-
-            function renderMerge(mainArr, auxArr, mainHl = [], auxHl = []) {
-                if (!mMain || !mAux) return;
-                mMain.innerHTML = '';
-                mainArr.forEach((val, i) => {
-                    var box = document.createElement('div');
-                    box.className = 'sort-box';
-                    var cl = 'sort-bar';
-                    if (mainHl.includes(i)) cl += ' compare'; // usar color de comp para highlight
-                    box.innerHTML = `<div class="${cl}" style="height: ${val * 1.5}px;">${val}</div>`;
-                    mMain.appendChild(box);
-                });
-
-                // Limpiar Aux excepto titulo
-                mAux.innerHTML = '<div style="position: absolute; color: var(--muted); font-size: 0.8rem; top: 110px;">Memoria Auxiliar O(N) (Array Creado en Heap)</div>';
-                auxArr.forEach((val, i) => {
-                    var bar = document.createElement('div');
-                    bar.className = 'aux-bar';
-                    if (val !== null) {
-                        bar.classList.add('active');
-                        bar.textContent = val;
-                        if (auxHl.includes(i)) bar.style.background = 'var(--ok)'; // Destacar el copiado
-                    }
-                    mAux.appendChild(bar);
-                });
-            }
-
-            var mergeFrames = [
-                { m: [27, 38, 3, 43], a: [null, null, null, null], mh: [], ah: [], msg: "Array a mezclar. Asumimos mitades [27,38] y [3,43] ya ordenadas." },
-                { m: [27, 38, 3, 43], a: [null, null, null, null], mh: [0, 2], ah: [], msg: "Comparamos inicio de mitades: ¿27 < 3? No." },
-                { m: [27, 38, 3, 43], a: [3, null, null, null], mh: [0, 2], ah: [0], msg: "El 3 baja a la memoria auxiliar." },
-                { m: [27, 38, 3, 43], a: [3, null, null, null], mh: [0, 3], ah: [], msg: "Siguiente comparación: ¿27 < 43? Sí." },
-                { m: [27, 38, 3, 43], a: [3, 27, null, null], mh: [0, 3], ah: [1], msg: "El 27 baja a la memoria auxiliar." },
-                { m: [27, 38, 3, 43], a: [3, 27, null, null], mh: [1, 3], ah: [], msg: "Siguiente comparación: ¿38 < 43? Sí." },
-                { m: [27, 38, 3, 43], a: [3, 27, 38, null], mh: [1, 3], ah: [2], msg: "El 38 baja a la memoria auxiliar." },
-                { m: [27, 38, 3, 43], a: [3, 27, 38, 43], mh: [], ah: [3], msg: "Baja el sobrante (43). La memoria auxiliar está ordenada." },
-                { m: [3, 27, 38, 43], a: [null, null, null, null], mh: [0, 1, 2, 3], ah: [], msg: "Sobreescribe el Array original y destruye la Memoria Auxiliar." }
-            ];
-
-            var mergeStep = 0;
-            if ($('#btn-merge-step')) {
-                renderMerge(mergeFrames[0].m, mergeFrames[0].a, mergeFrames[0].mh, mergeFrames[0].ah);
-                $('#btn-merge-step').onclick = function () {
-                    mergeStep++;
-                    if (mergeStep >= mergeFrames.length) mergeStep = mergeFrames.length - 1;
-                    var f = mergeFrames[mergeStep];
-                    renderMerge(f.m, f.a, f.mh, f.ah);
-                    $('#merge-log').textContent = f.msg;
-                };
-                $('#btn-merge-reset').onclick = function () {
-                    mergeStep = 0;
-                    renderMerge(mergeFrames[0].m, mergeFrames[0].a, mergeFrames[0].mh, mergeFrames[0].ah);
-                    $('#merge-log').textContent = mergeFrames[0].msg;
-                };
-            }
-
-            /* ---------- 5. Animación de BÚSQUEDA (Lineal vs Binaria) ---------- */
-            var searchData = [12, 25, 34, 48, 57, 63, 79, 91];
-            var searchTarget = 48;
-            var sCont = $('#search-array');
-            var sLog = $('#search-log');
-
-            function renderSearch(data, state) {
-                if (!sCont) return;
-                sCont.innerHTML = '';
-                data.forEach((val, i) => {
-                    var box = document.createElement('div');
-                    box.className = 'search-box';
-                    box.innerHTML = `<span>${val}</span><span class="search-idx">[${i}]</span>`;
-                    
-                    if (state) {
-                        if (state.type === 'linear') {
-                            if (state.found && state.idx === i) {
-                                box.classList.add('found');
-                            } else if (state.idx === i) {
-                                box.classList.add('checking');
-                            } else if (i < state.idx) {
-                                box.classList.add('discarded');
-                            }
-                        } else if (state.type === 'binary') {
-                            if (state.found && state.mid === i) {
-                                box.classList.add('found');
-                            } else if (i === state.mid) {
-                                box.classList.add('mid');
-                            } else if (i === state.left || i === state.right) {
-                                box.classList.add('bound');
-                            }
-                            if (i < state.left || i > state.right) {
-                                box.classList.add('discarded');
-                            }
-                        }
-                    }
-                    sCont.appendChild(box);
-                });
-            }
-
-            var linIndex = -1;
-            var binLeft = 0;
-            var binRight = searchData.length - 1;
-            var binFinished = false;
-            var linFinished = false;
-            var linComps = 0;
-            var binComps = 0;
-
-            function initSearch() {
-                var sel = $('#sel-search-target');
-                if (sel) searchTarget = parseInt(sel.value, 10);
-                linIndex = -1;
-                binLeft = 0;
-                binRight = searchData.length - 1;
-                binFinished = false;
-                linFinished = false;
-                linComps = 0;
-                binComps = 0;
-                renderSearch(searchData, null);
-                if (sLog) sLog.textContent = `Buscando ${searchTarget}. Elige Paso Lineal o Paso Binaria para avanzar.`;
-            }
-
-            if ($('#btn-lin-step')) {
-                initSearch();
-
-                if ($('#sel-search-target')) {
-                    $('#sel-search-target').onchange = function() {
-                        initSearch();
-                    };
-                }
-
-                $('#btn-lin-step').onclick = function() {
-                    if (linFinished) return;
-                    linIndex++;
-                    linComps++;
-                    if (linIndex >= searchData.length) {
-                        linFinished = true;
-                        renderSearch(searchData, { type: 'linear', idx: linIndex - 1, found: false, done: true });
-                        sLog.textContent = `[Lineal] Fin del array. ${searchTarget} NO existe. Comparaciones totales: ${linComps} (Costo O(N)).`;
-                        return;
-                    }
-                    if (searchData[linIndex] === searchTarget) {
-                        linFinished = true;
-                        renderSearch(searchData, { type: 'linear', idx: linIndex, found: true, done: true });
-                        sLog.textContent = `[Lineal] ¡Encontrado ${searchTarget} en índice [${linIndex}]! Comparaciones: ${linComps}.`;
-                    } else {
-                        renderSearch(searchData, { type: 'linear', idx: linIndex, found: false, done: false });
-                        sLog.textContent = `[Lineal] Paso ${linComps}: arr[${linIndex}] = ${searchData[linIndex]} != ${searchTarget}. Avanza a [${linIndex + 1}]...`;
-                    }
-                };
-
-                $('#btn-bin-step').onclick = function() {
-                    if (binFinished) return;
-                    if (binLeft > binRight) {
-                        binFinished = true;
-                        renderSearch(searchData, { type: 'binary', left: binLeft, right: binRight, mid: -1, found: false, done: true });
-                        sLog.textContent = `[Binaria] Límite cruzado (inicio > fin). ${searchTarget} NO existe. Comparaciones: ${binComps} (O(log N)).`;
-                        return;
-                    }
-                    binComps++;
-                    var mid = Math.floor((binLeft + binRight) / 2);
-                    var midVal = searchData[mid];
-
-                    if (midVal === searchTarget) {
-                        binFinished = true;
-                        renderSearch(searchData, { type: 'binary', left: binLeft, right: binRight, mid: mid, found: true, done: true });
-                        sLog.textContent = `[Binaria] Paso ${binComps}: medio = [${mid}] (${midVal}) == ${searchTarget}. ¡Encontrado! O(log N).`;
-                    } else if (midVal < searchTarget) {
-                        renderSearch(searchData, { type: 'binary', left: binLeft, right: binRight, mid: mid, found: false, done: false });
-                        sLog.textContent = `[Binaria] Paso ${binComps}: medio = [${mid}] (${midVal}) < ${searchTarget}. Descartamos izquierda. Nuevo inicio = [${mid + 1}].`;
-                        binLeft = mid + 1;
-                    } else {
-                        renderSearch(searchData, { type: 'binary', left: binLeft, right: binRight, mid: mid, found: false, done: false });
-                        sLog.textContent = `[Binaria] Paso ${binComps}: medio = [${mid}] (${midVal}) > ${searchTarget}. Descartamos derecha. Nuevo fin = [${mid - 1}].`;
-                        binRight = mid - 1;
-                    }
-                };
-
-                $('#btn-search-reset').onclick = function() {
-                    initSearch();
-                };
-            }
-
+            go(0);
         })();
     </script>
 </body>
