@@ -324,194 +324,7 @@
       text-decoration: underline;
     }
 
-    /* Modal Popup */
-    .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(17, 24, 39, 0.6);
-      backdrop-filter: blur(4px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      padding: 16px;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.25s ease, visibility 0.25s ease;
-    }
 
-    .modal-overlay.active {
-      opacity: 1;
-      visibility: visible;
-    }
-
-    .modal-card {
-      background: #ffffff;
-      border-radius: 14px;
-      max-width: 520px;
-      width: 100%;
-      padding: 24px 28px;
-      position: relative;
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-      border-top: 5px solid #00594e;
-      transform: translateY(20px) scale(0.97);
-      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .modal-overlay.active .modal-card {
-      transform: translateY(0) scale(1);
-    }
-
-    .modal-close-btn {
-      position: absolute;
-      top: 14px;
-      right: 14px;
-      background: #f3f4f6;
-      border: none;
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      color: #4b5563;
-      cursor: pointer;
-      line-height: 1;
-      transition: background-color 0.2s, color 0.2s, transform 0.1s;
-    }
-
-    .modal-close-btn:hover {
-      background-color: #e5e7eb;
-      color: #111827;
-    }
-
-    .modal-close-btn:active {
-      transform: scale(0.95);
-    }
-
-    .modal-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background-color: #ecfdf5;
-      color: #065f46;
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      padding: 4px 10px;
-      border-radius: 9999px;
-      margin-bottom: 12px;
-      border: 1px solid #a7f3d0;
-    }
-
-    .modal-badge::before {
-      content: "";
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background-color: #10b981;
-      display: inline-block;
-    }
-
-    .modal-title {
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: #111827;
-      margin-bottom: 12px;
-      line-height: 1.35;
-    }
-
-    .modal-body {
-      font-size: 0.96rem;
-      color: #374151;
-      line-height: 1.6;
-      margin-bottom: 20px;
-    }
-
-    .modal-info-box {
-      background-color: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      padding: 12px 14px;
-      margin: 12px 0 16px;
-    }
-
-    .modal-info-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-      margin-bottom: 6px;
-      font-size: 0.92rem;
-    }
-
-    .modal-info-row:last-child {
-      margin-bottom: 0;
-    }
-
-    .modal-info-row strong {
-      color: #0f172a;
-      min-width: 65px;
-    }
-
-    .modal-whatsapp-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background-color: #25D366;
-      color: #ffffff !important;
-      text-decoration: none !important;
-      padding: 10px 18px;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 0.95rem;
-      transition: background-color 0.2s, transform 0.1s;
-      box-shadow: 0 2px 6px rgba(37, 211, 102, 0.35);
-    }
-
-    .modal-whatsapp-link:hover {
-      background-color: #20bd5a;
-      text-decoration: none;
-    }
-
-    .modal-whatsapp-link:active {
-      transform: scale(0.98);
-    }
-
-    .modal-whatsapp-link svg {
-      width: 18px;
-      height: 18px;
-      fill: currentColor;
-    }
-
-    .modal-footer {
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .modal-btn-dismiss {
-      background: transparent;
-      border: 1px solid #d1d5db;
-      color: #4b5563;
-      padding: 9px 16px;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background-color 0.2s, color 0.2s;
-    }
-
-    .modal-btn-dismiss:hover {
-      background-color: #f3f4f6;
-      color: #111827;
-    }
 
     /* Carousel de Infografías / Recursos Visuales */
     .carousel-section {
@@ -832,7 +645,7 @@
             </div>
           </div>
           <div>
-            <a href="./Estructuras%20de%20datos_%20introducci%C3%B3n.html" class="guide-btn">Abrir Guía 01 &rarr;</a>
+            <a href="./guia_1_introduccion.html" class="guide-btn">Abrir Guía 01 &rarr;</a>
           </div>
         </article>
 
@@ -854,7 +667,7 @@
             </div>
           </div>
           <div>
-            <a href="./Estructuras%20de%20datos_%20arrays.html" class="guide-btn">Abrir Guía 02 &rarr;</a>
+            <a href="./guia_2_arrays.html" class="guide-btn">Abrir Guía 02 &rarr;</a>
           </div>
         </article>
 
@@ -876,7 +689,7 @@
             </div>
           </div>
           <div>
-            <a href="./Estructuras%20de%20datos_%20ordenamiento.html" class="guide-btn">Abrir Guía 03 &rarr;</a>
+            <a href="./guia_3_ordenamiento.html" class="guide-btn">Abrir Guía 03 &rarr;</a>
           </div>
         </article>
 
@@ -898,7 +711,7 @@
             </div>
           </div>
           <div>
-            <a href="./Estructuras%20de%20datos_%20archivos.html" class="guide-btn">Abrir Guía 04 &rarr;</a>
+            <a href="./guia_4_archivos.html" class="guide-btn">Abrir Guía 04 &rarr;</a>
           </div>
         </article>
 
@@ -920,7 +733,7 @@
             </div>
           </div>
           <div>
-            <a href="./Estructuras%20de%20datos_%20pilas_colas.html" class="guide-btn">Abrir Guía 05 &rarr;</a>
+            <a href="./guia_5_pilas_colas.html" class="guide-btn">Abrir Guía 05 &rarr;</a>
           </div>
         </article>
 
@@ -942,7 +755,7 @@
             </div>
           </div>
           <div>
-            <a href="./listas_enlazadas.html" class="guide-btn" style="background-color: #505856;">Abrir Material Anexo
+            <a href="./material_listas_enlazadas.html" class="guide-btn" style="background-color: #505856;">Abrir Material Anexo
               &rarr;</a>
           </div>
         </article>
@@ -965,7 +778,7 @@
             </div>
           </div>
           <div>
-            <a href="./Introducci%C3%B3n%20a%20C++.html" class="guide-btn" style="background-color: #505856;">Abrir
+            <a href="./material_introduccion_cpp.html" class="guide-btn" style="background-color: #505856;">Abrir
               Material Anexo &rarr;</a>
           </div>
         </article>
@@ -988,7 +801,7 @@
             </div>
           </div>
           <div>
-            <a href="./Estructuras%20de%20datos_%20comportamiento.html" class="guide-btn"
+            <a href="./material_comportamiento_memoria.html" class="guide-btn"
               style="background-color: #505856;">Abrir Material Anexo &rarr;</a>
           </div>
         </article>
@@ -1011,7 +824,7 @@
             </div>
           </div>
           <div>
-            <a href="./Material%20-%20Notaci%C3%B3n%20Big%20O.html" class="guide-btn"
+            <a href="./material_notacion_big_o.html" class="guide-btn"
               style="background-color: #505856;">Abrir Material Anexo &rarr;</a>
           </div>
         </article>
@@ -1028,11 +841,11 @@
 
       <div class="carousel-container">
         <div class="carousel-track" id="infografiasTrack">
-          <!-- Item 1: infografia_01.png -->
-          <article class="carousel-item" data-full-img="./infografia_01.png"
-            data-img-title="Infografía de Estructuras de Datos" title="Toca para ampliar y explorar con zoom">
+          <!-- Item 1: Infografia_01.png -->
+          <article class="carousel-item" data-full-img="./images/Infografia_01.png"
+            data-img-title="Infografía: Paso por valor vs. paso por referencia en C++" title="Toca para ampliar y explorar con zoom">
             <div class="carousel-item-img-wrap">
-              <img src="/infografia_01.png" alt="Infografía de Estructuras de Datos" loading="lazy">
+              <img src="./images/Infografia_01.png" alt="Infografía de Paso por Valor vs Referencia" loading="lazy">
               <span class="carousel-item-badge">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <circle cx="11" cy="11" r="8"></circle>
@@ -1044,8 +857,29 @@
               </span>
             </div>
             <div class="carousel-item-info">
-              <h3 class="carousel-item-title">Infografía - Estructuras de Datos</h3>
-              <p class="carousel-item-subtitle">Diagrama conceptual de apoyo visual y referencia rápida</p>
+              <h3 class="carousel-item-title">Infografía - Paso por Valor vs Referencia</h3>
+              <p class="carousel-item-subtitle">Comportamiento en memoria RAM y sintaxis en C++</p>
+            </div>
+          </article>
+
+          <!-- Item 2: infografia2.png -->
+          <article class="carousel-item" data-full-img="./images/infografia2.png"
+            data-img-title="Infografía: Lista enlazada en C++ desde cero" title="Toca para ampliar y explorar con zoom">
+            <div class="carousel-item-img-wrap">
+              <img src="./images/infografia2.png" alt="Infografía de Lista Enlazada en C++ desde Cero" loading="lazy">
+              <span class="carousel-item-badge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                  <line x1="11" y1="8" x2="11" y2="14"></line>
+                  <line x1="8" y1="11" x2="14" y2="11"></line>
+                </svg>
+                Toca para ampliar
+              </span>
+            </div>
+            <div class="carousel-item-info">
+              <h3 class="carousel-item-title">Infografía - Lista Enlazada desde Cero</h3>
+              <p class="carousel-item-subtitle">Estructura del nodo, punteros, función de recorrido y memoria</p>
             </div>
           </article>
         </div>
@@ -1147,49 +981,7 @@
 
   </div>
 
-  <!-- POPUP AVISO DE MONITORÍA -->
-  <div id="sessionModal" class="modal-overlay" role="dialog" aria-modal="true">
-    <div class="modal-card" id="modalCard">
-      <button type="button" class="modal-close-btn" id="btnCloseModal" aria-label="Cerrar ventana">&times;</button>
 
-      <div class="modal-body" style="margin-top: 10px;">
-        <p>Hoy <strong>sábado 24 de octubre</strong> hay sesión de monitoría en la <strong>biblioteca</strong> de
-          <strong>9:10 am a 12:00 pm</strong>.</p>
-
-        <div class="modal-info-box">
-          <div class="modal-info-row">
-            <strong>Fecha:</strong>
-            <span>Sábado 24 de octubre</span>
-          </div>
-          <div class="modal-info-row">
-            <strong>Horario:</strong>
-            <span>9:10 am - 12:00 pm</span>
-          </div>
-          <div class="modal-info-row">
-            <strong>Lugar:</strong>
-            <span>Biblioteca</span>
-          </div>
-        </div>
-
-        <p style="margin-bottom: 12px;">Cualquier duda o consulta, puedes comunicarte directamente al WhatsApp:</p>
-
-        <div>
-          <a href="https://wa.me/573225857486?text=Hola,%20tengo%20una%20duda%20sobre%20la%20monitor%C3%ADa%20de%20Estructuras%20de%20Datos"
-            target="_blank" rel="noopener noreferrer" class="modal-whatsapp-link" id="whatsappModalLink">
-            <svg viewBox="0 0 24 24">
-              <path
-                d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z" />
-            </svg>
-            WhatsApp
-          </a>
-        </div>
-      </div>
-
-      <div class="modal-footer">
-        <button type="button" class="modal-btn-dismiss" id="btnDismissModal">Entendido</button>
-      </div>
-    </div>
-  </div>
 
   <!-- LIGHTBOX PARA INFOGRAFÍA (RESPONSIVO CON ZOOM Y DESPLAZAMIENTO) -->
   <div id="imageLightbox" class="lightbox-overlay" role="dialog" aria-modal="true"
@@ -1334,42 +1126,7 @@
       }
     });
 
-    // 4. Modal Popup al entrar
-    (function initSessionModal() {
-      const modal = document.getElementById('sessionModal');
-      const btnClose = document.getElementById('btnCloseModal');
-      const btnDismiss = document.getElementById('btnDismissModal');
 
-      if (!modal) return;
-
-      function openModal() {
-        modal.classList.add('active');
-        document.body.style.overflow = 'hidden';
-      }
-
-      function closeModal() {
-        modal.classList.remove('active');
-        document.body.style.overflow = '';
-      }
-
-      // Abrir automáticamente al cargar la página
-      setTimeout(openModal, 250);
-
-      if (btnClose) btnClose.addEventListener('click', closeModal);
-      if (btnDismiss) btnDismiss.addEventListener('click', closeModal);
-
-      modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-          closeModal();
-        }
-      });
-
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && modal.classList.contains('active')) {
-          closeModal();
-        }
-      });
-    })();
 
     // 5. Lightbox Interactivo con Zoom y Arrastre (Pan)
     (function initLightbox() {
