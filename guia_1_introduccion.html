@@ -52,7 +52,7 @@ code,.mono{font-family:var(--f-mono)}
 @media (max-width:640px){.navname{display:none}}
 
 /* controls */
-.btn{font:600 1rem var(--f-body);padding:.55em 1em;border-radius:8px;border:2px solid var(--ink);background:var(--surface);color:var(--ink);cursor:pointer;line-height:1.2}
+.btn{font:600 1rem var(--f-body);padding:.55em 1em;border-radius:8px;border:2px solid var(--ink);background:var(--surface);color:var(--ink);cursor:pointer;line-height:1.2;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
 .btn:hover{background:var(--accent-soft)}
 .btn:active{transform:translateY(1px)}
 .btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
@@ -213,7 +213,10 @@ label{font-size:.95rem;color:var(--muted)}
       </div>
       <p class="hint" id="heroMsg" aria-live="polite" style="margin-top:12px">Toca el botón: cada dato se guarda en la siguiente casilla libre.</p>
     </div>
-    <p class="hint">Avanza con las flechas del teclado o con los botones de abajo.</p>
+    <div class="row top" style="justify-content: space-between; align-items: center; margin-top: 16px;">
+      <p class="hint" style="margin: 0;">Avanza con las flechas del teclado o con los botones de abajo.</p>
+      <a href="./index.html" class="btn">Volver a la página principal</a>
+    </div>
   </div>
 </section>
 
