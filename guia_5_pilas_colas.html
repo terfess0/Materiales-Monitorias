@@ -3,56 +3,32 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <title>5. Estructuras de datos: Pilas y Colas</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=JetBrains+Mono:wght@400;600&family=Public+Sans:wght@400;500;600&display=swap"
-        rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>5. Pilas y Colas</title>
     <style>
         :root {
-            color-scheme: light;
-            --bg: #FFFFFF;
-            --surface: #FFFFFF;
-            --ink: #141414;
+            --bg: #fff;
+            --ink: #1b1f24;
             --muted: #505856;
             --line: #D6DDDB;
-            --title: #00594E;
             --accent: #00594E;
             --accent-soft: #E4F0ED;
-            --on-accent: #FFFFFF;
-            --hot: #B5A160;
-            --hot-soft: #F6F1E0;
-            --ok: #00594E;
-            --ok-soft: #DCEEE9;
-            --bad: #505856;
-            --bad-soft: #E8ECEB;
             --code-bg: #F6F7F7;
-            --mem-bg: #E8ECEB;
-            --f-head: 'Bricolage Grotesque', 'Segoe UI', system-ui, sans-serif;
-            --f-body: 'Public Sans', 'Segoe UI', system-ui, sans-serif;
-            --f-mono: 'JetBrains Mono', ui-monospace, Consolas, monospace;
+            --f-body: 'Segoe UI', system-ui, -apple-system, Arial, sans-serif;
+            --f-mono: Consolas, 'Courier New', ui-monospace, monospace;
         }
 
-        :root {
-            box-sizing: border-box;
-            padding-top: env(safe-area-inset-top, 0px);
-            padding-bottom: env(safe-area-inset-bottom, 0px);
+        * {
+            box-sizing: border-box
         }
 
-        html {
+        html,
+        body {
             height: 100%;
-            scroll-padding-top: env(safe-area-inset-top, 0px);
-        }
-
-        *,
-        *::before,
-        *::after {
-            box-sizing: inherit;
+            margin: 0
         }
 
         body {
-            margin: 0;
-            height: 100%;
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -60,67 +36,52 @@
             color: var(--ink);
             font-family: var(--f-body);
             font-size: 18px;
-            line-height: 1.55;
-        }
-
-        [hidden] {
-            display: none !important;
-        }
-
-        [tabindex="-1"]:focus {
-            outline: none;
+            line-height: 1.5
         }
 
         h1,
         h2,
-        h3,
-        h4 {
-            font-family: var(--f-head);
-            line-height: 1.1;
-            margin: 0 0 .35em;
-            letter-spacing: -.015em;
-            font-weight: 700;
-            color: var(--title);
+        h3 {
+            color: var(--accent);
+            line-height: 1.15;
+            margin: 0 0 .4em
         }
 
         h1 {
-            font-size: clamp(2.1rem, 5.5vw, 3.6rem);
-            letter-spacing: -.03em;
-            font-weight: 800;
+            font-size: clamp(2rem, 5vw, 3.2rem)
         }
 
         h2 {
-            font-size: clamp(1.5rem, 3.2vw, 2.2rem);
+            font-size: clamp(1.4rem, 3vw, 1.9rem)
         }
 
         h3 {
-            font-size: 1.25rem;
-            letter-spacing: -.005em;
+            font-size: 1.1rem;
+            color: var(--ink)
         }
 
         p {
+            margin: 0 0 .8em
+        }
+
+        ul,
+        ol {
             margin: 0 0 .8em;
+            padding-left: 1.3em
         }
 
-        .lead {
-            font-size: clamp(1.05rem, 1.9vw, 1.3rem);
-            color: var(--muted);
+        li {
+            margin-bottom: .35em
         }
 
-        .hint {
-            color: var(--muted);
-            font-size: .95rem;
-        }
-
-        code,
-        .mono {
-            font-family: var(--f-mono);
+        .muted {
+            color: var(--muted)
         }
 
         .deck {
             flex: 1;
             min-height: 0;
-            position: relative;
+            position: relative
         }
 
         .slide {
@@ -128,41 +89,118 @@
             inset: 0;
             overflow-y: auto;
             display: none;
-            flex-direction: column;
-            padding: clamp(12px, 1.8vw, 20px) clamp(16px, 3.5vw, 42px) clamp(16px, 2.5vw, 28px);
+            padding: 18px clamp(14px, 3vw, 40px)
         }
 
         .slide.active {
-            display: flex;
-            animation: enter .22s ease-out;
+            display: block
         }
 
         .wrap {
+            max-width: 1180px;
+            margin: 0 auto
+        }
+
+        .sub {
+            color: var(--muted);
+            font-size: .95rem;
+            margin: -.2em 0 1em
+        }
+
+        .two {
+            display: grid;
+            grid-template-columns: 1fr 1.25fr;
+            gap: 28px;
+            align-items: start
+        }
+
+        @media(max-width:800px) {
+            .two {
+                grid-template-columns: 1fr
+            }
+        }
+
+        pre {
+            font: .85rem/1.45 var(--f-mono);
+            background: var(--code-bg);
+            border: 1px solid var(--line);
+            border-left: 4px solid var(--accent);
+            border-radius: 6px;
+            padding: 12px 14px;
+            margin: 0 0 12px;
+            overflow-x: auto;
+            white-space: pre
+        }
+
+        .salida {
+            border-left-color: var(--muted);
+            background: #fff
+        }
+
+        .label {
+            font-weight: 600;
+            font-size: .9rem;
+            color: var(--muted);
+            margin: 0 0 4px
+        }
+
+        code {
+            font-family: var(--f-mono);
+            background: var(--code-bg);
+            padding: 1px 5px;
+            border-radius: 4px;
+            font-size: .92em
+        }
+
+        table {
+            border-collapse: collapse;
             width: 100%;
-            margin: 0 auto;
-            max-width: 1240px;
+            font-size: .95rem;
+            margin-bottom: 12px
         }
 
-        @keyframes enter {
-            from {
-                opacity: 0;
-                transform: translateY(8px);
-            }
-
-            to {
-                opacity: 1;
-                transform: none;
-            }
+        th,
+        td {
+            border: 1px solid var(--line);
+            padding: 7px 10px;
+            text-align: left;
+            vertical-align: top
         }
 
-        /* Barra de navegación inferior */
+        th {
+            background: var(--accent-soft);
+            color: var(--accent)
+        }
+
+        .ej {
+            padding-left: 1.2em
+        }
+
+        .ej>li {
+            margin-bottom: 18px
+        }
+
+        details {
+            margin-top: 8px
+        }
+
+        summary {
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--accent)
+        }
+
+        details pre {
+            margin-top: 8px
+        }
+
         .nav {
             display: flex;
             align-items: center;
             gap: 12px;
             padding: 10px clamp(14px, 4vw, 40px);
-            border-top: 3px solid var(--hot);
-            background: var(--surface);
+            border-top: 2px solid var(--accent);
+            background: #fff
         }
 
         .track {
@@ -170,1423 +208,1171 @@
             height: 4px;
             background: var(--line);
             border-radius: 2px;
-            overflow: hidden;
+            overflow: hidden
         }
 
         .bar {
             height: 100%;
             width: 0;
             background: var(--accent);
-            transition: width .25s ease;
+            transition: width .2s
         }
 
         .count {
             font: 600 .9rem var(--f-mono);
             color: var(--muted);
             min-width: 4.5em;
-            text-align: center;
+            text-align: center
         }
 
         .navname {
-            font: 600 .88rem var(--f-mono);
-            color: var(--title);
-            max-width: 280px;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            font-size: .9rem;
+            color: var(--muted);
+            min-width: 9em;
+            max-width: 210px;
             white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis
         }
 
-        /* Botones y controles */
+        @media(max-width:600px) {
+            .navname {
+                display: none
+            }
+        }
+
         .btn {
-            font: 600 0.95rem var(--f-body);
+            font: 600 1rem var(--f-body);
             padding: .5em 1em;
-            border-radius: 8px;
-            border: 2px solid var(--ink);
-            background: var(--surface);
-            color: var(--ink);
-            cursor: pointer;
-            line-height: 1.2;
-            transition: all 0.2s;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-
-        .btn:hover {
-            background: var(--accent-soft);
-            border-color: var(--accent);
+            border-radius: 6px;
+            border: 2px solid var(--accent);
+            background: #fff;
             color: var(--accent);
+            cursor: pointer
         }
 
         .btn.primary {
             background: var(--accent);
-            border-color: var(--accent);
-            color: var(--on-accent);
-        }
-
-        .btn.primary:hover {
-            background: #00453c;
-            border-color: #00453c;
-            color: #ffffff;
-        }
-
-        .btn.action {
-            background: var(--hot);
-            border-color: var(--hot);
-            color: var(--ink);
-        }
-
-        .btn.action:hover {
-            background: #a38f4e;
-            border-color: #a38f4e;
+            color: #fff
         }
 
         .btn:disabled {
-            opacity: .45;
-            cursor: not-allowed;
-            border-color: var(--line);
-            background: #f3f4f6;
-            color: var(--muted);
-        }
-
-        .row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .row.top {
-            margin-top: 14px;
-        }
-
-        /* Paneles y Layouts */
-        .panel {
-            background: var(--surface);
-            border: 1px solid var(--line);
-            border-radius: 12px;
-            padding: clamp(14px, 2.2vw, 22px);
-            margin-bottom: 14px;
-        }
-
-        .code {
-            font: .9rem/1.55 var(--f-mono);
-            background: var(--code-bg);
-            border: 1px solid var(--line);
-            border-radius: 8px;
-            padding: 12px 14px;
-            min-height: 2.8em;
-            white-space: pre;
-            overflow-x: auto;
-            color: #1a202c;
-        }
-
-        .two {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 18px;
-        }
-
-        @media (max-width: 900px) {
-            .two {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .tbl {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: .92rem;
-            margin-bottom: 14px;
-        }
-
-        .tbl th,
-        .tbl td {
-            border: 1px solid var(--line);
-            padding: 9px 12px;
-            text-align: left;
-        }
-
-        .tbl th {
-            background: var(--accent-soft);
-            color: var(--title);
-            font-weight: 600;
-        }
-
-        .tbl tr:nth-child(even) td {
-            background: #fbfcfc;
-        }
-
-        .tech-card {
-            border: 1px solid var(--line);
-            border-radius: 10px;
-            padding: 15px;
-            background: var(--surface);
-            margin-bottom: 12px;
-        }
-
-        .tech-card h4 {
-            margin: 0 0 6px 0;
-            color: var(--title);
-            font-size: 1.05rem;
-        }
-
-        /* Cajas interactivas de simulación */
-        .sim-container {
-            border: 1px solid var(--line);
-            border-radius: 10px;
-            padding: 16px;
-            background: #ffffff;
-            margin-top: 10px;
-        }
-
-        .sim-controls {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            align-items: center;
-            margin-bottom: 14px;
-        }
-
-        .sim-input {
-            padding: 6px 10px;
-            font-size: 0.95rem;
-            font-family: var(--f-mono);
-            border: 1px solid var(--line);
-            border-radius: 6px;
-            width: 90px;
-            outline: none;
-        }
-
-        .sim-input:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 2px var(--accent-soft);
-        }
-
-        .stack-stage {
-            display: flex;
-            flex-direction: column-reverse;
-            align-items: center;
-            justify-content: flex-start;
-            min-height: 260px;
-            border-left: 3px solid var(--accent);
-            border-right: 3px solid var(--accent);
-            border-bottom: 5px solid var(--title);
-            background: var(--code-bg);
-            border-radius: 0 0 8px 8px;
-            padding: 10px;
-            width: 180px;
-            margin: 0 auto;
-            position: relative;
-        }
-
-        .stack-item {
-            width: 100%;
-            height: 40px;
-            background: var(--accent-soft);
-            border: 2px solid var(--accent);
-            color: var(--title);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 12px;
-            font-family: var(--f-mono);
-            font-weight: 600;
-            font-size: 1rem;
-            border-radius: 6px;
-            margin-top: 5px;
-            transition: all 0.25s ease;
-        }
-
-        .stack-item.is-top {
-            background: var(--hot-soft);
-            border-color: var(--hot);
-            color: #4a3e14;
-        }
-
-        .stack-item.is-highlight {
-            background: var(--ok-soft);
-            border-color: var(--ok);
-            transform: scale(1.04);
-        }
-
-        .queue-stage {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            min-height: 70px;
-            background: var(--code-bg);
-            border-top: 3px solid var(--accent);
-            border-bottom: 3px solid var(--accent);
-            border-radius: 8px;
-            padding: 10px 14px;
-            overflow-x: auto;
-        }
-
-        .queue-item {
-            min-width: 65px;
-            height: 50px;
-            background: var(--accent-soft);
-            border: 2px solid var(--accent);
-            color: var(--title);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-family: var(--f-mono);
-            font-weight: 600;
-            font-size: 0.95rem;
-            border-radius: 6px;
-            position: relative;
-            transition: all 0.25s ease;
-        }
-
-        .queue-item.is-front {
-            background: var(--hot-soft);
-            border-color: var(--hot);
-            color: #4a3e14;
-        }
-
-        .queue-item.is-back {
-            border-style: dashed;
-        }
-
-        .queue-item .pos-tag {
-            font-size: 0.68rem;
-            font-weight: 500;
-            color: var(--muted);
-        }
-
-        .status-log {
-            margin-top: 10px;
-            padding: 9px 12px;
-            background: #fafafa;
-            border: 1px solid var(--line);
-            border-radius: 6px;
-            font-family: var(--f-mono);
-            font-size: 0.88rem;
-            color: var(--ink);
-            min-height: 2.4em;
-            display: flex;
-            align-items: center;
-        }
-
-        /* Ejercicios y soluciones desplegables */
-        details.ex-solution {
-            margin-top: 10px;
-        }
-
-        details.ex-solution summary {
-            font-weight: 600;
-            padding: 7px 12px;
-            background: var(--accent-soft);
-            color: var(--accent);
-            border-radius: 6px;
-            cursor: pointer;
-            list-style: none;
-            display: inline-flex;
-            align-items: center;
-            font-size: 0.88rem;
-            transition: background 0.2s;
-        }
-
-        details.ex-solution summary:hover {
-            background: #d4e7e2;
-        }
-
-        details.ex-solution summary::-webkit-details-marker {
-            display: none;
-        }
-
-        details.ex-solution summary::before {
-            content: '▶ Ver solución en C++';
-            margin-right: 6px;
-            font-size: 0.85em;
-        }
-
-        details.ex-solution[open] summary::before {
-            content: '▼ Ocultar solución';
-        }
-
-        details.ex-solution .code {
-            margin-top: 10px;
-            font-size: 0.85rem;
-        }
-
-        .badge-method {
-            display: inline-block;
-            padding: 3px 8px;
-            background: var(--accent-soft);
-            color: var(--title);
-            font-family: var(--f-mono);
-            font-size: 0.82rem;
-            font-weight: 600;
-            border-radius: 4px;
-            border: 1px solid var(--line);
-        }
-
-        .badge-hot {
-            background: var(--hot-soft);
-            color: #4a3e14;
-            border-color: #e4d8b0;
+            opacity: .4;
+            cursor: not-allowed
         }
     </style>
 </head>
 
 <body>
-
     <main class="deck" id="deck">
 
-        <!-- 1 Portada -->
-        <section class="slide active" data-name="Inicio" aria-label="Portada">
-            <div class="wrap hero">
-                <div style="font-size: 0.9rem; font-weight: 600; color: var(--hot); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px;">
-                    Universidad Internacional del Trópico Americano &bull; Monitorías Académicas
-                </div>
-                <h1 tabindex="-1">5. Pilas y Colas en C++</h1>
-                <p class="lead">
-                    Estructuras de datos lineales de acceso restringido: métodos LIFO, FILO, FIFO y LILO. Creación, lectura de datos, inserción, eliminación, búsqueda, implementación estática y dinámica, biblioteca STL y aplicaciones en software.
-                </p>
-
-                <div class="panel" style="margin-top: 24px; border-color: var(--accent); background: #ffffff;">
-                    <h3 style="color: var(--accent);">¿Por qué son indispensables las Pilas y Colas?</h3>
-                    <p style="margin-bottom: 8px;">
-                        A diferencia de los arreglos donde puedes acceder a cualquier índice de forma arbitraria (acceso aleatorio), las <strong>Pilas</strong> y las <strong>Colas</strong> restringen deliberadamente los puntos de entrada y salida. Este orden estricto es el pilar de los sistemas computacionales modernos:
-                    </p>
-                    <div class="two" style="gap: 12px; margin-top: 12px;">
-                        <div class="tech-card" style="border-left: 4px solid var(--accent); margin: 0;">
-                            <h4>Pilas (Stacks) &bull; LIFO / FILO</h4>
-                            <p style="font-size: 0.92rem; margin: 0;">
-                                Llamadas a funciones (Call Stack), gestión de memoria, reversión de acciones (Ctrl + Z), verificación de sintaxis y evaluación de expresiones matemáticas.
-                            </p>
-                        </div>
-                        <div class="tech-card" style="border-left: 4px solid var(--hot); margin: 0;">
-                            <h4>Colas (Queues) &bull; FIFO / LILO</h4>
-                            <p style="font-size: 0.92rem; margin: 0;">
-                                Planificación de procesos en el CPU (Round Robin), colas de impresión, transmisión de paquetes de red y buffers de atención a usuarios por orden de llegada.
-                            </p>
-                        </div>
+        <!-- PORTADA -->
+        <section class="slide active" data-name="Inicio">
+            <div class="wrap">
+                <h1>5. Pilas y Colas en C++</h1>
+                <p class="muted">Cada ejemplo es un programa completo: cópialo, pégalo en tu IDE y pruébalo.</p>
+                <div class="two" style="grid-template-columns:1fr 1fr">
+                    <div>
+                        <h3>Pilas (LIFO)</h3>
+                        <ul>
+                            <li>Concepto y operaciones</li>
+                            <li>Con <code>std::stack</code>, con arreglo y con vector</li>
+                            <li>Recorrer y reemplazar un campo</li>
+                            <li>Ejercicios</li>
+                        </ul>
+                        <h3>Colas (FIFO)</h3>
+                        <ul>
+                            <li>Concepto y operaciones</li>
+                            <li>Con <code>std::queue</code>, con arreglo circular y con vector</li>
+                            <li>Recorrer y reemplazar un campo</li>
+                            <li>Ejercicios</li>
+                        </ul>
                     </div>
-                </div>
-
-                <div class="row top" style="justify-content: space-between;">
-                    <p class="hint" style="margin: 0;">Navega con las flechas del teclado (&larr; / &rarr;) o con los botones inferiores.</p>
-                    <a href="./index.html" class="btn">Volver a la página principal</a>
+                    <div>
+                        <h3>Para terminar</h3>
+                        <ul>
+                            <li>Aplicaciones: paréntesis balanceados, decimal a binario, palíndromos y turnos</li>
+                            <li>Resumen</li>
+                        </ul>
+                        <p class="muted">Todo se hace con arreglos, vectores y la biblioteca estándar; no se usan nodos
+                            ni punteros.</p>
+                        <p class="muted">Avanza con las flechas del teclado o con los botones de abajo.</p>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- 2 Concepto de Pila: LIFO / FILO -->
-        <section class="slide" data-name="5.0 Concepto de Pila" aria-label="Concepto de Pila">
+        <!-- PILA 1 -->
+        <section class="slide" data-name="Pila (1/3) Concepto">
             <div class="wrap">
-                <h2 tabindex="-1">5.0. Concepto de Pila (Stack) y Métodos de Acceso</h2>
-                <p>
-                    Una <strong>Pila</strong> es una estructura de datos lineal y homogénea donde las operaciones de inserción y eliminación se realizan exclusivamente por un único extremo, denominado <strong>Tope</strong> o <strong>Cima</strong> (<em>Top</em>).
-                </p>
-
+                <h2>Pila (1/3): concepto y std::stack</h2>
+                <p class="sub">LIFO: el último en entrar es el primero en salir</p>
                 <div class="two">
                     <div>
-                        <div class="tech-card" style="border-left: 4px solid var(--accent);">
-                            <h4>Principios de Acceso: LIFO y FILO</h4>
-                            <p>Son dos formas equivalentes de describir la misma regla fundamental:</p>
-                            <ul style="font-size: 0.93rem; padding-left: 20px; margin-bottom: 8px;">
-                                <li>
-                                    <span class="badge-method">LIFO</span> <strong>Last In, First Out:</strong>
-                                    El último elemento en entrar es el primer elemento en salir.
-                                </li>
-                                <li style="margin-top: 8px;">
-                                    <span class="badge-method badge-hot">FILO</span> <strong>First In, Last Out:</strong>
-                                    El primer elemento en entrar será el último en salir (queda al fondo).
-                                </li>
-                            </ul>
-                            <p style="font-size: 0.9rem; color: var(--muted); margin: 0;">
-                                <strong>Analogía:</strong> Una pila de platos limpios. Cada plato nuevo se coloca sobre el último, y al usar uno, se retira obligatoriamente el que está arriba.
-                            </p>
-                        </div>
-
-                        <table class="tbl">
+                        <p>Una <strong>pila</strong> solo se toca por un extremo, el <strong>tope</strong>. Es como una
+                            pila de platos: se pone encima y se saca de encima.</p>
+                        <table>
                             <tr>
-                                <th>Operación Formal</th>
-                                <th>Acción en la Pila</th>
-                                <th>Costo Big O</th>
+                                <th>Operación</th>
+                                <th>Qué hace</th>
                             </tr>
                             <tr>
-                                <td><code>push(x)</code> (Apilar)</td>
-                                <td>Inserta el elemento <code>x</code> en el tope</td>
-                                <td><strong>O(1)</strong></td>
+                                <td><code>push(x)</code></td>
+                                <td>Pone <code>x</code> en el tope</td>
                             </tr>
                             <tr>
-                                <td><code>pop()</code> (Desapilar)</td>
-                                <td>Remueve el elemento que está en el tope</td>
-                                <td><strong>O(1)</strong></td>
+                                <td><code>pop()</code></td>
+                                <td>Quita el tope (no devuelve nada)</td>
                             </tr>
                             <tr>
-                                <td><code>top()</code> / <code>peek()</code></td>
-                                <td>Lee el valor del tope sin removerlo</td>
-                                <td><strong>O(1)</strong></td>
+                                <td><code>top()</code></td>
+                                <td>Lee el tope sin quitarlo</td>
                             </tr>
                             <tr>
-                                <td><code>estaVacia()</code> / <code>empty()</code></td>
-                                <td>Verifica si la pila no tiene elementos</td>
-                                <td><strong>O(1)</strong></td>
+                                <td><code>empty()</code></td>
+                                <td>¿Está vacía?</td>
                             </tr>
                             <tr>
-                                <td><code>buscar(x)</code></td>
-                                <td>Desapila temporalmente hasta encontrar</td>
-                                <td><strong>O(N)</strong></td>
+                                <td><code>size()</code></td>
+                                <td>Cantidad de elementos</td>
                             </tr>
                         </table>
+                        <pre class="salida">  |  30  |  &lt;- tope (sale primero)
+  |  20  |
+  |  10  |  &lt;- fondo (entró primero)</pre>
+                        <p class="muted">Usos: deshacer (Ctrl+Z), llamadas a funciones, revisar paréntesis.</p>
                     </div>
-
-                    <div class="panel">
-                        <h3>Representación Gráfica de Memoria</h3>
-                        <p style="font-size: 0.9rem; color: var(--muted);">
-                            La variable índice <code>tope</code> rastrea la posición superior. Si la pila está vacía, <code>tope = -1</code>.
-                        </p>
-                        <div style="background: var(--code-bg); padding: 16px; border-radius: 8px; border: 1px solid var(--line); text-align: center;">
-                            <div style="display: inline-block; text-align: left; font-family: var(--f-mono); font-size: 0.88rem;">
-                                <div style="color: var(--title); font-weight: 600; margin-bottom: 6px;">[ Índice : Estado en RAM ]</div>
-                                <div style="background: var(--hot-soft); border: 2px solid var(--hot); padding: 6px 12px; border-radius: 4px; margin-bottom: 4px;">
-                                    Índice 2: [ 30 ] &larr; <strong>TOPE</strong> (Último en entrar / Primero en salir)
-                                </div>
-                                <div style="background: var(--accent-soft); border: 1px solid var(--line); padding: 6px 12px; border-radius: 4px; margin-bottom: 4px;">
-                                    Índice 1: [ 20 ]
-                                </div>
-                                <div style="background: var(--accent-soft); border: 1px solid var(--line); padding: 6px 12px; border-radius: 4px;">
-                                    Índice 0: [ 10 ] &larr; <strong>FONDO</strong> (Primer elemento ingresado)
-                                </div>
-                            </div>
-                        </div>
-                        <p style="font-size: 0.85rem; color: var(--muted); margin-top: 12px;">
-                            <strong>Regla de oro:</strong> Nunca intentes acceder directamente a <code>pila[1]</code> desde afuera de la estructura; violarías el principio de encapsulamiento del TAD Pila.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 3 5.1 Creación de Pilas con Arreglos en C++ -->
-        <section class="slide" data-name="5.1 Creación Pila" aria-label="Creación de Pilas">
-            <div class="wrap">
-                <h2 tabindex="-1">5.1. Creación e Inicialización de una Pila en C++</h2>
-                <p>
-                    Para implementar una pila estática en C++ definimos una capacidad máxima <code>MAX</code>, un arreglo para almacenar los datos y una variable entera <code>tope</code> inicializada en <code>-1</code>.
-                </p>
-
-                <div class="two">
                     <div>
-                        <div class="tech-card">
-                            <h4>Componentes Fundamentales</h4>
-                            <ul style="font-size: 0.93rem; padding-left: 20px;">
-                                <li><code>const int MAX = 100;</code> define el límite físico en memoria.</li>
-                                <li><code>tope = -1;</code> indica formalmente que la pila está vacía.</li>
-                                <li><strong>Condición de vacía:</strong> <code>tope == -1</code>.</li>
-                                <li><strong>Condición de llena:</strong> <code>tope == MAX - 1</code>.</li>
-                            </ul>
-                        </div>
-                        <div class="tech-card" style="border-left: 4px solid var(--accent);">
-                            <h4>Encapsulamiento con struct o class</h4>
-                            <p style="font-size: 0.92rem; margin: 0;">
-                                Agrupar el arreglo y el tope dentro de un <code>struct</code> o <code>class</code> evita variables globales sueltas y permite instanciar múltiples pilas independientes en el mismo programa.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div>
-                        <pre class="code">// Implementación base de Pila Estática en C++
-#include &lt;iostream&gt;
-using namespace std;
-
-const int MAX = 5; // Capacidad máxima para el ejemplo
-
-struct Pila {
-    int elementos[MAX];
-    int tope;
-
-    // Constructor: inicializa la pila vacía
-    Pila() {
-        tope = -1;
-    }
-
-    bool estaVacia() const {
-        return tope == -1;
-    }
-
-    bool estaLlena() const {
-        return tope == MAX - 1;
-    }
-
-    int cantidad() const {
-        return tope + 1;
-    }
-};
-
-int main() {
-    Pila miPila; // Creación de la instancia
-    cout &lt;&lt; "¿Pila vacía? " &lt;&lt; (miPila.estaVacia() ? "Sí" : "No") &lt;&lt; endl;
-    return 0;
-}</pre>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 4 5.3 Sacar y Poner Elementos: Push y Pop -->
-        <section class="slide" data-name="5.3 Push y Pop" aria-label="Operaciones Push y Pop">
-            <div class="wrap">
-                <h2 tabindex="-1">5.3. Sacar y Poner Elementos en la Pila</h2>
-                <p>
-                    Las dos operaciones esenciales son <strong>apilar (push)</strong> y <strong>desapilar (pop)</strong>. Ambas exigen verificar los estados límite de la estructura.
-                </p>
-
-                <div class="two">
-                    <div>
-                        <div class="tech-card" style="border-left: 4px solid var(--accent);">
-                            <h4>1. Poner: Push (Apilar)</h4>
-                            <p style="font-size: 0.92rem;">
-                                Antes de insertar, se comprueba si la pila está llena. Si lo está, ocurre un <strong>Desbordamiento (Stack Overflow)</strong> y no se puede insertar. Si hay espacio:
-                            </p>
-                            <ol style="font-size: 0.9rem; padding-left: 20px;">
-                                <li>Incrementar el tope: <code>tope++</code>.</li>
-                                <li>Almacenar el valor: <code>elementos[tope] = nuevoDato;</code>.</li>
-                            </ol>
-                        </div>
-
-                        <div class="tech-card" style="border-left: 4px solid var(--hot);">
-                            <h4>2. Sacar: Pop (Desapilar) y Top (Cima)</h4>
-                            <p style="font-size: 0.92rem;">
-                                Antes de extraer, se comprueba si la pila está vacía. Si lo está, ocurre un <strong>Subdesbordamiento (Stack Underflow)</strong>. Si contiene elementos:
-                            </p>
-                            <ol style="font-size: 0.9rem; padding-left: 20px;">
-                                <li>Guardar el valor del tope actual.</li>
-                                <li>Decrementar el índice: <code>tope--</code>.</li>
-                                <li>Retornar el valor extraído.</li>
-                            </ol>
-                        </div>
-                    </div>
-
-                    <div>
-                        <pre class="code">// Métodos de manipulación en C++
-bool push(Pila &p, int valor) {
-    if (p.estaLlena()) {
-        cout &lt;&lt; "[Aviso] Pila llena: Desbordamiento.\n";
-        return false;
-    }
-    p.tope++;
-    p.elementos[p.tope] = valor;
-    cout &lt;&lt; "Apilado con éxito: " &lt;&lt; valor &lt;&lt; endl;
-    return true;
-}
-
-bool pop(Pila &p, int &valorExtraido) {
-    if (p.estaVacia()) {
-        cout &lt;&lt; "[Aviso] Pila vacía: Subdesbordamiento.\n";
-        return false;
-    }
-    valorExtraido = p.elementos[p.tope];
-    p.tope--;
-    return true;
-}
-
-bool top(const Pila &p, int &valorTope) {
-    if (p.estaVacia()) return false;
-    valorTope = p.elementos[p.tope];
-    return true;
-}</pre>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 5 5.2 Lectura, Búsqueda y Modificación en Pilas -->
-        <section class="slide" data-name="5.2 Lectura y Búsqueda Pila" aria-label="Lectura en Pilas">
-            <div class="wrap">
-                <h2 tabindex="-1">5.2. Lectura de Datos y Búsqueda en Pilas</h2>
-                <p>
-                    <strong>El reto del acceso restringido:</strong> En una pila no está permitido hacer un bucle <code>for(int i = 0; i &lt; n; i++)</code> que lea los elementos internos directamente. Para leer, buscar o modificar datos se utiliza una <strong>pila auxiliar</strong>.
-                </p>
-
-                <div class="two">
-                    <div>
-                        <div class="tech-card" style="border-left: 4px solid var(--accent);">
-                            <h4>Protocolo de Lectura sin Destrucción</h4>
-                            <ol style="font-size: 0.92rem; padding-left: 20px;">
-                                <li>Crear una pila temporal <code>Pila aux;</code>.</li>
-                                <li>Desapilar cada elemento de la pila original y procesarlo (imprimirlo o comparar).</li>
-                                <li>Apilar el elemento extraído en <code>aux</code>.</li>
-                                <li>Una vez concluido, desapilar de <code>aux</code> y devolver los elementos a la original para restaurar el estado inicial.</li>
-                            </ol>
-                        </div>
-                        <div class="tech-card" style="border-left: 4px solid var(--hot);">
-                            <h4>Búsqueda y Modificación</h4>
-                            <p style="font-size: 0.9rem; margin: 0;">
-                                Si se desea cambiar un valor específico, se busca durante el paso a la auxiliar; al hallarlo se modifica el dato antes de volver a apilarlo en el proceso de retorno.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div>
-                        <pre class="code">// Lectura y Búsqueda en C++ preservando la Pila
-bool buscarYModificar(Pila &p, int buscado, int nuevoValor) {
-    Pila aux;
-    bool encontrado = false;
-    int actual;
-
-    // Fase 1: Pasar a la pila auxiliar buscando el dato
-    while (!p.estaVacia()) {
-        pop(p, actual);
-        if (actual == buscado && !encontrado) {
-            actual = nuevoValor; // Modificación del dato
-            encontrado = true;
-        }
-        push(aux, actual);
-    }
-
-    // Fase 2: Restaurar los elementos a la pila original
-    while (!aux.estaVacia()) {
-        pop(aux, actual);
-        push(p, actual);
-    }
-
-    return encontrado;
-}</pre>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 6 Laboratorio Interactivo: Pila -->
-        <section class="slide" data-name="Simulador Pila" aria-label="Simulador de Pila">
-            <div class="wrap">
-                <h2 tabindex="-1">Laboratorio Interactivo: Simulador de Pila (Stack)</h2>
-                <p>Experimenta en vivo el comportamiento de una Pila con capacidad máxima de 5 elementos. Observa cómo cambia el índice <code>tope</code> en cada operación.</p>
-
-                <div class="sim-container">
-                    <div class="sim-controls">
-                        <label for="stackVal" style="font-weight: 600; font-size: 0.9rem;">Dato:</label>
-                        <input type="number" id="stackVal" class="sim-input" value="15" min="1" max="999">
-                        <button class="btn primary" id="btnStackPush">Apilar (Push)</button>
-                        <button class="btn action" id="btnStackPop">Desapilar (Pop)</button>
-                        <button class="btn" id="btnStackPeek">Tope (Peek)</button>
-                        <button class="btn" id="btnStackSearch">Buscar</button>
-                        <button class="btn" id="btnStackClear">Vaciar Pila</button>
-                    </div>
-
-                    <div class="two" style="align-items: center;">
-                        <div>
-                            <div style="text-align: center; font-size: 0.85rem; font-weight: 600; color: var(--muted); margin-bottom: 6px;">
-                                Estructura de la Pila en Memoria (Tope arriba)
-                            </div>
-                            <div class="stack-stage" id="stackStage">
-                                <!-- Elementos dinámicos JS -->
-                            </div>
-                        </div>
-
-                        <div>
-                            <div class="tech-card" style="margin: 0 0 10px 0;">
-                                <h4 style="margin-bottom: 4px;">Variables de Control en RAM</h4>
-                                <div style="font-family: var(--f-mono); font-size: 0.9rem; color: var(--ink);">
-                                    &bull; <code>tope = </code> <span id="stackTopIndex" style="font-weight: 700; color: var(--title);">-1</span> (vacía)<br>
-                                    &bull; <code>elementos = </code> <span id="stackCount">0</span> / 5<br>
-                                    &bull; <code>estado = </code> <span id="stackState" style="color: var(--hot); font-weight: 600;">VACÍA</span>
-                                </div>
-                            </div>
-                            <div class="status-log" id="stackLog">
-                                Listo. Ingresa un dato y pulsa "Apilar (Push)".
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 7 Pilas Dinámicas y std::stack -->
-        <section class="slide" data-name="Pilas Dinámicas y STL" aria-label="Pilas Dinámicas y STL">
-            <div class="wrap">
-                <h2 tabindex="-1">Pilas con Memoria Dinámica y la Biblioteca STL</h2>
-                <p>En proyectos de producción existen dos opciones modernas: implementar nodos enlazados con punteros o usar el contenedor estándar <code>std::stack</code>.</p>
-
-                <div class="two">
-                    <div>
-                        <div class="tech-card">
-                            <h4>Pila Dinámica con Nodos Enlazados</h4>
-                            <p style="font-size: 0.9rem;">
-                                No tiene límite rígido <code>MAX</code>. Cada elemento es un nodo que guarda su dato y un puntero al nodo inferior.
-                            </p>
-                            <pre class="code" style="font-size: 0.84rem;">struct Nodo {
-    int dato;
-    Nodo* siguiente;
-};
-
-void pushDinamico(Nodo* &tope, int valor) {
-    Nodo* nuevo = new Nodo();
-    nuevo-&gt;dato = valor;
-    nuevo-&gt;siguiente = tope;
-    tope = nuevo;
-}
-
-void popDinamico(Nodo* &tope) {
-    if (tope == nullptr) return;
-    Nodo* temp = tope;
-    tope = tope-&gt;siguiente;
-    delete temp; // Libera memoria
-}</pre>
-                        </div>
-                    </div>
-
-                    <div>
-                        <div class="tech-card" style="border-left: 4px solid var(--accent);">
-                            <h4>Uso Profesional con <code>&lt;stack&gt;</code> (C++ STL)</h4>
-                            <p style="font-size: 0.9rem;">
-                                Es la forma estándar y segura en la industria. Ofrece soporte para cualquier tipo de dato mediante plantillas (templates).
-                            </p>
-                            <pre class="code" style="font-size: 0.84rem;">#include &lt;iostream&gt;
+                        <p class="label">Programa completo con std::stack</p>
+                        <pre>#include &lt;iostream&gt;
 #include &lt;stack&gt;
 using namespace std;
 
 int main() {
-    stack&lt;int&gt; miPila;
+    stack&lt;int&gt; pila;
 
-    miPila.push(10);
-    miPila.push(20);
-    miPila.push(30);
+    pila.push(10);
+    pila.push(20);
+    pila.push(30);
 
-    cout &lt;&lt; "Tope actual: " &lt;&lt; miPila.top() &lt;&lt; endl; // 30
-    cout &lt;&lt; "Cantidad: " &lt;&lt; miPila.size() &lt;&lt; endl;  // 3
+    cout &lt;&lt; "Tope: " &lt;&lt; pila.top() &lt;&lt; endl;       // 30
+    cout &lt;&lt; "Tamano: " &lt;&lt; pila.size() &lt;&lt; endl;    // 3
 
-    miPila.pop(); // Quita el 30
+    pila.pop();                                      // quita el 30
+    cout &lt;&lt; "Nuevo tope: " &lt;&lt; pila.top() &lt;&lt; endl;  // 20
 
-    cout &lt;&lt; "Nuevo tope: " &lt;&lt; miPila.top() &lt;&lt; endl; // 20
+    // Vaciar la pila mostrando cada elemento
+    while (!pila.empty()) {
+        cout &lt;&lt; pila.top() &lt;&lt; " ";                 // 20 10
+        pila.pop();
+    }
+    cout &lt;&lt; endl;
+    cout &lt;&lt; "Vacia? " &lt;&lt; (pila.empty() ? "si" : "no");
     return 0;
 }</pre>
-                        </div>
+                        <p class="muted">Antes de <code>top()</code> o <code>pop()</code> siempre se comprueba que no
+                            esté vacía; hacerlo con la pila vacía es un error.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- 8 Concepto de Cola: FIFO / LILO -->
-        <section class="slide" data-name="5.0 Concepto de Cola" aria-label="Concepto de Cola">
+        <!-- PILA 2 -->
+        <section class="slide" data-name="Pila (2/3) Arreglo">
             <div class="wrap">
-                <h2 tabindex="-1">5.0. Concepto de Cola (Queue) y Métodos FIFO / LILO</h2>
-                <p>
-                    Una <strong>Cola</strong> es una estructura de datos lineal donde las inserciones se realizan por un extremo denominado <strong>Final</strong> (<em>Rear / Back</em>) y las extracciones se realizan por el extremo opuesto llamado <strong>Frente</strong> (<em>Front</em>).
-                </p>
-
+                <h2>Pila (2/3): con un arreglo, sin librería</h2>
+                <p class="sub">Un arreglo y una variable <code>tope</code></p>
                 <div class="two">
                     <div>
-                        <div class="tech-card" style="border-left: 4px solid var(--accent);">
-                            <h4>Principios de Acceso: FIFO y LILO</h4>
-                            <ul style="font-size: 0.93rem; padding-left: 20px; margin-bottom: 8px;">
-                                <li>
-                                    <span class="badge-method">FIFO</span> <strong>First In, First Out:</strong>
-                                    El primer elemento en ingresar es el primero en ser atendido y salir.
-                                </li>
-                                <li style="margin-top: 8px;">
-                                    <span class="badge-method badge-hot">LILO</span> <strong>Last In, Last Out:</strong>
-                                    El último elemento en llegar a la fila será el último en salir de ella.
-                                </li>
-                            </ul>
-                            <p style="font-size: 0.9rem; color: var(--muted); margin: 0;">
-                                <strong>Analogía:</strong> La fila de clientes en un banco o la cola de impresión. Quien llega primero tiene prioridad de atención.
-                            </p>
-                        </div>
-
-                        <table class="tbl">
-                            <tr>
-                                <th>Operación Formal</th>
-                                <th>Acción en la Cola</th>
-                                <th>Costo Big O</th>
-                            </tr>
-                            <tr>
-                                <td><code>encolar(x)</code> / <code>push</code></td>
-                                <td>Inserta el elemento <code>x</code> al final</td>
-                                <td><strong>O(1)</strong></td>
-                            </tr>
-                            <tr>
-                                <td><code>desencolar()</code> / <code>pop</code></td>
-                                <td>Remueve el elemento del frente</td>
-                                <td><strong>O(1)</strong></td>
-                            </tr>
-                            <tr>
-                                <td><code>frente()</code> / <code>front</code></td>
-                                <td>Inspecciona el primer elemento</td>
-                                <td><strong>O(1)</strong></td>
-                            </tr>
-                            <tr>
-                                <td><code>final()</code> / <code>back</code></td>
-                                <td>Inspecciona el último elemento</td>
-                                <td><strong>O(1)</strong></td>
-                            </tr>
-                        </table>
+                        <ul>
+                            <li>El arreglo guarda los datos y tiene un tamaño máximo <code>MAX</code>.</li>
+                            <li><code>tope</code> es el índice del último dato. Vacía: <code>tope == -1</code>.</li>
+                            <li><strong>push:</strong> sube el tope y guarda ahí el dato.</li>
+                            <li><strong>pop:</strong> lee el dato del tope y baja el tope.</li>
+                            <li>Llena: <code>tope == MAX - 1</code>. Si se intenta un <code>push</code> así, hay
+                                <em>desbordamiento</em> (overflow).</li>
+                            <li>Los métodos devuelven <code>true</code> o <code>false</code> para avisar si pudieron; el
+                                dato sale por el parámetro <code>int&amp; x</code> (referencia).</li>
+                        </ul>
+                        <pre class="salida">MAX = 5, despues de 3 push:
+indice:  0    1    2    3    4
+dato:   [10] [20] [30]  .    .
+                  ^ tope = 2</pre>
                     </div>
-
-                    <div class="panel">
-                        <h3>Punteros de Control: Frente y Final</h3>
-                        <p style="font-size: 0.9rem; color: var(--muted);">
-                            La cola utiliza dos índices para sincronizar el flujo sin tener que desplazar físicamente todos los elementos a la izquierda en cada extracción.
-                        </p>
-                        <div style="background: var(--code-bg); padding: 14px; border-radius: 8px; border: 1px solid var(--line); text-align: center;">
-                            <div style="display: flex; justify-content: center; gap: 8px; font-family: var(--f-mono);">
-                                <div style="background: var(--hot-soft); border: 2px solid var(--hot); padding: 8px 12px; border-radius: 6px;">
-                                    <strong>[ 100 ]</strong><br><span style="font-size: 0.75rem;">FRENTE (Salida)</span>
-                                </div>
-                                <div style="background: var(--accent-soft); border: 1px solid var(--line); padding: 8px 12px; border-radius: 6px;">
-                                    <strong>[ 200 ]</strong><br><span style="font-size: 0.75rem;">Medio</span>
-                                </div>
-                                <div style="background: var(--accent-soft); border: 1px solid var(--line); padding: 8px 12px; border-radius: 6px;">
-                                    <strong>[ 300 ]</strong><br><span style="font-size: 0.75rem;">Medio</span>
-                                </div>
-                                <div style="background: var(--ok-soft); border: 2px solid var(--ok); padding: 8px 12px; border-radius: 6px;">
-                                    <strong>[ 400 ]</strong><br><span style="font-size: 0.75rem;">FINAL (Entrada)</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="tech-card" style="margin-top: 14px; border-left: 4px solid var(--hot);">
-                            <h4>Problema de la Cola Lineal Simple</h4>
-                            <p style="font-size: 0.88rem; margin: 0;">
-                                Si solo incrementamos <code>frente</code> y <code>final</code>, se alcanza el final del arreglo aunque queden posiciones libres a la izquierda. La solución técnica es la <strong>Cola Circular</strong>.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 9 5.1 y 5.3 Cola Circular en C++ -->
-        <section class="slide" data-name="5.1 y 5.3 Cola Circular" aria-label="Cola Circular en C++">
-            <div class="wrap">
-                <h2 tabindex="-1">5.1 y 5.3. Implementación de Cola Circular en C++</h2>
-                <p>
-                    La <strong>Cola Circular</strong> une virtualmente el final del arreglo con el principio utilizando el operador módulo <code>% MAX</code>. Esto reutiliza los espacios liberados al desencolar sin mover datos.
-                </p>
-
-                <div class="two">
                     <div>
-                        <div class="tech-card">
-                            <h4>Mecánica de la Cola Circular</h4>
-                            <ul style="font-size: 0.92rem; padding-left: 20px;">
-                                <li>Inicialización: <code>frente = 0; final = -1; contador = 0;</code></li>
-                                <li><strong>Avanzar el final:</strong> <code>final = (final + 1) % MAX;</code></li>
-                                <li><strong>Avanzar el frente:</strong> <code>frente = (frente + 1) % MAX;</code></li>
-                                <li>Control de capacidad: la variable <code>contador</code> lleva la cuenta exacta de elementos activos.</li>
-                            </ul>
-                        </div>
-                        <div class="tech-card" style="border-left: 4px solid var(--accent);">
-                            <h4>Eficiencia Garantizada</h4>
-                            <p style="font-size: 0.9rem; margin: 0;">
-                                Tanto encolar como desencolar son operaciones de tiempo constante <strong>O(1)</strong>, ideales para buffers de audio, red y videojuegos en tiempo real.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div>
-                        <pre class="code">// Cola Circular estática en C++
-#include &lt;iostream&gt;
+                        <p class="label">Programa completo</p>
+                        <pre>#include &lt;iostream&gt;
 using namespace std;
 
 const int MAX = 5;
 
-struct ColaCircular {
+struct Pila {
     int datos[MAX];
-    int frente;
-    int final;
-    int contador;
+    int tope = -1;                 // -1 = vacia
 
-    ColaCircular() : frente(0), final(-1), contador(0) {}
+    bool vacia() const { return tope == -1; }
+    bool llena() const { return tope == MAX - 1; }
 
-    bool estaVacia() const { return contador == 0; }
-    bool estaLlena() const { return contador == MAX; }
-
-    bool encolar(int valor) {
-        if (estaLlena()) {
-            cout &lt;&lt; "[Aviso] Cola llena.\n";
-            return false;
-        }
-        final = (final + 1) % MAX; // Salto circular
-        datos[final] = valor;
-        contador++;
+    bool push(int x) {
+        if (llena()) return false; // desbordamiento
+        tope++;
+        datos[tope] = x;
         return true;
     }
 
-    bool desencolar(int &valor) {
-        if (estaVacia()) {
-            cout &lt;&lt; "[Aviso] Cola vacía.\n";
-            return false;
-        }
-        valor = datos[frente];
-        frente = (frente + 1) % MAX; // Salto circular
-        contador--;
+    bool pop(int&amp; x) {
+        if (vacia()) return false; // nada que sacar
+        x = datos[tope];
+        tope--;
         return true;
     }
-};</pre>
-                    </div>
-                </div>
-            </div>
-        </section>
 
-        <!-- 10 5.2 Lectura y Búsqueda en Colas -->
-        <section class="slide" data-name="5.2 Lectura en Colas" aria-label="Lectura en Colas">
-            <div class="wrap">
-                <h2 tabindex="-1">5.2. Lectura de Datos y Búsqueda en Colas</h2>
-                <p>
-                    Al igual que en las pilas, en una cola pura no se deben alterar arbitrariamente los punteros internos. Para listar, contar o buscar elementos preservando el orden original, se desencola hacia una <strong>cola auxiliar</strong> o se rota la misma cola.
-                </p>
-
-                <div class="two">
-                    <div>
-                        <div class="tech-card" style="border-left: 4px solid var(--accent);">
-                            <h4>Estrategia 1: Uso de Cola Auxiliar</h4>
-                            <p style="font-size: 0.9rem;">
-                                Desencolas cada elemento, lo imprimes o evalúas, y lo encolas en <code>ColaCircular aux</code>. Al final, regresas todos los elementos de <code>aux</code> a la cola original.
-                            </p>
-                        </div>
-
-                        <div class="tech-card" style="border-left: 4px solid var(--hot);">
-                            <h4>Estrategia 2: Rotación Completa $N$ veces</h4>
-                            <p style="font-size: 0.9rem;">
-                                Conociendo el número de elementos $N$, desencolas un valor y lo vuelves a encolar en la misma estructura inmediatamente. Al repetir $N$ veces, todos los datos fueron leídos y regresaron a su orden inicial.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div>
-                        <pre class="code">// Búsqueda por rotación en C++ sin estructuras extras
-bool buscarPorRotacion(ColaCircular &c, int buscado) {
-    if (c.estaVacia()) return false;
-
-    int total = c.contador;
-    bool encontrado = false;
-    int temp;
-
-    for (int i = 0; i &lt; total; i++) {
-        c.desencolar(temp);
-        if (temp == buscado) {
-            encontrado = true;
-        }
-        c.encolar(temp); // Vuelve a entrar por el final
+    bool top(int&amp; x) const {
+        if (vacia()) return false;
+        x = datos[tope];
+        return true;
     }
+};
 
-    return encontrado; // La cola queda intacta
+int main() {
+    Pila p;
+    for (int i = 1; i &lt;= 6; i++) {          // el 6.o no cabe
+        if (p.push(i * 10)) cout &lt;&lt; "push " &lt;&lt; i * 10 &lt;&lt; endl;
+        else cout &lt;&lt; "Pila llena, no cabe " &lt;&lt; i * 10 &lt;&lt; endl;
+    }
+    int x;
+    p.top(x);
+    cout &lt;&lt; "Tope: " &lt;&lt; x &lt;&lt; endl;            // 50
+    while (p.pop(x))
+        cout &lt;&lt; "pop " &lt;&lt; x &lt;&lt; endl;         // 50 40 30 20 10
+    return 0;
 }</pre>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- 11 Laboratorio Interactivo: Cola -->
-        <section class="slide" data-name="Simulador Cola" aria-label="Simulador de Cola">
+        <!-- PILA 3 -->
+        <section class="slide" data-name="Pila (3/3) Vector">
             <div class="wrap">
-                <h2 tabindex="-1">Laboratorio Interactivo: Simulador de Cola (Queue)</h2>
-                <p>Observa el flujo FIFO en acción. Los elementos ingresan por la derecha (Final) y salen por la izquierda (Frente).</p>
-
-                <div class="sim-container">
-                    <div class="sim-controls">
-                        <label for="queueVal" style="font-weight: 600; font-size: 0.9rem;">Dato:</label>
-                        <input type="number" id="queueVal" class="sim-input" value="42" min="1" max="999">
-                        <button class="btn primary" id="btnQueueEnqueue">Encolar (Push)</button>
-                        <button class="btn action" id="btnQueueDequeue">Desencolar (Pop)</button>
-                        <button class="btn" id="btnQueueFront">Ver Frente</button>
-                        <button class="btn" id="btnQueueSearch">Buscar</button>
-                        <button class="btn" id="btnQueueClear">Vaciar Cola</button>
-                    </div>
-
+                <h2>Pila (3/3): con un vector</h2>
+                <p class="sub">El final del vector hace de tope</p>
+                <div class="two">
                     <div>
-                        <div style="font-size: 0.85rem; font-weight: 600; color: var(--muted); margin-bottom: 6px; display: flex; justify-content: space-between;">
-                            <span>&larr; SALIDA (Frente / Dequeue)</span>
-                            <span>ENTRADA (Final / Enqueue) &larr;</span>
-                        </div>
-                        <div class="queue-stage" id="queueStage">
-                            <!-- Elementos dinámicos JS -->
-                        </div>
+                        <p>Un <code>vector</code> ya se comporta como una pila si solo se usa su final:</p>
+                        <table>
+                            <tr>
+                                <th>Pila</th>
+                                <th>Vector</th>
+                            </tr>
+                            <tr>
+                                <td><code>push(x)</code></td>
+                                <td><code>push_back(x)</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>pop()</code></td>
+                                <td><code>pop_back()</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>top()</code></td>
+                                <td><code>back()</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>empty()</code></td>
+                                <td><code>empty()</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>size()</code></td>
+                                <td><code>size()</code></td>
+                            </tr>
+                        </table>
+                        <ul>
+                            <li>No tiene límite <code>MAX</code>: crece solo.</li>
+                            <li>Como es un vector, <strong>sí se puede recorrer</strong> con un <code>for</code>, cosa
+                                que <code>std::stack</code> no permite.</li>
+                        </ul>
                     </div>
+                    <div>
+                        <p class="label">Programa completo</p>
+                        <pre>#include &lt;iostream&gt;
+#include &lt;vector&gt;
+using namespace std;
 
-                    <div class="two" style="margin-top: 14px;">
-                        <div class="tech-card" style="margin: 0;">
-                            <h4 style="margin-bottom: 4px;">Punteros y Estado de la Cola</h4>
-                            <div style="font-family: var(--f-mono); font-size: 0.9rem; color: var(--ink);">
-                                &bull; <code>elementos = </code> <span id="queueCount">0</span> / 6<br>
-                                &bull; <code>frente = </code> <span id="queueFrontVal" style="font-weight: 700; color: var(--title);">-</span><br>
-                                &bull; <code>final = </code> <span id="queueBackVal" style="font-weight: 700; color: var(--hot);">-</span>
-                            </div>
-                        </div>
-                        <div class="status-log" id="queueLog" style="margin: 0;">
-                            Listo. Ingresa un dato y pulsa "Encolar (Push)".
-                        </div>
+int main() {
+    vector&lt;int&gt; pila;               // el final es el tope
+
+    pila.push_back(10);             // push
+    pila.push_back(20);
+    pila.push_back(30);
+
+    cout &lt;&lt; "Tope: " &lt;&lt; pila.back() &lt;&lt; endl;      // 30
+    pila.pop_back();                                 // pop
+    cout &lt;&lt; "Tamano: " &lt;&lt; pila.size() &lt;&lt; endl;   // 2
+
+    // Recorrer del tope al fondo sin sacar nada
+    for (int i = (int)pila.size() - 1; i &gt;= 0; i--)
+        cout &lt;&lt; pila[i] &lt;&lt; " ";                 // 20 10
+    cout &lt;&lt; endl;
+
+    pila.clear();                                    // vaciar
+    cout &lt;&lt; (pila.empty() ? "vacia" : "con datos");
+    return 0;
+}</pre>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- 12 Colas Dinámicas y std::queue -->
-        <section class="slide" data-name="Colas Dinámicas y STL" aria-label="Colas Dinámicas y STL">
+        <!-- RECORRER PILA 1 -->
+        <section class="slide" data-name="Recorrer pila (1/3) stack">
             <div class="wrap">
-                <h2 tabindex="-1">Colas Dinámicas y la Biblioteca Estándar (`std::queue`)</h2>
-                <p>En proyectos reales de C++ se utiliza memoria dinámica para soportar colas infinitas o la plantilla industrial <code>std::queue</code>.</p>
-
+                <h2>Recorrer una pila (1/3): std::stack</h2>
+                <p class="sub">No tiene índices: se saca de a uno y se usa una pila auxiliar</p>
                 <div class="two">
                     <div>
-                        <div class="tech-card">
-                            <h4>Cola Dinámica con Punteros Dobles</h4>
-                            <p style="font-size: 0.9rem;">
-                                Guarda dos punteros: <code>frente</code> y <code>final</code>. Al encolar se liga por el final; al desencolar se avanza por el frente y se libera memoria con <code>delete</code>.
-                            </p>
-                            <pre class="code" style="font-size: 0.84rem;">struct NodoCola {
-    int dato;
-    NodoCola* siguiente;
+                        <p>Con <code>std::stack</code> no hay <code>for</code> sobre sus elementos. Hay dos trucos:</p>
+                        <ul>
+                            <li><strong>Solo mirar:</strong> pasar la pila <strong>por valor</strong>
+                                (<code>stack&lt;T&gt; copia</code>). La función trabaja con una copia y la original
+                                queda intacta.</li>
+                            <li><strong>Reemplazar un dato:</strong> pasar la pila <strong>por referencia</strong>
+                                (<code>stack&lt;T&gt;&amp;</code>), pasar todo a una pila auxiliar cambiando el dato
+                                buscado, y luego devolver todo a la original. Al pasar dos veces el orden se restaura.
+                            </li>
+                        </ul>
+                        <pre class="salida">original (tope primero): Marta Luis Ana
+ -&gt; a aux, cambiando Luis
+aux      (tope primero): Ana Luis' Marta
+ -&gt; de vuelta a la original
+original (tope primero): Marta Luis' Ana</pre>
+                    </div>
+                    <div>
+                        <p class="label">Programa completo: mostrar y reemplazar un campo</p>
+                        <pre>#include &lt;iostream&gt;
+#include &lt;stack&gt;
+#include &lt;string&gt;
+using namespace std;
+
+struct Estudiante {
+    string nombre;
+    float  nota;
 };
 
-struct ColaDinamica {
-    NodoCola* frente = nullptr;
-    NodoCola* final = nullptr;
-
-    void encolar(int v) {
-        NodoCola* nuevo = new NodoCola{v, nullptr};
-        if (!frente) frente = final = nuevo;
-        else { final-&gt;siguiente = nuevo; final = nuevo; }
+// Por VALOR: trabaja con una copia
+void mostrar(stack&lt;Estudiante&gt; copia) {
+    cout &lt;&lt; "Pila (tope primero):" &lt;&lt; endl;
+    while (!copia.empty()) {
+        cout &lt;&lt; "  " &lt;&lt; copia.top().nombre &lt;&lt; " "
+             &lt;&lt; copia.top().nota &lt;&lt; endl;
+        copia.pop();
     }
-};</pre>
-                        </div>
-                    </div>
+}
 
+// Por REFERENCIA: modifica la pila original
+bool reemplazarNota(stack&lt;Estudiante&gt;&amp; p, const string&amp; nombre, float nueva) {
+    stack&lt;Estudiante&gt; aux;
+    bool hallado = false;
+
+    while (!p.empty()) {                 // ida: original -&gt; aux
+        Estudiante e = p.top();
+        p.pop();
+        if (!hallado &amp;&amp; e.nombre == nombre) {
+            e.nota = nueva;              // cambiar el campo
+            hallado = true;
+        }
+        aux.push(e);
+    }
+    while (!aux.empty()) {               // vuelta: aux -&gt; original
+        p.push(aux.top());
+        aux.pop();
+    }
+    return hallado;
+}
+
+int main() {
+    stack&lt;Estudiante&gt; pila;
+    pila.push({"Ana", 4.2f});
+    pila.push({"Luis", 3.5f});
+    pila.push({"Marta", 4.5f});
+
+    mostrar(pila);
+    if (reemplazarNota(pila, "Luis", 4.8f))
+        cout &lt;&lt; "Nota de Luis actualizada" &lt;&lt; endl;
+    mostrar(pila);
+    return 0;
+}</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- RECORRER PILA 2 -->
+        <section class="slide" data-name="Recorrer pila (2/3) vector">
+            <div class="wrap">
+                <h2>Recorrer una pila (2/3): vector o arreglo</h2>
+                <p class="sub">Se recorre con índices y se modifica en el lugar</p>
+                <div class="two">
                     <div>
-                        <div class="tech-card" style="border-left: 4px solid var(--accent);">
-                            <h4>Uso Estándar con <code>&lt;queue&gt;</code> en C++</h4>
-                            <p style="font-size: 0.9rem;">
-                                La biblioteca estándar proporciona una cola segura, probada y altamente optimizada.
-                            </p>
-                            <pre class="code" style="font-size: 0.84rem;">#include &lt;iostream&gt;
+                        <p>Si la pila es un vector o un arreglo, se puede recorrer directamente, sin pila auxiliar.</p>
+                        <ul>
+                            <li><strong>Del tope al fondo:</strong> <code>for (int i = tope; i &gt;= 0; i--)</code>. Con
+                                vector, <code>tope</code> es <code>size() - 1</code>.</li>
+                            <li><strong>Reemplazar un campo:</strong> <code>pila[i].nota = 4.8f;</code></li>
+                            <li><strong>Con <code>for (auto&amp; e : pila)</code></strong> la <code>&amp;</code> es lo
+                                que hace que <code>e</code> sea el elemento original. Sin ella, <code>e</code> es una
+                                copia y el cambio se pierde.</li>
+                        </ul>
+                        <p class="label">Misma idea con la pila de arreglo (tema 2/3)</p>
+                        <pre>for (int i = p.tope; i &gt;= 0; i--)
+    if (p.datos[i].nombre == "Luis")
+        p.datos[i].nota = 4.8f;</pre>
+                        <p class="muted">Esto rompe la regla de "solo se toca el tope", pero sirve para entender cómo se
+                            guardan los datos.</p>
+                    </div>
+                    <div>
+                        <p class="label">Programa completo con vector</p>
+                        <pre>#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+using namespace std;
+
+struct Estudiante {
+    string nombre;
+    float  nota;
+};
+
+int main() {
+    vector&lt;Estudiante&gt; pila;
+    pila.push_back({"Ana", 4.2f});
+    pila.push_back({"Luis", 3.5f});
+    pila.push_back({"Marta", 4.5f});
+
+    // 1. Recorrer del tope al fondo
+    cout &lt;&lt; "Antes:" &lt;&lt; endl;
+    for (int i = (int)pila.size() - 1; i &gt;= 0; i--)
+        cout &lt;&lt; "  " &lt;&lt; pila[i].nombre &lt;&lt; " " &lt;&lt; pila[i].nota &lt;&lt; endl;
+
+    // 2. Reemplazar un campo (auto&amp; = el elemento original)
+    for (auto&amp; e : pila)
+        if (e.nombre == "Luis")
+            e.nota = 4.8f;
+
+    // 3. Error comun: sin &amp; se modifica una COPIA
+    for (auto e : pila)
+        if (e.nombre == "Ana")
+            e.nota = 1.0f;               // no cambia la pila
+
+    cout &lt;&lt; "Despues:" &lt;&lt; endl;
+    for (int i = (int)pila.size() - 1; i &gt;= 0; i--)
+        cout &lt;&lt; "  " &lt;&lt; pila[i].nombre &lt;&lt; " " &lt;&lt; pila[i].nota &lt;&lt; endl;
+    return 0;
+}</pre>
+                        <p class="label">Salida</p>
+                        <pre class="salida">Antes:
+  Marta 4.5
+  Luis 3.5
+  Ana 4.2
+Despues:
+  Marta 4.5
+  Luis 4.8
+  Ana 4.2</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- RECORRER PILA 3 EJERCICIOS -->
+        <section class="slide" data-name="Ejercicios de pilas">
+            <div class="wrap">
+                <h2>Ejercicios de pilas (3/3)</h2>
+                <ol class="ej">
+                    <li>Invierte un texto usando una pila de caracteres.
+                        <details>
+                            <summary>Ver solución</summary>
+                            <pre>#include &lt;iostream&gt;
+#include &lt;stack&gt;
+#include &lt;string&gt;
+using namespace std;
+
+int main() {
+    string s = "hola mundo";
+    stack&lt;char&gt; p;
+    for (char c : s) p.push(c);
+
+    string r;
+    while (!p.empty()) {
+        r += p.top();
+        p.pop();
+    }
+    cout &lt;&lt; r;          // odnum aloh
+    return 0;
+}</pre>
+                        </details>
+                    </li>
+
+                    <li>Escribe una función que muestre la suma y el mayor de una pila de enteros <strong>sin
+                            destruirla</strong>. Pista: recíbela por valor.
+                        <details>
+                            <summary>Ver solución</summary>
+                            <pre>#include &lt;iostream&gt;
+#include &lt;stack&gt;
+using namespace std;
+
+void resumen(stack&lt;int&gt; copia) {       // por valor: copia
+    if (copia.empty()) return;
+    int suma = 0, mayor = copia.top();
+    while (!copia.empty()) {
+        suma += copia.top();
+        if (copia.top() &gt; mayor) mayor = copia.top();
+        copia.pop();
+    }
+    cout &lt;&lt; "Suma: " &lt;&lt; suma &lt;&lt; "  Mayor: " &lt;&lt; mayor &lt;&lt; endl;
+}
+
+int main() {
+    stack&lt;int&gt; p;
+    p.push(4); p.push(9); p.push(2);
+    resumen(p);                          // Suma: 15  Mayor: 9
+    cout &lt;&lt; "Sigue con " &lt;&lt; p.size() &lt;&lt; " elementos";   // 3
+    return 0;
+}</pre>
+                        </details>
+                    </li>
+
+                    <li>Elimina todas las apariciones de un valor en una pila, manteniendo el orden de los demás. Pista:
+                        pila auxiliar y referencia.
+                        <details>
+                            <summary>Ver solución</summary>
+                            <pre>#include &lt;iostream&gt;
+#include &lt;stack&gt;
+using namespace std;
+
+void eliminarValor(stack&lt;int&gt;&amp; p, int x) {
+    stack&lt;int&gt; aux;
+    while (!p.empty()) {
+        if (p.top() != x) aux.push(p.top());
+        p.pop();
+    }
+    while (!aux.empty()) {               // devolver en el orden original
+        p.push(aux.top());
+        aux.pop();
+    }
+}
+
+int main() {
+    stack&lt;int&gt; p;
+    int datos[] = {1, 2, 3, 2, 5};
+    for (int d : datos) p.push(d);
+
+    eliminarValor(p, 2);
+
+    while (!p.empty()) {
+        cout &lt;&lt; p.top() &lt;&lt; " ";         // 5 3 1
+        p.pop();
+    }
+    return 0;
+}</pre>
+                        </details>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- COLA 1 -->
+        <section class="slide" data-name="Cola (1/3) Concepto">
+            <div class="wrap">
+                <h2>Cola (1/3): concepto y std::queue</h2>
+                <p class="sub">FIFO: el primero en entrar es el primero en salir</p>
+                <div class="two">
+                    <div>
+                        <p>Una <strong>cola</strong> tiene dos extremos: se entra por el <strong>final</strong> y se
+                            sale por el <strong>frente</strong>. Es la fila de un banco.</p>
+                        <table>
+                            <tr>
+                                <th>Operación</th>
+                                <th>Qué hace</th>
+                            </tr>
+                            <tr>
+                                <td><code>push(x)</code></td>
+                                <td>Agrega <code>x</code> al final</td>
+                            </tr>
+                            <tr>
+                                <td><code>pop()</code></td>
+                                <td>Quita el del frente (no devuelve nada)</td>
+                            </tr>
+                            <tr>
+                                <td><code>front()</code></td>
+                                <td>Lee el del frente</td>
+                            </tr>
+                            <tr>
+                                <td><code>back()</code></td>
+                                <td>Lee el del final</td>
+                            </tr>
+                            <tr>
+                                <td><code>empty()</code>, <code>size()</code></td>
+                                <td>Vacía y cantidad</td>
+                            </tr>
+                        </table>
+                        <pre class="salida">salida &lt;- [10] [20] [30] &lt;- entrada
+          frente       final</pre>
+                        <p class="muted">Usos: cola de impresión, turnos de atención, procesos del sistema operativo.
+                        </p>
+                    </div>
+                    <div>
+                        <p class="label">Programa completo con std::queue</p>
+                        <pre>#include &lt;iostream&gt;
 #include &lt;queue&gt;
+#include &lt;string&gt;
 using namespace std;
 
 int main() {
     queue&lt;string&gt; turnos;
 
-    turnos.push("Cliente A"); // Encolar
+    turnos.push("Cliente A");     // encolar
     turnos.push("Cliente B");
     turnos.push("Cliente C");
 
-    cout &lt;&lt; "Próximo a atender: " &lt;&lt; turnos.front() &lt;&lt; endl; // Cliente A
-    cout &lt;&lt; "Último en fila: " &lt;&lt; turnos.back() &lt;&lt; endl;     // Cliente C
+    cout &lt;&lt; "Frente: " &lt;&lt; turnos.front() &lt;&lt; endl;   // Cliente A
+    cout &lt;&lt; "Final: "  &lt;&lt; turnos.back()  &lt;&lt; endl;   // Cliente C
+    cout &lt;&lt; "En fila: " &lt;&lt; turnos.size() &lt;&lt; endl;    // 3
 
-    turnos.pop(); // Se atiende al Cliente A
+    turnos.pop();                 // atiende a Cliente A
+    cout &lt;&lt; "Siguiente: " &lt;&lt; turnos.front() &lt;&lt; endl; // Cliente B
 
-    cout &lt;&lt; "Nuevo próximo: " &lt;&lt; turnos.front() &lt;&lt; endl;    // Cliente B
+    // Atender a todos en orden de llegada
+    while (!turnos.empty()) {
+        cout &lt;&lt; "Atendiendo a " &lt;&lt; turnos.front() &lt;&lt; endl;
+        turnos.pop();
+    }
     return 0;
 }</pre>
-                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- 13 Aplicaciones en la Industria -->
-        <section class="slide" data-name="Aplicaciones Industria" aria-label="Aplicaciones en la Industria">
+        <!-- COLA 2 -->
+        <section class="slide" data-name="Cola (2/3) Arreglo circular">
             <div class="wrap">
-                <h2 tabindex="-1">Aplicaciones en la Industria y Sistemas Computacionales</h2>
-                <p>Las pilas y colas resuelven problemas arquitectónicos fundamentales en sistemas operativos, redes y desarrollo web.</p>
-
+                <h2>Cola (2/3): con un arreglo circular, sin librería</h2>
+                <p class="sub">El índice vuelve al inicio con el operador %</p>
                 <div class="two">
                     <div>
-                        <div class="tech-card" style="border-left: 4px solid var(--accent);">
-                            <h4>Casos Reales con Pilas (LIFO)</h4>
-                            <ul style="font-size: 0.9rem; padding-left: 20px;">
-                                <li><strong>Call Stack de la CPU:</strong> Cada vez que un programa llama a una función en C++, la dirección de retorno y las variables locales se apilan en el Stack de memoria.</li>
-                                <li><strong>Operación Deshacer (Undo / Ctrl + Z):</strong> Editores de código y suites como Photoshop apilan cada acción del usuario para revertirla en orden inverso.</li>
-                                <li><strong>Validación de Sintaxis:</strong> Los compiladores verifican el balanceo de etiquetas HTML, llaves <code>{}</code> y paréntesis <code>()</code>.</li>
-                                <li><strong>Evaluador de Expresiones:</strong> Conversión de notación infija a postfija (Notación Polaca Inversa) para calculadoras.</li>
-                            </ul>
-                        </div>
+                        <p>Si el frente solo avanzara, al llegar al final del arreglo no se podría seguir aunque haya
+                            espacios libres atrás. La solución es la <strong>cola circular</strong>: después del último
+                            índice se vuelve al 0 con <code>% MAX</code>.</p>
+                        <ul>
+                            <li><code>frente</code>: índice del primer elemento.</li>
+                            <li><code>cuenta</code>: cuántos elementos hay.</li>
+                            <li>Posición libre para encolar: <code>(frente + cuenta) % MAX</code>.</li>
+                            <li>Al desencolar: <code>frente = (frente + 1) % MAX</code>.</li>
+                            <li>Vacía: <code>cuenta == 0</code>. Llena: <code>cuenta == MAX</code>.</li>
+                        </ul>
+                        <pre class="salida">MAX = 5. Se encolaron 10..50, se sacaron 10 y 20,
+y se encolaron 60 y 70 (vuelven al inicio):
+indice:  0    1    2    3    4
+dato:   [60] [70] [30] [40] [50]
+                  ^ frente = 2, cuenta = 5</pre>
                     </div>
-
                     <div>
-                        <div class="tech-card" style="border-left: 4px solid var(--hot);">
-                            <h4>Casos Reales con Colas (FIFO)</h4>
-                            <ul style="font-size: 0.9rem; padding-left: 20px;">
-                                <li><strong>Spooler de Impresión:</strong> Los documentos enviados por múltiples usuarios se encolan y se imprimen estrictamente en el orden recibido.</li>
-                                <li><strong>Planificador de CPU (Round Robin):</strong> El sistema operativo asigna rodajas de tiempo de procesador a cada programa rotándolos en una cola circular.</li>
-                                <li><strong>Message Brokers (RabbitMQ / Kafka):</strong> Servidores en la nube comunican microservicios procesando millones de transacciones por segundo en colas.</li>
-                                <li><strong>Algoritmos de Grafos (BFS):</strong> Búsqueda en anchura para encontrar la ruta más corta en mapas (GPS) y redes sociales.</li>
-                            </ul>
-                        </div>
+                        <p class="label">Programa completo</p>
+                        <pre>#include &lt;iostream&gt;
+using namespace std;
+
+const int MAX = 5;
+
+struct Cola {
+    int datos[MAX];
+    int frente = 0;               // indice del primero
+    int cuenta = 0;               // elementos actuales
+
+    bool vacia() const { return cuenta == 0; }
+    bool llena() const { return cuenta == MAX; }
+
+    bool encolar(int x) {
+        if (llena()) return false;
+        int fin = (frente + cuenta) % MAX;   // espacio libre
+        datos[fin] = x;
+        cuenta++;
+        return true;
+    }
+
+    bool desencolar(int&amp; x) {
+        if (vacia()) return false;
+        x = datos[frente];
+        frente = (frente + 1) % MAX;         // avanza circular
+        cuenta--;
+        return true;
+    }
+
+    void mostrar() const {                   // recorre sin sacar
+        for (int i = 0; i &lt; cuenta; i++)
+            cout &lt;&lt; datos[(frente + i) % MAX] &lt;&lt; " ";
+        cout &lt;&lt; endl;
+    }
+};
+
+int main() {
+    Cola c;
+    for (int i = 1; i &lt;= 6; i++) {           // el 6.o no cabe
+        if (!c.encolar(i * 10)) cout &lt;&lt; "Cola llena, no cabe " &lt;&lt; i * 10 &lt;&lt; endl;
+    }
+    c.mostrar();                             // 10 20 30 40 50
+
+    int x;
+    c.desencolar(x);                         // sale 10
+    c.desencolar(x);                         // sale 20
+    c.encolar(60);                           // usa el espacio liberado
+    c.encolar(70);
+    c.mostrar();                             // 30 40 50 60 70
+    return 0;
+}</pre>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- 14 Batería de Ejercicios Prácticos (30 ejercicios) -->
-        <section class="slide" data-name="Ejercicios Prácticos" aria-label="30 Ejercicios Prácticos">
+        <!-- COLA 3 -->
+        <section class="slide" data-name="Cola (3/3) Vector">
             <div class="wrap">
-                <h2 tabindex="-1">Batería de Ejercicios Prácticos en C++ (30 Problemas)</h2>
-                <p class="lead">Desarrolla tus habilidades de implementación y resolución de problemas. Cada ejercicio incluye su solución completa desplegable.</p>
-
-                <!-- Bloque 1: Básicos -->
-                <div class="panel">
-                    <h3 style="color: var(--title);">Bloque A: Fundamentos de Pilas y Colas (Ejercicios 1 al 10)</h3>
-
-                    <!-- Ejercicio 1 -->
-                    <div class="tech-card">
-                        <h4>1. Inversión de una Cadena de Texto con Pila</h4>
-                        <p style="font-size: 0.9rem;">Escribe una función que reciba un <code>string</code> y retorne la cadena invertida utilizando una pila <code>stack&lt;char&gt;</code>.</p>
-                        <details class="ex-solution">
-                            <summary></summary>
-                            <pre class="code">#include &lt;iostream&gt;
-#include &lt;stack&gt;
+                <h2>Cola (3/3): con un vector</h2>
+                <p class="sub">Se agrega por el final y se saca por el principio</p>
+                <div class="two">
+                    <div>
+                        <table>
+                            <tr>
+                                <th>Cola</th>
+                                <th>Vector</th>
+                            </tr>
+                            <tr>
+                                <td><code>push(x)</code></td>
+                                <td><code>push_back(x)</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>pop()</code></td>
+                                <td><code>erase(begin())</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>front()</code></td>
+                                <td><code>front()</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>back()</code></td>
+                                <td><code>back()</code></td>
+                            </tr>
+                        </table>
+                        <ul>
+                            <li>Sin límite de tamaño y se puede recorrer con <code>for</code>.</li>
+                            <li><strong>Costo:</strong> borrar el primero obliga a mover todos los demás un lugar. Es
+                                lento si hay muchos datos, pero para aprender y para pocos datos sirve.</li>
+                            <li>Si necesitas una opción rápida con la biblioteca, usa <code>std::deque</code>: tiene
+                                <code>push_back</code>, <code>pop_front</code>, <code>front</code> y se recorre con
+                                índices.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <p class="label">Programa completo con vector</p>
+                        <pre>#include &lt;iostream&gt;
+#include &lt;vector&gt;
 using namespace std;
 
-string invertir(const string &s) {
-    stack&lt;char&gt; p;
-    for (char c : s) p.push(c);
-    string res = "";
-    while (!p.empty()) {
-        res += p.top();
-        p.pop();
-    }
-    return res;
-}</pre>
-                        </details>
-                    </div>
+int main() {
+    vector&lt;int&gt; cola;
 
-                    <!-- Ejercicio 2 -->
-                    <div class="tech-card">
-                        <h4>2. Conteo de Elementos en Pila sin Destruirla</h4>
-                        <p style="font-size: 0.9rem;">Determina cuántos elementos tiene una pila manual sin acceder a la variable <code>tope</code>, usando una pila auxiliar.</p>
-                        <details class="ex-solution">
-                            <summary></summary>
-                            <pre class="code">int contarElementos(Pila &p) {
-    Pila aux;
-    int c = 0, val;
-    while (!p.estaVacia()) {
-        pop(p, val);
-        push(aux, val);
-        c++;
-    }
-    while (!aux.estaVacia()) {
-        pop(aux, val);
-        push(p, val);
-    }
-    return c;
-}</pre>
-                        </details>
-                    </div>
+    cola.push_back(10);                // encolar
+    cola.push_back(20);
+    cola.push_back(30);
 
-                    <!-- Ejercicio 3 -->
-                    <div class="tech-card">
-                        <h4>3. Duplicar Elementos de una Cola</h4>
-                        <p style="font-size: 0.9rem;">Dada una cola de números enteros, duplica cada valor de forma consecutiva (ej: [1, 2] &rarr; [1, 1, 2, 2]).</p>
-                        <details class="ex-solution">
-                            <summary></summary>
-                            <pre class="code">#include &lt;queue&gt;
-void duplicar(queue&lt;int&gt; &q) {
-    int n = q.size();
+    cout &lt;&lt; "Frente: " &lt;&lt; cola.front() &lt;&lt; endl;   // 10
+    cout &lt;&lt; "Final: "  &lt;&lt; cola.back()  &lt;&lt; endl;   // 30
+
+    cola.erase(cola.begin());          // desencolar (sale el 10)
+
+    // Recorrer del frente al final
+    for (int i = 0; i &lt; (int)cola.size(); i++)
+        cout &lt;&lt; cola[i] &lt;&lt; " ";        // 20 30
+    cout &lt;&lt; endl;
+
+    // Version con deque (pop_front es rapido)
+    // #include &lt;deque&gt;
+    // deque&lt;int&gt; d;  d.push_back(1);  d.pop_front();
+    return 0;
+}</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- RECORRER COLA 1 -->
+        <section class="slide" data-name="Recorrer cola (1/3) queue">
+            <div class="wrap">
+                <h2>Recorrer una cola (1/3): std::queue</h2>
+                <p class="sub">Se rota: sacar el del frente y volver a meterlo al final</p>
+                <div class="two">
+                    <div>
+                        <p>Con <code>std::queue</code> tampoco hay índices. Se hace una <strong>rotación
+                                completa</strong>:</p>
+                        <ol>
+                            <li>Guardar la cantidad inicial <code>n = size()</code>.</li>
+                            <li>Repetir <code>n</code> veces: tomar el frente, <code>pop()</code>, revisar o cambiar el
+                                dato y hacer <code>push()</code> otra vez.</li>
+                        </ol>
+                        <p>Después de <code>n</code> vueltas, todos fueron visitados y la cola queda <strong>en el mismo
+                                orden</strong>.</p>
+                        <p>Para solo mirar, también sirve pasar la cola <strong>por valor</strong> (una copia).</p>
+                        <pre class="salida">frente -&gt; Ana, Luis, Marta
+vuelta 1: Ana   sale y entra -&gt; Luis, Marta, Ana
+vuelta 2: Luis  se cambia   -&gt; Marta, Ana, Luis'
+vuelta 3: Marta sale y entra -&gt; Ana, Luis', Marta</pre>
+                    </div>
+                    <div>
+                        <p class="label">Programa completo: mostrar y reemplazar un campo</p>
+                        <pre>#include &lt;iostream&gt;
+#include &lt;queue&gt;
+#include &lt;string&gt;
+using namespace std;
+
+struct Estudiante {
+    string nombre;
+    float  nota;
+};
+
+// Por VALOR: trabaja con una copia
+void mostrar(queue&lt;Estudiante&gt; copia) {
+    cout &lt;&lt; "Cola (frente primero):" &lt;&lt; endl;
+    while (!copia.empty()) {
+        cout &lt;&lt; "  " &lt;&lt; copia.front().nombre &lt;&lt; " "
+             &lt;&lt; copia.front().nota &lt;&lt; endl;
+        copia.pop();
+    }
+}
+
+// Por REFERENCIA: rotacion completa
+bool reemplazarNota(queue&lt;Estudiante&gt;&amp; c, const string&amp; nombre, float nueva) {
+    bool hallado = false;
+    int n = c.size();                 // cantidad inicial
     for (int i = 0; i &lt; n; i++) {
-        int v = q.front();
-        q.pop();
-        q.push(v);
-        q.push(v);
+        Estudiante e = c.front();
+        c.pop();
+        if (e.nombre == nombre) {
+            e.nota = nueva;           // cambiar el campo
+            hallado = true;
+        }
+        c.push(e);                    // vuelve a entrar por el final
     }
-}</pre>
-                        </details>
-                    </div>
+    return hallado;
+}
 
-                    <!-- Ejercicio 4 -->
-                    <div class="tech-card">
-                        <h4>4. Copiar una Pila Preservando el Orden</h4>
-                        <p style="font-size: 0.9rem;">Copia todos los datos de una pila origen a una pila destino manteniendo exactamente el mismo orden original.</p>
-                        <details class="ex-solution">
-                            <summary></summary>
-                            <pre class="code">void copiarPila(stack&lt;int&gt; origen, stack&lt;int&gt; &destino) {
-    stack&lt;int&gt; aux;
-    while (!origen.empty()) {
-        aux.push(origen.top());
-        origen.pop();
-    }
-    while (!aux.empty()) {
-        destino.push(aux.top());
-        aux.pop();
-    }
-}</pre>
-                        </details>
-                    </div>
+int main() {
+    queue&lt;Estudiante&gt; cola;
+    cola.push({"Ana", 4.2f});
+    cola.push({"Luis", 3.5f});
+    cola.push({"Marta", 4.5f});
 
-                    <!-- Ejercicio 5 -->
-                    <div class="tech-card">
-                        <h4>5. Sumar los Elementos de una Cola</h4>
-                        <p style="font-size: 0.9rem;">Calcula la suma total de los elementos de una cola sin alterar su contenido al finalizar.</p>
-                        <details class="ex-solution">
-                            <summary></summary>
-                            <pre class="code">int sumarCola(queue&lt;int&gt; &q) {
+    mostrar(cola);
+    if (reemplazarNota(cola, "Luis", 4.8f))
+        cout &lt;&lt; "Nota de Luis actualizada" &lt;&lt; endl;
+    mostrar(cola);
+    return 0;
+}</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- RECORRER COLA 2 -->
+        <section class="slide" data-name="Recorrer cola (2/3) arreglo">
+            <div class="wrap">
+                <h2>Recorrer una cola (2/3): arreglo circular</h2>
+                <p class="sub">El elemento número i está en (frente + i) % MAX</p>
+                <div class="two">
+                    <div>
+                        <p>Con la cola de arreglo se recorre desde el frente, <code>cuenta</code> elementos, y el índice
+                            real se calcula con el módulo:</p>
+                        <pre>for (int i = 0; i &lt; cuenta; i++) {
+    int pos = (frente + i) % MAX;
+    // datos[pos] es el elemento i-esimo
+}</pre>
+                        <ul>
+                            <li>Para <strong>mostrar</strong>, se imprime <code>datos[pos]</code>.</li>
+                            <li>Para <strong>reemplazar un campo</strong>, se asigna directamente:
+                                <code>datos[pos].nota = nueva;</code></li>
+                            <li>No hace falta rotar ni copiar nada.</li>
+                        </ul>
+                        <p class="muted">Importante: no se recorre de 0 a <code>MAX</code>, porque la cola puede empezar
+                            en cualquier posición y haber espacios sin uso.</p>
+                    </div>
+                    <div>
+                        <p class="label">Programa completo</p>
+                        <pre>#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+const int MAX = 5;
+
+struct Estudiante {
+    string nombre;
+    float  nota;
+};
+
+struct Cola {
+    Estudiante datos[MAX];
+    int frente = 0;
+    int cuenta = 0;
+
+    bool encolar(const Estudiante&amp; e) {
+        if (cuenta == MAX) return false;
+        datos[(frente + cuenta) % MAX] = e;
+        cuenta++;
+        return true;
+    }
+
+    bool desencolar(Estudiante&amp; e) {
+        if (cuenta == 0) return false;
+        e = datos[frente];
+        frente = (frente + 1) % MAX;
+        cuenta--;
+        return true;
+    }
+
+    void mostrar() const {
+        for (int i = 0; i &lt; cuenta; i++) {
+            const Estudiante&amp; e = datos[(frente + i) % MAX];
+            cout &lt;&lt; "  " &lt;&lt; e.nombre &lt;&lt; " " &lt;&lt; e.nota &lt;&lt; endl;
+        }
+    }
+
+    bool reemplazarNota(const string&amp; nombre, float nueva) {
+        for (int i = 0; i &lt; cuenta; i++) {
+            int pos = (frente + i) % MAX;
+            if (datos[pos].nombre == nombre) {
+                datos[pos].nota = nueva;
+                return true;
+            }
+        }
+        return false;
+    }
+};
+
+int main() {
+    Cola c;
+    c.encolar({"Ana", 4.2f});
+    c.encolar({"Luis", 3.5f});
+    c.encolar({"Marta", 4.5f});
+
+    Estudiante x;
+    c.desencolar(x);                  // sale Ana
+    c.encolar({"Pedro", 3.9f});       // el arreglo ya esta dando la vuelta
+
+    c.reemplazarNota("Luis", 4.8f);
+    c.mostrar();                      // Luis 4.8, Marta 4.5, Pedro 3.9
+    return 0;
+}</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- RECORRER COLA 3 EJERCICIOS -->
+        <section class="slide" data-name="Ejercicios de colas">
+            <div class="wrap">
+                <h2>Ejercicios de colas (3/3)</h2>
+                <ol class="ej">
+                    <li>Suma los elementos de una cola sin destruirla, usando la rotación completa.
+                        <details>
+                            <summary>Ver solución</summary>
+                            <pre>#include &lt;iostream&gt;
+#include &lt;queue&gt;
+using namespace std;
+
+int main() {
+    queue&lt;int&gt; q;
+    q.push(5); q.push(10); q.push(15);
+
     int suma = 0, n = q.size();
     for (int i = 0; i &lt; n; i++) {
         int v = q.front();
-        suma += v;
         q.pop();
-        q.push(v);
+        suma += v;
+        q.push(v);                      // vuelve a entrar
     }
-    return suma;
+    cout &lt;&lt; "Suma: " &lt;&lt; suma &lt;&lt; endl;            // 30
+    cout &lt;&lt; "Elementos: " &lt;&lt; q.size();          // 3
+    return 0;
 }</pre>
                         </details>
-                    </div>
+                    </li>
 
-                    <!-- Ejercicio 6 -->
-                    <div class="tech-card">
-                        <h4>6. Eliminar el Fondo de una Pila</h4>
-                        <p style="font-size: 0.9rem;">Elimina el elemento más antiguo (el del fondo) de una pila dejando los demás intactos.</p>
-                        <details class="ex-solution">
-                            <summary></summary>
-                            <pre class="code">void eliminarFondo(stack&lt;int&gt; &p) {
-    if (p.empty()) return;
-    stack&lt;int&gt; aux;
-    while (p.size() &gt; 1) {
-        aux.push(p.top());
+                    <li>Invierte una cola usando una pila como intermediaria.
+                        <details>
+                            <summary>Ver solución</summary>
+                            <pre>#include &lt;iostream&gt;
+#include &lt;queue&gt;
+#include &lt;stack&gt;
+using namespace std;
+
+int main() {
+    queue&lt;int&gt; q;
+    q.push(1); q.push(2); q.push(3);
+
+    stack&lt;int&gt; p;
+    while (!q.empty()) {                // cola -&gt; pila
+        p.push(q.front());
+        q.pop();
+    }
+    while (!p.empty()) {                // pila -&gt; cola (invertida)
+        q.push(p.top());
         p.pop();
     }
-    p.pop(); // Se descarta el fondo
-    while (!aux.empty()) {
-        p.push(aux.top());
-        aux.pop();
+    while (!q.empty()) {
+        cout &lt;&lt; q.front() &lt;&lt; " ";       // 3 2 1
+        q.pop();
     }
+    return 0;
 }</pre>
                         </details>
-                    </div>
+                    </li>
 
-                    <!-- Ejercicio 7 -->
-                    <div class="tech-card">
-                        <h4>7. Comprobar si Dos Pilas son Idénticas</h4>
-                        <p style="font-size: 0.9rem;">Determina si dos pilas contienen los mismos valores en las mismas posiciones sin destruirlas.</p>
-                        <details class="ex-solution">
-                            <summary></summary>
-                            <pre class="code">bool sonIdenticas(stack&lt;int&gt; a, stack&lt;int&gt; b) {
-    if (a.size() != b.size()) return false;
-    while (!a.empty()) {
-        if (a.top() != b.top()) return false;
-        a.pop();
-        b.pop();
+                    <li>Separa una cola de enteros en dos colas: pares e impares.
+                        <details>
+                            <summary>Ver solución</summary>
+                            <pre>#include &lt;iostream&gt;
+#include &lt;queue&gt;
+using namespace std;
+
+void mostrar(queue&lt;int&gt; q) {          // por valor: no destruye
+    while (!q.empty()) {
+        cout &lt;&lt; q.front() &lt;&lt; " ";
+        q.pop();
     }
-    return true;
-}</pre>
-                        </details>
-                    </div>
+    cout &lt;&lt; endl;
+}
 
-                    <!-- Ejercicio 8 -->
-                    <div class="tech-card">
-                        <h4>8. Separar Pares e Impares de una Cola</h4>
-                        <p style="font-size: 0.9rem;">Recibe una cola de enteros y genera dos colas separadas: una con los pares y otra con los impares.</p>
-                        <details class="ex-solution">
-                            <summary></summary>
-                            <pre class="code">void separar(queue&lt;int&gt; q, queue&lt;int&gt; &pares, queue&lt;int&gt; &impares) {
+int main() {
+    queue&lt;int&gt; q, pares, impares;
+    int datos[] = {7, 2, 9, 4, 5, 6};
+    for (int d : datos) q.push(d);
+
     while (!q.empty()) {
         int v = q.front();
         q.pop();
         if (v % 2 == 0) pares.push(v);
-        else impares.push(v);
+        else            impares.push(v);
     }
+    mostrar(pares);      // 2 4 6
+    mostrar(impares);    // 7 9 5
+    return 0;
 }</pre>
                         </details>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- APLICACIONES 1 -->
+        <section class="slide" data-name="Aplicaciones con pila">
+            <div class="wrap">
+                <h2>Aplicaciones con pila</h2>
+                <p class="sub">Dos problemas clásicos</p>
+                <div class="two">
+                    <div>
+                        <p><strong>1. Paréntesis balanceados.</strong> Cada símbolo que abre se apila. Cada símbolo que
+                            cierra debe coincidir con el tope: si no coincide, o la pila está vacía, está mal. Al final,
+                            la pila debe quedar vacía.</p>
+                        <pre class="salida">"{[()]}"  -&gt; balanceado
+"(]"      -&gt; no
+"(("      -&gt; no (sobra un parentesis)</pre>
+                        <p><strong>2. Decimal a binario.</strong> Se divide entre 2 y se apila cada residuo. Al
+                            desapilar salen en el orden correcto, porque el último residuo es el primer dígito.</p>
+                        <pre class="salida">13 / 2 = 6  residuo 1
+ 6 / 2 = 3  residuo 0
+ 3 / 2 = 1  residuo 1
+ 1 / 2 = 0  residuo 1
+al desapilar: 1 1 0 1</pre>
                     </div>
+                    <div>
+                        <p class="label">Programa completo</p>
+                        <pre>#include &lt;iostream&gt;
+#include &lt;stack&gt;
+#include &lt;string&gt;
+using namespace std;
 
-                    <!-- Ejercicio 9 -->
-                    <div class="tech-card">
-                        <h4>9. Obtener el Valor Mínimo de una Pila</h4>
-                        <p style="font-size: 0.9rem;">Encuentra el menor valor almacenado en una pila manteniendo su orden original al concluir.</p>
-                        <details class="ex-solution">
-                            <summary></summary>
-                            <pre class="code">int minimoPila(stack&lt;int&gt; p) {
-    if (p.empty()) return -1;
-    int minVal = p.top();
-    while (!p.empty()) {
-        if (p.top() &lt; minVal) minVal = p.top();
-        p.pop();
-    }
-    return minVal;
-}</pre>
-                        </details>
-                    </div>
-
-                    <!-- Ejercicio 10 -->
-                    <div class="tech-card">
-                        <h4>10. Invertir una Cola Utilizando una Pila</h4>
-                        <p style="font-size: 0.9rem;">Invierte completamente el orden de los elementos de una cola utilizando una pila como intermediaria.</p>
-                        <details class="ex-solution">
-                            <summary></summary>
-                            <pre class="code">void invertirCola(queue&lt;int&gt; &q) {
-    stack&lt;int&gt; p;
-    while (!q.empty()) {
-        p.push(q.front());
-        q.pop();
-    }
-    while (!p.empty()) {
-        q.push(p.top());
-        p.pop();
-    }
-}</pre>
-                        </details>
-                    </div>
-                </div>
-
-                <!-- Bloque 2: Intermedios -->
-                <div class="panel">
-                    <h3 style="color: var(--title);">Bloque B: Algoritmos y Aplicaciones Intermedias (Ejercicios 11 al 20)</h3>
-
-                    <!-- Ejercicio 11 -->
-                    <div class="tech-card">
-                        <h4>11. Verificación de Paréntesis y Corchetes Balanceados</h4>
-                        <p style="font-size: 0.9rem;">Verifica si una cadena contiene delimitadores bien balanceados: <code>()</code>, <code>[]</code>, <code>{}</code>.</p>
-                        <details class="ex-solution">
-                            <summary></summary>
-                            <pre class="code">#include &lt;stack&gt;
-bool balanceado(const string &expr) {
+bool balanceado(const string&amp; s) {
     stack&lt;char&gt; p;
-    for (char c : expr) {
-        if (c == '(' || c == '[' || c == '{') p.push(c);
-        else if (c == ')' || c == ']' || c == '}') {
+    for (char c : s) {
+        if (c == '(' || c == '[' || c == '{') {
+            p.push(c);
+        } else if (c == ')' || c == ']' || c == '}') {
             if (p.empty()) return false;
-            char t = p.top(); p.pop();
-            if (c == ')' && t != '(') return false;
-            if (c == ']' && t != '[') return false;
-            if (c == '}' && t != '{') return false;
+            char t = p.top();
+            p.pop();
+            if ((c == ')' &amp;&amp; t != '(') ||
+                (c == ']' &amp;&amp; t != '[') ||
+                (c == '}' &amp;&amp; t != '{')) return false;
         }
     }
     return p.empty();
-}</pre>
-                        </details>
-                    </div>
+}
 
-                    <!-- Ejercicio 12 -->
-                    <div class="tech-card">
-                        <h4>12. Conversión de Decimal a Binario con Pila</h4>
-                        <p style="font-size: 0.9rem;">Convierte un número entero positivo a su representación binaria apilando los residuos de la división sucesiva por 2.</p>
-                        <details class="ex-solution">
-                            <summary></summary>
-                            <pre class="code">string decimalABinario(int n) {
+string decimalABinario(int n) {
     if (n == 0) return "0";
     stack&lt;int&gt; residuos;
     while (n &gt; 0) {
         residuos.push(n % 2);
         n /= 2;
     }
-    string bin = "";
+    string bin;
     while (!residuos.empty()) {
         bin += to_string(residuos.top());
         residuos.pop();
     }
     return bin;
-}</pre>
-                        </details>
-                    </div>
+}
 
-                    <!-- Ejercicio 13 -->
-                    <div class="tech-card">
-                        <h4>13. Comprobación de Palíndromos con Pila y Cola</h4>
-                        <p style="font-size: 0.9rem;">Determina si una palabra se lee igual al derecho y al revés comparando el frente de una cola con el tope de una pila.</p>
-                        <details class="ex-solution">
-                            <summary></summary>
-                            <pre class="code">bool esPalindromo(const string &palabra) {
+int main() {
+    cout &lt;&lt; balanceado("{[()]}") &lt;&lt; endl;   // 1 (si)
+    cout &lt;&lt; balanceado("(]") &lt;&lt; endl;       // 0 (no)
+    cout &lt;&lt; decimalABinario(13) &lt;&lt; endl;    // 1101
+    return 0;
+}</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- APLICACIONES 2 -->
+        <section class="slide" data-name="Aplicaciones con cola">
+            <div class="wrap">
+                <h2>Aplicaciones con pila y cola</h2>
+                <p class="sub">Palíndromos y turnos de procesos</p>
+                <div class="two">
+                    <div>
+                        <p><strong>1. Palíndromo.</strong> Se mete cada letra en una pila y en una cola. La pila las
+                            entrega de atrás hacia adelante y la cola de adelante hacia atrás. Si todas coinciden, la
+                            palabra se lee igual en los dos sentidos.</p>
+                        <p><strong>2. Turnos (Round Robin).</strong> Cada proceso recibe un tiempo máximo llamado
+                            <em>quantum</em>. Si no termina, vuelve al final de la cola con el tiempo que le falta. Así
+                            todos avanzan por turnos.</p>
+                        <pre class="salida">A(5) B(3) C(8), quantum 3
+A ejecuto 3, resta 2   (vuelve a la cola)
+B termino (3)
+C ejecuto 3, resta 5   (vuelve a la cola)
+A termino (2)
+C ejecuto 3, resta 2   (vuelve a la cola)
+C termino (2)</pre>
+                    </div>
+                    <div>
+                        <p class="label">Programa completo</p>
+                        <pre>#include &lt;iostream&gt;
+#include &lt;stack&gt;
+#include &lt;queue&gt;
+#include &lt;string&gt;
+using namespace std;
+
+bool esPalindromo(const string&amp; s) {
     stack&lt;char&gt; p;
     queue&lt;char&gt; q;
-    for (char c : palabra) {
+    for (char c : s) {
         p.push(c);
         q.push(c);
     }
@@ -1596,789 +1382,144 @@ bool balanceado(const string &expr) {
         q.pop();
     }
     return true;
-}</pre>
-                        </details>
-                    </div>
+}
 
-                    <!-- Ejercicio 14 -->
-                    <div class="tech-card">
-                        <h4>14. Intercalado de Dos Colas</h4>
-                        <p style="font-size: 0.9rem;">Combina dos colas $A$ y $B$ de igual longitud intercalando sus elementos en una tercera cola $C$.</p>
-                        <details class="ex-solution">
-                            <summary></summary>
-                            <pre class="code">queue&lt;int&gt; intercalar(queue&lt;int&gt; a, queue&lt;int&gt; b) {
-    queue&lt;int&gt; c;
-    while (!a.empty() || !b.empty()) {
-        if (!a.empty()) { c.push(a.front()); a.pop(); }
-        if (!b.empty()) { c.push(b.front()); b.pop(); }
-    }
-    return c;
-}</pre>
-                        </details>
-                    </div>
+struct Proceso {
+    string nombre;
+    int    tiempo;
+};
 
-                    <!-- Ejercicio 15 -->
-                    <div class="tech-card">
-                        <h4>15. Eliminar Ocurrencias de un Valor en una Pila</h4>
-                        <p style="font-size: 0.9rem;">Elimina todas las apariciones de un número $X$ dentro de una pila manteniendo el orden relativo de los demás elementos.</p>
-                        <details class="ex-solution">
-                            <summary></summary>
-                            <pre class="code">void eliminarValor(stack&lt;int&gt; &p, int x) {
-    stack&lt;int&gt; aux;
-    while (!p.empty()) {
-        if (p.top() != x) aux.push(p.top());
-        p.pop();
-    }
-    while (!aux.empty()) {
-        p.push(aux.top());
-        aux.pop();
-    }
-}</pre>
-                        </details>
-                    </div>
-
-                    <!-- Ejercicio 16 -->
-                    <div class="tech-card">
-                        <h4>16. Fusión Ordenada de Dos Colas Ordenadas</h4>
-                        <p style="font-size: 0.9rem;">Dadas dos colas cuyos elementos están ordenados de menor a mayor, crea una tercera cola ordenada sin usar algoritmos de ordenamiento.</p>
-                        <details class="ex-solution">
-                            <summary></summary>
-                            <pre class="code">queue&lt;int&gt; fusionarOrdenadas(queue&lt;int&gt; a, queue&lt;int&gt; b) {
-    queue&lt;int&gt; res;
-    while (!a.empty() && !b.empty()) {
-        if (a.front() &lt;= b.front()) {
-            res.push(a.front()); a.pop();
-        } else {
-            res.push(b.front()); b.pop();
-        }
-    }
-    while (!a.empty()) { res.push(a.front()); a.pop(); }
-    while (!b.empty()) { res.push(b.front()); b.pop(); }
-    return res;
-}</pre>
-                        </details>
-                    </div>
-
-                    <!-- Ejercicio 17 -->
-                    <div class="tech-card">
-                        <h4>17. Ordenar una Pila Usando Otra Pila Auxiliar</h4>
-                        <p style="font-size: 0.9rem;">Ordena los elementos de una pila de menor a mayor (el menor en el tope) utilizando únicamente otra pila auxiliar.</p>
-                        <details class="ex-solution">
-                            <summary></summary>
-                            <pre class="code">void ordenarPila(stack&lt;int&gt; &p) {
-    stack&lt;int&gt; aux;
-    while (!p.empty()) {
-        int temp = p.top();
-        p.pop();
-        while (!aux.empty() && aux.top() &gt; temp) {
-            p.push(aux.top());
-            aux.pop();
-        }
-        aux.push(temp);
-    }
-    p = aux;
-}</pre>
-                        </details>
-                    </div>
-
-                    <!-- Ejercicio 18 -->
-                    <div class="tech-card">
-                        <h4>18. Invertir los Primeros K Elementos de una Cola</h4>
-                        <p style="font-size: 0.9rem;">Invierte únicamente los primeros $K$ elementos de una cola dejando el resto en su orden original.</p>
-                        <details class="ex-solution">
-                            <summary></summary>
-                            <pre class="code">void invertirK(queue&lt;int&gt; &q, int k) {
-    if (q.empty() || k &lt;= 0 || k &gt; q.size()) return;
-    stack&lt;int&gt; p;
-    for (int i = 0; i &lt; k; i++) {
-        p.push(q.front());
-        q.pop();
-    }
-    while (!p.empty()) {
-        q.push(p.top());
-        p.pop();
-    }
-    int restantes = q.size() - k;
-    for (int i = 0; i &lt; restantes; i++) {
-        q.push(q.front());
-        q.pop();
-    }
-}</pre>
-                        </details>
-                    </div>
-
-                    <!-- Ejercicio 19 -->
-                    <div class="tech-card">
-                        <h4>19. Comprobar si los Elementos de una Pila son Consecutivos</h4>
-                        <p style="font-size: 0.9rem;">Determina si cada elemento difiere en exactamente 1 con el elemento adyacente en la pila.</p>
-                        <details class="ex-solution">
-                            <summary></summary>
-                            <pre class="code">bool sonConsecutivos(stack&lt;int&gt; p) {
-    if (p.size() &lt;= 1) return true;
-    int prev = p.top(); p.pop();
-    while (!p.empty()) {
-        int act = p.top(); p.pop();
-        if (abs(prev - act) != 1) return false;
-        prev = act;
-    }
-    return true;
-}</pre>
-                        </details>
-                    </div>
-
-                    <!-- Ejercicio 20 -->
-                    <div class="tech-card">
-                        <h4>20. Reemplazar Elementos Mayores que un Umbral en Cola</h4>
-                        <p style="font-size: 0.9rem;">Recorre una cola y reemplaza todos los valores mayores que un límite $L$ por dicho límite $L$ sin alterar el orden.</p>
-                        <details class="ex-solution">
-                            <summary></summary>
-                            <pre class="code">void truncarCola(queue&lt;int&gt; &q, int limite) {
-    int n = q.size();
-    for (int i = 0; i &lt; n; i++) {
-        int v = q.front(); q.pop();
-        if (v &gt; limite) v = limite;
-        q.push(v);
-    }
-}</pre>
-                        </details>
-                    </div>
-                </div>
-
-                <!-- Bloque 3: Avanzados / Retos -->
-                <div class="panel">
-                    <h3 style="color: var(--title);">Bloque C: Retos y Algoritmos Avanzados (Ejercicios 21 al 30)</h3>
-
-                    <!-- Ejercicio 21 -->
-                    <div class="tech-card">
-                        <h4>21. Evaluación de Expresiones Postfijas (Notación Polaca Inversa)</h4>
-                        <p style="font-size: 0.9rem;">Evalúa una expresión aritmética en notación postfija como <code>"5 3 + 2 *"</code> utilizando una pila de operandos.</p>
-                        <details class="ex-solution">
-                            <summary></summary>
-                            <pre class="code">#include &lt;sstream&gt;
-int evaluarPostfijo(const string &expr) {
-    stack&lt;int&gt; p;
-    stringstream ss(expr);
-    string token;
-    while (ss &gt;&gt; token) {
-        if (token == "+" || token == "-" || token == "*" || token == "/") {
-            int b = p.top(); p.pop();
-            int a = p.top(); p.pop();
-            if (token == "+") p.push(a + b);
-            else if (token == "-") p.push(a - b);
-            else if (token == "*") p.push(a * b);
-            else if (token == "/") p.push(a / b);
-        } else {
-            p.push(stoi(token));
-        }
-    }
-    return p.top();
-}</pre>
-                        </details>
-                    </div>
-
-                    <!-- Ejercicio 22 -->
-                    <div class="tech-card">
-                        <h4>22. Implementar una Cola Utilizando Dos Pilas</h4>
-                        <p style="font-size: 0.9rem;">Construye una estructura <code>ColaConPilas</code> que emule operaciones FIFO (push y pop) empleando internamente dos pilas.</p>
-                        <details class="ex-solution">
-                            <summary></summary>
-                            <pre class="code">struct ColaConPilas {
-    stack&lt;int&gt; entrada, salida;
-
-    void encolar(int x) { entrada.push(x); }
-
-    int desencolar() {
-        if (salida.empty()) {
-            while (!entrada.empty()) {
-                salida.push(entrada.top());
-                entrada.pop();
-            }
-        }
-        if (salida.empty()) return -1;
-        int v = salida.top(); salida.pop();
-        return v;
-    }
-};</pre>
-                        </details>
-                    </div>
-
-                    <!-- Ejercicio 23 -->
-                    <div class="tech-card">
-                        <h4>23. Sistema de "Deshacer" y "Rehacer" (Undo / Redo)</h4>
-                        <p style="font-size: 0.9rem;">Implementa el mecanismo clásico de editores de texto con dos pilas: una de acciones realizadas y otra de deshechas.</p>
-                        <details class="ex-solution">
-                            <summary></summary>
-                            <pre class="code">struct EditorTexto {
-    stack&lt;string&gt; undoStack;
-    stack&lt;string&gt; redoStack;
-    string textoActual = "";
-
-    void escribir(string nuevo) {
-        undoStack.push(textoActual);
-        textoActual += nuevo;
-        while (!redoStack.empty()) redoStack.pop();
-    }
-    void deshacer() {
-        if (!undoStack.empty()) {
-            redoStack.push(textoActual);
-            textoActual = undoStack.top();
-            undoStack.pop();
-        }
-    }
-    void rehacer() {
-        if (!redoStack.empty()) {
-            undoStack.push(textoActual);
-            textoActual = redoStack.top();
-            redoStack.pop();
-        }
-    }
-};</pre>
-                        </details>
-                    </div>
-
-                    <!-- Ejercicio 24 -->
-                    <div class="tech-card">
-                        <h4>24. Simulación de Planificación Round Robin con Cola</h4>
-                        <p style="font-size: 0.9rem;">Simula el reparto de tiempo de procesador en un sistema operativo con un quántum determinado.</p>
-                        <details class="ex-solution">
-                            <summary></summary>
-                            <pre class="code">struct Proceso { string nombre; int tiempo; };
-
-void roundRobin(queue&lt;Proceso&gt; &q, int quantum) {
+void roundRobin(queue&lt;Proceso&gt;&amp; q, int quantum) {
     while (!q.empty()) {
-        Proceso p = q.front(); q.pop();
+        Proceso p = q.front();
+        q.pop();
         if (p.tiempo &gt; quantum) {
             p.tiempo -= quantum;
-            cout &lt;&lt; p.nombre &lt;&lt; " ejecutó " &lt;&lt; quantum &lt;&lt; "ms. Resta: " &lt;&lt; p.tiempo &lt;&lt; "ms\n";
-            q.push(p);
+            cout &lt;&lt; p.nombre &lt;&lt; " ejecuto " &lt;&lt; quantum
+                 &lt;&lt; ", resta " &lt;&lt; p.tiempo &lt;&lt; endl;
+            q.push(p);                    // vuelve al final
         } else {
-            cout &lt;&lt; p.nombre &lt;&lt; " TERMINÓ tras ejecutar " &lt;&lt; p.tiempo &lt;&lt; "ms\n";
+            cout &lt;&lt; p.nombre &lt;&lt; " termino (" &lt;&lt; p.tiempo &lt;&lt; ")" &lt;&lt; endl;
         }
     }
+}
+
+int main() {
+    cout &lt;&lt; esPalindromo("reconocer") &lt;&lt; endl;   // 1
+    cout &lt;&lt; esPalindromo("casa") &lt;&lt; endl;        // 0
+
+    queue&lt;Proceso&gt; cola;
+    cola.push({"A", 5});
+    cola.push({"B", 3});
+    cola.push({"C", 8});
+    roundRobin(cola, 3);
+    return 0;
 }</pre>
-                        </details>
-                    </div>
-
-                    <!-- Ejercicio 25 -->
-                    <div class="tech-card">
-                        <h4>25. Encontrar el Siguiente Mayor Elemento (Next Greater Element)</h4>
-                        <p style="font-size: 0.9rem;">Dado un arreglo de enteros, encuentra para cada posición el primer elemento mayor a su derecha utilizando una pila monótona $O(N)$.</p>
-                        <details class="ex-solution">
-                            <summary></summary>
-                            <pre class="code">#include &lt;vector&gt;
-vector&lt;int&gt; siguienteMayor(const vector&lt;int&gt;& arr) {
-    int n = arr.size();
-    vector&lt;int&gt; res(n, -1);
-    stack&lt;int&gt; p; // Guarda índices
-    for (int i = 0; i &lt; n; i++) {
-        while (!p.empty() && arr[i] &gt; arr[p.top()]) {
-            res[p.top()] = arr[i];
-            p.pop();
-        }
-        p.push(i);
-    }
-    return res;
-}</pre>
-                        </details>
-                    </div>
-
-                    <!-- Ejercicio 26 -->
-                    <div class="tech-card">
-                        <h4>26. Bicola (Deque) Implementada con Arreglo Circular</h4>
-                        <p style="font-size: 0.9rem;">Crea una estructura donde se pueda insertar y eliminar libremente tanto por el frente como por el final.</p>
-                        <details class="ex-solution">
-                            <summary></summary>
-                            <pre class="code">struct Bicola {
-    static const int CAP = 100;
-    int arr[CAP];
-    int frente = 0, final = -1, tam = 0;
-
-    void pushFront(int v) {
-        frente = (frente - 1 + CAP) % CAP;
-        arr[frente] = v; tam++;
-    }
-    void pushBack(int v) {
-        final = (final + 1) % CAP;
-        arr[final] = v; tam++;
-    }
-    int popFront() {
-        int v = arr[frente];
-        frente = (frente + 1) % CAP; tam--; return v;
-    }
-    int popBack() {
-        int v = arr[final];
-        final = (final - 1 + CAP) % CAP; tam--; return v;
-    }
-};</pre>
-                        </details>
-                    </div>
-
-                    <!-- Ejercicio 27 -->
-                    <div class="tech-card">
-                        <h4>27. Simplificación de Rutas de Archivos estilo UNIX</h4>
-                        <p style="font-size: 0.9rem;">Convierte una ruta como <code>"/a/./b/../../c/"</code> a su formato canónico <code>"/c"</code> utilizando una pila de directorios.</p>
-                        <details class="ex-solution">
-                            <summary></summary>
-                            <pre class="code">string simplificarRuta(string path) {
-    stack&lt;string&gt; p;
-    stringstream ss(path);
-    string dir;
-    while (getline(ss, dir, '/')) {
-        if (dir == "" || dir == ".") continue;
-        if (dir == "..") {
-            if (!p.empty()) p.pop();
-        } else p.push(dir);
-    }
-    string res = "";
-    while (!p.empty()) { res = "/" + p.top() + res; p.pop(); }
-    return res.empty() ? "/" : res;
-}</pre>
-                        </details>
-                    </div>
-
-                    <!-- Ejercicio 28 -->
-                    <div class="tech-card">
-                        <h4>28. Simulación de Cola de Clientes con Prioridad de Tercera Edad</h4>
-                        <p style="font-size: 0.9rem;">Diseña una atención bancaria con dos colas: clientes prioritarios y clientes regulares, atendiendo siempre primero a los prioritarios.</p>
-                        <details class="ex-solution">
-                            <summary></summary>
-                            <pre class="code">struct Banco {
-    queue&lt;string&gt; prioritarios;
-    queue&lt;string&gt; regulares;
-
-    void registrar(string nombre, bool esPrioritario) {
-        if (esPrioritario) prioritarios.push(nombre);
-        else regulares.push(nombre);
-    }
-    string atenderSiguiente() {
-        if (!prioritarios.empty()) {
-            string c = prioritarios.front(); prioritarios.pop();
-            return "[Prioritario] " + c;
-        }
-        if (!regulares.empty()) {
-            string c = regulares.front(); regulares.pop();
-            return "[Regular] " + c;
-        }
-        return "No hay clientes en espera";
-    }
-};</pre>
-                        </details>
-                    </div>
-
-                    <!-- Ejercicio 29 -->
-                    <div class="tech-card">
-                        <h4>29. Pila con Consulta del Mínimo en Tiempo Constante O(1)</h4>
-                        <p style="font-size: 0.9rem;">Crea una estructura <code>MinStack</code> que soporte <code>push()</code>, <code>pop()</code>, <code>top()</code> y <code>getMin()</code> en $O(1)$ sin recorrer la pila.</p>
-                        <details class="ex-solution">
-                            <summary></summary>
-                            <pre class="code">struct MinStack {
-    stack&lt;int&gt; datos;
-    stack&lt;int&gt; minimos;
-
-    void push(int val) {
-        datos.push(val);
-        if (minimos.empty() || val &lt;= minimos.top()) minimos.push(val);
-    }
-    void pop() {
-        if (datos.empty()) return;
-        if (datos.top() == minimos.top()) minimos.pop();
-        datos.pop();
-    }
-    int top() { return datos.top(); }
-    int getMin() { return minimos.top(); }
-};</pre>
-                        </details>
-                    </div>
-
-                    <!-- Ejercicio 30 -->
-                    <div class="tech-card">
-                        <h4>30. Eliminación de Duplicados Adyacentes en Cadena</h4>
-                        <p style="font-size: 0.9rem;">Elimina pares de caracteres repetidos adyacentes de forma iterativa (ej: <code>"abbaca"</code> &rarr; <code>"ca"</code>) usando una pila.</p>
-                        <details class="ex-solution">
-                            <summary></summary>
-                            <pre class="code">string eliminarDuplicados(string s) {
-    stack&lt;char&gt; p;
-    for (char c : s) {
-        if (!p.empty() && p.top() == c) p.pop();
-        else p.push(c);
-    }
-    string res = "";
-    while (!p.empty()) { res += p.top(); p.pop(); }
-    reverse(res.begin(), res.end());
-    return res;
-}</pre>
-                        </details>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- 15 Caso Evaluativo Integral -->
-        <section class="slide" data-name="Caso Evaluativo" aria-label="Caso Evaluativo">
+        <!-- RESUMEN -->
+        <section class="slide" data-name="Resumen">
             <div class="wrap">
-                <h2 tabindex="-1">Proyecto Evaluativo Integral: Centro de Soporte TI</h2>
-                <p class="lead">
-                    Aplica todos los conceptos de Pilas y Colas en un problema del mundo real con especificaciones funcionales y criterios de calificación.
-                </p>
-
-                <div class="panel" style="border-left: 4px solid var(--accent);">
-                    <h3 style="color: var(--title);">Enunciado del Problema</h3>
-                    <p style="font-size: 0.93rem;">
-                        La oficina de Tecnologías de la Información de la Universidad necesita gestionar las solicitudes de mantenimiento técnico recibidas durante la jornada. Se requiere implementar un sistema modular en C++ que gestione:
-                    </p>
-                    <ol style="font-size: 0.92rem; padding-left: 22px;">
-                        <li><strong>Cola de Tickets de Atención (FIFO):</strong> Cada ticket tiene número correlativo, sala (ej: "Lab 3"), descripción del fallo y nombre del docente solicitante. Deben ser atendidos estrictamente por orden de llegada.</li>
-                        <li><strong>Pila de Auditoría y Cancelación (LIFO):</strong> Cada vez que un técnico atiende o procesa un ticket, la operación se apila en un registro de auditoría. Si el técnico cometió un error o la sala estaba cerrada, se puede ejecutar la opción <em>"Deshacer última atención"</em>, desapilando la acción y reintegrando el ticket a la cola de espera.</li>
-                        <li><strong>Consulta y Reportes:</strong> Visualizar el estado actual de la cola sin destruirla y consultar el historial de acciones procesadas en orden inverso a su ejecución.</li>
-                    </ol>
-                </div>
-
-                <div class="two">
-                    <div class="tech-card">
-                        <h4>Rúbrica de Evaluación</h4>
-                        <table class="tbl" style="margin: 0; font-size: 0.85rem;">
-                            <tr>
-                                <th>Criterio</th>
-                                <th>Descripción</th>
-                                <th>Puntos</th>
-                            </tr>
-                            <tr>
-                                <td><strong>TAD Cola</strong></td>
-                                <td>Implementación correcta de encolar y desencolar sin fugas de memoria.</td>
-                                <td>30%</td>
-                            </tr>
-                            <tr>
-                                <td><strong>TAD Pila</strong></td>
-                                <td>Mecanismo de auditoría y función Deshacer (Undo) funcional.</td>
-                                <td>30%</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Preservación</strong></td>
-                                <td>Consultas y listados sin pérdida ni desorden de datos.</td>
-                                <td>20%</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Calidad C++</strong></td>
-                                <td>Uso de buenas prácticas, comentarios, structs y validaciones de límites.</td>
-                                <td>20%</td>
-                            </tr>
-                        </table>
-                    </div>
-
-                    <div class="tech-card" style="border-left: 4px solid var(--hot);">
-                        <h4>Estructura Base del Código Recomendada</h4>
-                        <pre class="code" style="font-size: 0.82rem;">struct Ticket {
-    int id;
-    string sala;
-    string detalle;
-};
-
-struct AccionAuditoria {
-    Ticket ticket;
-    string tecnico;
-    string hora;
-};
-
-// Contenedores del sistema
-queue&lt;Ticket&gt; colaSoporte;
-stack&lt;AccionAuditoria&gt; pilaAuditoria;</pre>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 16 Software, Video Tutoriales y Bibliografía -->
-        <section class="slide" data-name="Recursos y Bibliografía" aria-label="Recursos y Bibliografía">
-            <div class="wrap">
-                <h2 tabindex="-1">Software, Tutoriales Recomendados y Bibliografía</h2>
-                <p>Materiales complementarios de estudio, herramientas de desarrollo y lecturas canónicas para profundizar.</p>
-
-                <div class="two">
-                    <div>
-                        <div class="tech-card" style="border-left: 4px solid var(--accent);">
-                            <h4>Software de Programación Recomendado</h4>
-                            <ul style="font-size: 0.92rem; padding-left: 20px;">
-                                <li><strong>Visual Studio Code:</strong> Con la extensión <em>C/C++</em> de Microsoft y compilador GCC (MinGW-w64).</li>
-                                <li><strong>Dev-C++ 6.3+ (Embarcadero):</strong> Entorno ligero y directo para compilación académica en Windows.</li>
-                                <li><strong>GDB (GNU Debugger):</strong> Indispensable para inspeccionar el valor de punteros y variables de memoria paso a paso.</li>
-                                <li><strong>OnlineGDB / Compiler Explorer (Godbolt):</strong> Para probar prototipos rápidos y verificar la generación de código ensamblador.</li>
-                            </ul>
-                        </div>
-
-                        <div class="tech-card" style="border-left: 4px solid var(--hot);">
-                            <h4>Video Tutoriales Seleccionados en YouTube</h4>
-                            <ul style="font-size: 0.92rem; padding-left: 20px;">
-                                <li><strong>Pilas en C++:</strong> Concepto de LIFO, implementación de Push y Pop con arreglos y listas enlazadas.</li>
-                                <li><strong>Colas Circulares en C++:</strong> Cómo resolver el desbordamiento aparente utilizando el operador módulo <code>%</code>.</li>
-                                <li><strong>Biblioteca STL:</strong> Guía completa de uso de <code>std::stack</code> y <code>std::queue</code> en C++ moderno.</li>
-                                <li><strong>Casos Prácticos:</strong> Algoritmo de Shunting Yard para conversión infija a postfija y evaluación de expresiones.</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div>
-                        <div class="tech-card">
-                            <h4>Bibliografía Académica</h4>
-                            <ul style="font-size: 0.9rem; padding-left: 20px; line-height: 1.7;">
-                                <li><strong>Joyanes Aguilar, L.</strong> &bull; <em>Estructuras de datos en C++</em>. McGraw-Hill Interamericana. Capítulos dedicados a Pilas (Stacks) y Colas (Queues).</li>
-                                <li><strong>Cairó, O. & Guardati, S.</strong> &bull; <em>Estructuras de datos</em>. McGraw-Hill. Análisis riguroso de representación estática y dinámica.</li>
-                                <li><strong>Weiss, Mark Allen.</strong> &bull; <em>Data Structures and Algorithm Analysis in C++</em>. Pearson. Complejidad temporal Big O y diseño de TADs con la STL.</li>
-                                <li><strong>Stroustrup, Bjarne.</strong> &bull; <em>El lenguaje de programación C++</em>. Addison-Wesley. La referencia autorizada del creador del lenguaje.</li>
-                            </ul>
-                        </div>
-
-                        <div class="panel" style="text-align: center; margin-top: 16px;">
-                            <h3 style="color: var(--title); font-size: 1.15rem;">¡Has completado la Guía 05!</h3>
-                            <p style="font-size: 0.92rem; color: var(--muted); margin-bottom: 14px;">
-                                Continúa practicando los 30 ejercicios y revisando las guías previas para consolidar tus conocimientos en estructuras de datos.
-                            </p>
-                            <a href="./index.html" class="btn primary">Regresar al Índice Principal</a>
-                        </div>
-                    </div>
-                </div>
+                <h2>Resumen</h2>
+                <table>
+                    <tr>
+                        <th></th>
+                        <th>Pila (LIFO)</th>
+                        <th>Cola (FIFO)</th>
+                    </tr>
+                    <tr>
+                        <td>Entra por</td>
+                        <td>El tope</td>
+                        <td>El final</td>
+                    </tr>
+                    <tr>
+                        <td>Sale por</td>
+                        <td>El tope</td>
+                        <td>El frente</td>
+                    </tr>
+                    <tr>
+                        <td>Con librería</td>
+                        <td><code>stack</code>: <code>push</code>, <code>pop</code>, <code>top</code></td>
+                        <td><code>queue</code>: <code>push</code>, <code>pop</code>, <code>front</code>,
+                            <code>back</code></td>
+                    </tr>
+                    <tr>
+                        <td>Con arreglo</td>
+                        <td><code>tope</code> sube y baja</td>
+                        <td>Circular con <code>% MAX</code>, <code>frente</code> y <code>cuenta</code></td>
+                    </tr>
+                    <tr>
+                        <td>Con vector</td>
+                        <td><code>push_back</code>, <code>pop_back</code>, <code>back</code></td>
+                        <td><code>push_back</code>, <code>erase(begin())</code>, <code>front</code></td>
+                    </tr>
+                    <tr>
+                        <td>Recorrer con librería</td>
+                        <td>Pila auxiliar o copia por valor</td>
+                        <td>Rotación <code>n</code> veces o copia por valor</td>
+                    </tr>
+                    <tr>
+                        <td>Recorrer con arreglo o vector</td>
+                        <td><code>for</code> del tope al fondo</td>
+                        <td><code>for</code> con <code>(frente + i) % MAX</code></td>
+                    </tr>
+                    <tr>
+                        <td>Reemplazar un campo</td>
+                        <td><code>auto&amp; e</code> o <code>datos[i].campo</code></td>
+                        <td><code>datos[pos].campo</code> o rotando</td>
+                    </tr>
+                </table>
+                <p><strong>Errores comunes:</strong> usar <code>top()</code> o <code>front()</code> con la estructura
+                    vacía, esperar que <code>pop()</code> devuelva el valor, olvidar la <code>&amp;</code> al modificar
+                    (se cambia una copia), recorrer el arreglo circular de 0 a <code>MAX</code> y no revisar si está
+                    llena antes de agregar.</p>
+                <p><button class="btn primary" type="button" id="home">Volver al inicio</button></p>
             </div>
         </section>
 
     </main>
 
-    <!-- Barra de Navegación Inferior -->
     <nav class="nav" aria-label="Navegación de diapositivas">
-        <button class="btn" id="prev" type="button" aria-label="Diapositiva anterior">&larr; Anterior</button>
+        <button class="btn" id="prev" type="button">Anterior</button>
         <div class="track" aria-hidden="true">
             <div class="bar" id="bar"></div>
         </div>
-        <span class="count" id="count" aria-live="polite">1 / 16</span>
-        <span class="navname" id="navName">Inicio</span>
-        <button class="btn primary" id="next" type="button" aria-label="Diapositiva siguiente">Siguiente &rarr;</button>
+        <span class="count" id="count">1 / 1</span>
+        <span class="navname" id="navName"></span>
+        <button class="btn primary" id="next" type="button">Siguiente</button>
     </nav>
 
     <script>
         (function () {
-            'use strict';
-            var $ = function (s) { return document.querySelector(s); };
-            var $$ = function (s) { return Array.prototype.slice.call(document.querySelectorAll(s)); };
-
-            /* ---------- Controlador del Slide Deck ---------- */
-            var slides = $$('.slide'), N = slides.length, cur = 0;
-            function go(i, focus) {
+            var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+            var N = slides.length, cur = 0;
+            function go(i) {
                 i = Math.max(0, Math.min(N - 1, i));
                 slides[cur].classList.remove('active');
                 cur = i;
                 var s = slides[cur];
                 s.classList.add('active');
                 s.scrollTop = 0;
-                $('#bar').style.width = ((cur + 1) / N * 100) + '%';
-                $('#count').textContent = (cur + 1) + ' / ' + N;
-                $('#navName').textContent = s.getAttribute('data-name') || '';
-                $('#prev').disabled = cur === 0;
-                $('#next').disabled = cur === N - 1;
-                if (focus) { var h = s.querySelector('h1,h2'); if (h) h.focus({ preventScroll: true }); }
+                document.getElementById('bar').style.width = ((cur + 1) / N * 100) + '%';
+                document.getElementById('count').textContent = (cur + 1) + ' / ' + N;
+                document.getElementById('navName').textContent = s.getAttribute('data-name') || '';
+                document.getElementById('prev').disabled = cur === 0;
+                document.getElementById('next').disabled = cur === N - 1;
             }
-            $('#prev').onclick = function () { go(cur - 1, true); };
-            $('#next').onclick = function () { go(cur + 1, true); };
+            document.getElementById('prev').onclick = function () { go(cur - 1); };
+            document.getElementById('next').onclick = function () { go(cur + 1); };
+            document.getElementById('home').onclick = function () { go(0); };
             document.addEventListener('keydown', function (e) {
-                var t = e.target;
-                if (t.closest && t.closest('input,select,textarea')) return;
-                if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); go(cur + 1, true); }
-                else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); go(cur - 1, true); }
-                else if (e.key === 'Home') { go(0, true); }
-                else if (e.key === 'End') { go(N - 1, true); }
+                if (e.target.closest && e.target.closest('input,select,textarea')) return;
+                if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); go(cur + 1); }
+                else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); go(cur - 1); }
+                else if (e.key === 'Home') { go(0); }
+                else if (e.key === 'End') { go(N - 1); }
             });
-            go(0, false);
-
-            /* ---------- Laboratorio Interactivo: Simulador de Pila ---------- */
-            var stackData = [];
-            var STACK_MAX = 5;
-            var stackStage = $('#stackStage');
-            var stackLog = $('#stackLog');
-            var stackTopIndex = $('#stackTopIndex');
-            var stackCount = $('#stackCount');
-            var stackState = $('#stackState');
-
-            function renderStack(highlightIndex) {
-                stackStage.innerHTML = '';
-                for (var i = 0; i < stackData.length; i++) {
-                    var div = document.createElement('div');
-                    var isTop = (i === stackData.length - 1);
-                    div.className = 'stack-item' + (isTop ? ' is-top' : '') + (highlightIndex === i ? ' is-highlight' : '');
-                    div.innerHTML = '<span>' + stackData[i] + '</span><span style="font-size:0.75rem; color:var(--muted);">' + (isTop ? 'TOPE' : '[' + i + ']') + '</span>';
-                    stackStage.appendChild(div);
-                }
-                var topIdx = stackData.length - 1;
-                stackTopIndex.textContent = topIdx >= 0 ? topIdx : '-1';
-                stackCount.textContent = stackData.length;
-                if (stackData.length === 0) {
-                    stackState.textContent = 'VACÍA';
-                    stackState.style.color = 'var(--muted)';
-                } else if (stackData.length === STACK_MAX) {
-                    stackState.textContent = 'LLENA';
-                    stackState.style.color = 'var(--title)';
-                } else {
-                    stackState.textContent = 'NORMAL';
-                    stackState.style.color = 'var(--hot)';
-                }
-            }
-
-            $('#btnStackPush').onclick = function () {
-                if (stackData.length >= STACK_MAX) {
-                    stackLog.textContent = '[Stack Overflow] La pila está llena (máximo ' + STACK_MAX + ' elementos). No se puede apilar.';
-                    return;
-                }
-                var input = $('#stackVal');
-                var val = parseInt(input.value, 10);
-                if (isNaN(val)) val = Math.floor(Math.random() * 90) + 10;
-                stackData.push(val);
-                renderStack(stackData.length - 1);
-                stackLog.textContent = 'push(' + val + '): Elemento colocado en el tope (índice ' + (stackData.length - 1) + '). Operación O(1).';
-                input.value = Math.floor(Math.random() * 90) + 10;
-            };
-
-            $('#btnStackPop').onclick = function () {
-                if (stackData.length === 0) {
-                    stackLog.textContent = '[Stack Underflow] La pila está vacía. No hay elementos para desapilar.';
-                    return;
-                }
-                var removed = stackData.pop();
-                renderStack();
-                stackLog.textContent = 'pop(): Se removió el elemento ' + removed + ' del tope. Operación O(1).';
-            };
-
-            $('#btnStackPeek').onclick = function () {
-                if (stackData.length === 0) {
-                    stackLog.textContent = 'peek() / top(): Pila vacía. No hay elemento en el tope.';
-                    return;
-                }
-                var topVal = stackData[stackData.length - 1];
-                renderStack(stackData.length - 1);
-                stackLog.textContent = 'peek() / top(): El valor en la cima es ' + topVal + ' (no se remueve de la pila).';
-            };
-
-            $('#btnStackSearch').onclick = function () {
-                var input = $('#stackVal');
-                var target = parseInt(input.value, 10);
-                if (isNaN(target)) {
-                    stackLog.textContent = 'Ingresa un número en la casilla para buscar en la pila.';
-                    return;
-                }
-                if (stackData.length === 0) {
-                    stackLog.textContent = 'La pila está vacía. Búsqueda fallida.';
-                    return;
-                }
-                var foundIdx = -1;
-                for (var i = stackData.length - 1; i >= 0; i--) {
-                    if (stackData[i] === target) {
-                        foundIdx = i;
-                        break;
-                    }
-                }
-                if (foundIdx !== -1) {
-                    renderStack(foundIdx);
-                    stackLog.textContent = '¡Encontrado! El valor ' + target + ' está en el índice ' + foundIdx + ' (a ' + (stackData.length - 1 - foundIdx) + ' pasos del tope).';
-                } else {
-                    renderStack();
-                    stackLog.textContent = 'El valor ' + target + ' NO está en la pila tras inspeccionar los ' + stackData.length + ' elementos.';
-                }
-            };
-
-            $('#btnStackClear').onclick = function () {
-                stackData = [];
-                renderStack();
-                stackLog.textContent = 'Pila vaciada completamente. tope = -1.';
-            };
-
-            renderStack();
-
-            /* ---------- Laboratorio Interactivo: Simulador de Cola ---------- */
-            var queueData = [];
-            var QUEUE_MAX = 6;
-            var queueStage = $('#queueStage');
-            var queueLog = $('#queueLog');
-            var queueCount = $('#queueCount');
-            var queueFrontVal = $('#queueFrontVal');
-            var queueBackVal = $('#queueBackVal');
-
-            function renderQueue(highlightIndex) {
-                queueStage.innerHTML = '';
-                if (queueData.length === 0) {
-                    queueStage.innerHTML = '<span style="font-size:0.9rem; color:var(--muted); font-style:italic; margin: auto;">Cola vacía</span>';
-                } else {
-                    for (var i = 0; i < queueData.length; i++) {
-                        var div = document.createElement('div');
-                        var isFront = (i === 0);
-                        var isBack = (i === queueData.length - 1);
-                        div.className = 'queue-item' + (isFront ? ' is-front' : '') + (isBack ? ' is-back' : '');
-                        if (highlightIndex === i) div.style.transform = 'scale(1.12)';
-                        div.innerHTML = '<span>' + queueData[i] + '</span><span class="pos-tag">' + (isFront ? 'FRENTE' : (isBack ? 'FINAL' : '[' + i + ']')) + '</span>';
-                        queueStage.appendChild(div);
-                    }
-                }
-                queueCount.textContent = queueData.length;
-                queueFrontVal.textContent = queueData.length > 0 ? queueData[0] : '-';
-                queueBackVal.textContent = queueData.length > 0 ? queueData[queueData.length - 1] : '-';
-            }
-
-            $('#btnQueueEnqueue').onclick = function () {
-                if (queueData.length >= QUEUE_MAX) {
-                    queueLog.textContent = '[Queue Overflow] Cola llena (máximo ' + QUEUE_MAX + ' elementos). No se puede encolar.';
-                    return;
-                }
-                var input = $('#queueVal');
-                var val = parseInt(input.value, 10);
-                if (isNaN(val)) val = Math.floor(Math.random() * 90) + 10;
-                queueData.push(val);
-                renderQueue(queueData.length - 1);
-                queueLog.textContent = 'encolar(' + val + '): Ingresó por el extremo FINAL. Operación O(1).';
-                input.value = Math.floor(Math.random() * 90) + 10;
-            };
-
-            $('#btnQueueDequeue').onclick = function () {
-                if (queueData.length === 0) {
-                    queueLog.textContent = '[Queue Underflow] La cola está vacía. No hay clientes para atender.';
-                    return;
-                }
-                var removed = queueData.shift();
-                renderQueue();
-                queueLog.textContent = 'desencolar(): Salió el elemento ' + removed + ' del FRENTE (FIFO). Operación O(1).';
-            };
-
-            $('#btnQueueFront').onclick = function () {
-                if (queueData.length === 0) {
-                    queueLog.textContent = 'frente() / front(): Cola vacía. No hay nadie al frente.';
-                    return;
-                }
-                renderQueue(0);
-                queueLog.textContent = 'frente(): El próximo elemento en salir es ' + queueData[0] + ' (primer turno).';
-            };
-
-            $('#btnQueueSearch').onclick = function () {
-                var input = $('#queueVal');
-                var target = parseInt(input.value, 10);
-                if (isNaN(target)) {
-                    queueLog.textContent = 'Ingresa un número en la casilla para buscar en la cola.';
-                    return;
-                }
-                if (queueData.length === 0) {
-                    queueLog.textContent = 'La cola está vacía. Búsqueda fallida.';
-                    return;
-                }
-                var foundIdx = queueData.indexOf(target);
-                if (foundIdx !== -1) {
-                    renderQueue(foundIdx);
-                    queueLog.textContent = '¡Encontrado! El valor ' + target + ' está en la posición ' + foundIdx + ' de la fila (atención en turno ' + (foundIdx + 1) + ').';
-                } else {
-                    renderQueue();
-                    queueLog.textContent = 'El valor ' + target + ' NO está en la cola tras rotar los ' + queueData.length + ' elementos.';
-                }
-            };
-
-            $('#btnQueueClear').onclick = function () {
-                queueData = [];
-                renderQueue();
-                queueLog.textContent = 'Cola vaciada completamente. frente = 0, final = -1.';
-            };
-
-            renderQueue();
-
+            go(0);
         })();
     </script>
 </body>
