@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hoja de retos: Pilas y Colas</title>
+<style>
+:root{
+  --ink:#1b1f24; --muted:#505856; --line:#D6DDDB;
+  --accent:#00594E; --accent-soft:#E4F0ED; --code-bg:#F6F7F7;
+  --f-body:'Segoe UI',system-ui,-apple-system,Arial,sans-serif;
+  --f-mono:Consolas,'Courier New',ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.5}
+.page{max-width:860px;margin:0 auto;padding:28px clamp(16px,4vw,40px) 60px}
+h1{color:var(--accent);font-size:clamp(1.8rem,4vw,2.4rem);margin:0 0 .2em}
+h2{color:var(--accent);font-size:1.4rem;margin:1.8em 0 .5em;padding-bottom:.2em;border-bottom:2px solid var(--line)}
+h3{font-size:1.02rem;margin:0 0 .25em}
+p{margin:0 0 .7em}
+ul,ol{margin:0 0 .8em;padding-left:1.3em}
+li{margin-bottom:.3em}
+.muted{color:var(--muted)}
+.reto{border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:6px;padding:12px 16px;margin:0 0 14px;break-inside:avoid}
+.nivel{font-size:.82rem;font-weight:600;color:var(--accent);margin-left:6px}
+pre{font:.84rem/1.45 var(--f-mono);background:var(--code-bg);border:1px solid var(--line);border-radius:6px;padding:10px 12px;margin:6px 0 8px;overflow-x:auto;white-space:pre}
+code{font-family:var(--f-mono);background:var(--code-bg);padding:1px 5px;border-radius:4px;font-size:.92em}
+.caja{background:var(--accent-soft);border-radius:6px;padding:12px 16px;margin:12px 0}
+table{border-collapse:collapse;width:100%;font-size:.95rem;margin:8px 0 14px}
+th,td{border:1px solid var(--line);padding:6px 10px;text-align:left}
+th{background:var(--accent-soft);color:var(--accent)}
+.linea{border-bottom:1px solid var(--ink);height:1.6em;margin:4px 0}
+@media print{
+  body{font-size:12pt}
+  .page{padding:0}
+  h2{break-after:avoid}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<h1>Hoja de retos: Pilas y Colas</h1>
+<p class="muted">Estructuras de datos en C++. Partes de los programas de la guía 5 y los modificas o los extiendes.</p>
+
+<table>
+<tr><td style="width:50%">Nombre: </td><td>Fecha: </td></tr>
+</table>
+
+<div class="caja">
+<strong>Cómo trabajar</strong>
+<ul style="margin:6px 0 0">
+<li>Copia el programa de la guía que indica cada reto y pruébalo <strong>antes</strong> de modificarlo.</li>
+<li>Escribe un comentario <code>// CAMBIO:</code> en cada línea que modifiques o agregues.</li>
+<li>Cuando el reto diga "predice", escribe tu respuesta a mano <strong>antes</strong> de ejecutar y compárala con el resultado.</li>
+<li>Entrega un archivo <code>.cpp</code> por reto, con tu nombre en un comentario al inicio.</li>
+</ul>
+</div>
+
+<h2>A. Predice y encuentra el error</h2>
+
+<div class="reto">
+<h3>A1. Predice la salida <span class="nivel">Básico</span></h3>
+<p>Toma la pila con arreglo (guía, "Pila 2/3") y cambia <code>MAX</code> a 3. Sin ejecutar, escribe qué imprime este <code>main</code>:</p>
+<pre>Pila p;
+for (int i = 1; i &lt;= 5; i++) {
+    if (p.push(i * 10)) cout &lt;&lt; "push " &lt;&lt; i * 10 &lt;&lt; endl;
+    else cout &lt;&lt; "llena " &lt;&lt; i * 10 &lt;&lt; endl;
+}
+int x;
+while (p.pop(x)) cout &lt;&lt; x &lt;&lt; " ";</pre>
+<div class="linea"></div><div class="linea"></div><div class="linea"></div>
+<p>Después ejecútalo y explica en una frase cualquier diferencia.</p>
+</div>
+
+<div class="reto">
+<h3>A2. Encuentra el error <span class="nivel">Intermedio</span></h3>
+<p>Cada fragmento tiene un problema. Para cada uno: ¿qué esperaba el programador?, ¿qué pasa realmente? y ¿cómo se corrige?</p>
+<p><strong>(a)</strong></p>
+<pre>vector&lt;Estudiante&gt; v = {{"Ana", 4.0f}, {"Luis", 3.0f}};
+for (auto e : v)
+    if (e.nombre == "Luis") e.nota = 5.0f;
+cout &lt;&lt; v[1].nota;       // se esperaba 5</pre>
+<p><strong>(b)</strong></p>
+<pre>// dentro de encolar() de la cola circular
+int fin = frente + cuenta;      // falta algo
+datos[fin] = x;</pre>
+<p><strong>(c)</strong></p>
+<pre>stack&lt;int&gt; p;
+cout &lt;&lt; p.top();</pre>
+<p><strong>(d)</strong> ¿Por qué esta línea no compila?</p>
+<pre>stack&lt;int&gt; p;
+p.push(7);
+int x = p.pop();</pre>
+</div>
+
+<h2>B. Pilas</h2>
+
+<div class="reto">
+<h3>B1. Historial de navegación <span class="nivel">Básico</span></h3>
+<p>Basado en <code>std::stack</code> (guía, "Pila 1/3"). Cambia el programa para que la pila guarde <code>string</code> con direcciones de páginas. Agrega un menú con las opciones: visitar página (apila), volver atrás (desapila y muestra la página actual) y salir. Si no hay a dónde volver, muestra un aviso.</p>
+</div>
+
+<div class="reto">
+<h3>B2. Números al revés <span class="nivel">Básico</span></h3>
+<p>Lee números enteros por teclado hasta que el usuario escriba 0. Al terminar, muéstralos en orden inverso al que los escribió y muestra cuántos fueron.</p>
+</div>
+
+<div class="reto">
+<h3>B3. Pila de caracteres <span class="nivel">Intermedio</span></h3>
+<p>Cambia la pila con arreglo para que guarde <code>char</code> en lugar de <code>int</code>. Úsala para leer una palabra y mostrarla invertida. Agrega los métodos <code>cantidad()</code> y <code>vaciar()</code> a la pila.</p>
+</div>
+
+<div class="reto">
+<h3>B4. Reemplazar todas las apariciones <span class="nivel">Intermedio</span></h3>
+<p>En el programa de recorrer una pila con <code>std::stack</code>, la función <code>reemplazarNota</code> solo cambia al primer estudiante que encuentra. Modifícala para que cambie el <strong>nombre</strong> de todos los estudiantes que tengan una nota dada. Devuelve cuántos cambió.</p>
+</div>
+
+<div class="reto">
+<h3>B5. Contar sin destruir <span class="nivel">Intermedio</span></h3>
+<p>Escribe <code>int contarMayoresA(stack&lt;Estudiante&gt; p, float limite)</code> que devuelva cuántos estudiantes superan una nota. Comprueba en <code>main</code> que la pila original sigue completa después de llamarla.</p>
+</div>
+
+<div class="reto">
+<h3>B6. Subir nota con vector <span class="nivel">Intermedio</span></h3>
+<p>Con la pila hecha con <code>vector&lt;Estudiante&gt;</code>, agrega el campo <code>float peso</code> o <code>string carrera</code> al struct. Luego sube 0.5 a la nota de todos los que estén por debajo de 3.0 (máximo 5.0) y muestra la pila del tope al fondo.</p>
+</div>
+
+<div class="reto">
+<h3>B7. Pila de capacidad limitada <span class="nivel">Reto</span></h3>
+<p>Modifica la pila con arreglo: cuando esté llena, un nuevo <code>push</code> debe <strong>descartar el elemento del fondo</strong> (el más antiguo) y guardar el nuevo. Muestra un mensaje indicando qué dato se descartó.</p>
+</div>
+
+<div class="reto">
+<h3>B8. Eliminar a un estudiante <span class="nivel">Reto</span></h3>
+<p>Escribe <code>bool eliminarEstudiante(stack&lt;Estudiante&gt;&amp; p, const string&amp; nombre)</code>. Debe quitar a ese estudiante de la pila dejando a los demás en el mismo orden. Devuelve <code>false</code> si no estaba.</p>
+</div>
+
+<h2>C. Colas</h2>
+
+<div class="reto">
+<h3>C1. Sistema de tickets <span class="nivel">Básico</span></h3>
+<p>Basado en <code>std::queue</code> (guía, "Cola 1/3"). Cada cliente que llega recibe un número consecutivo (T-1, T-2, ...). Haz un menú con: llegar un cliente, atender (muestra su ticket y cuántos quedan esperando), ver quién sigue y salir.</p>
+</div>
+
+<div class="reto">
+<h3>C2. Predice las posiciones <span class="nivel">Básico</span></h3>
+<p>Con la cola circular de arreglo y <code>MAX = 3</code>, sin ejecutar: encolas 10, 20 y 30; desencolas una vez; encolas 40.</p>
+<ul>
+<li>¿En qué índice del arreglo queda el 40?</li>
+<li>¿Cuánto valen <code>frente</code> y <code>cuenta</code> al final?</li>
+</ul>
+<div class="linea"></div><div class="linea"></div>
+<p>Luego agrega un método que imprima el arreglo <strong>completo</strong> (de 0 a <code>MAX - 1</code>) y verifica. ¿Qué diferencia hay con <code>mostrar()</code>? ¿Por qué <code>mostrar()</code> no recorre de 0 a <code>MAX</code>?</p>
+</div>
+
+<div class="reto">
+<h3>C3. Frente y final <span class="nivel">Básico</span></h3>
+<p>Agrega a la cola circular los métodos <code>bool frenteValor(int&amp; x)</code> y <code>bool finalValor(int&amp; x)</code> que lean esos elementos sin sacarlos. Piensa cómo calcular el índice del último elemento.</p>
+</div>
+
+<div class="reto">
+<h3>C4. Buscar y promediar <span class="nivel">Intermedio</span></h3>
+<p>En la cola circular de estudiantes, agrega:</p>
+<ul>
+<li><code>int posicionEnFila(const string&amp; nombre)</code>: devuelve 1 si está al frente, 2 si es el segundo, etc., y -1 si no está.</li>
+<li><code>float promedio()</code>: el promedio de las notas de quienes están en la cola.</li>
+</ul>
+</div>
+
+<div class="reto">
+<h3>C5. Modificar notas rotando <span class="nivel">Intermedio</span></h3>
+<p>Con <code>std::queue&lt;Estudiante&gt;</code>, escribe una función que suba 0.5 a las notas menores a 3.0 y otra que muestre al estudiante con mejor nota. Ninguna debe alterar el orden de la fila.</p>
+</div>
+
+<div class="reto">
+<h3>C6. Rotar la fila <span class="nivel">Intermedio</span></h3>
+<p>Escribe <code>void rotar(queue&lt;int&gt;&amp; q, int k)</code> que pase los primeros <code>k</code> elementos al final. Ejemplo: <code>[1 2 3 4 5]</code> con <code>k = 2</code> queda <code>[3 4 5 1 2]</code>.</p>
+</div>
+
+<div class="reto">
+<h3>C7. Velocidad: vector contra deque <span class="nivel">Intermedio</span></h3>
+<p>Llena un <code>vector&lt;int&gt;</code> con 100000 números y sácalos todos uno por uno con <code>erase(begin())</code>. Repite con <code>deque&lt;int&gt;</code> y <code>pop_front()</code>. Mide el tiempo de cada uno con <code>&lt;chrono&gt;</code> y explica la diferencia.</p>
+</div>
+
+<div class="reto">
+<h3>C8. Quitar a alguien del medio <span class="nivel">Reto</span></h3>
+<p>En la cola circular de estudiantes, escribe <code>bool retirar(const string&amp; nombre)</code> que saque a esa persona de la fila (aunque no esté al frente) y cierre el hueco, de modo que los demás conserven su orden.</p>
+</div>
+
+<div class="reto">
+<h3>C9. Cola sin contador <span class="nivel">Reto</span></h3>
+<p>Reescribe la cola circular sin la variable <code>cuenta</code>, usando solo <code>frente</code> y <code>fin</code>. Tendrás que decidir cómo distinguir "llena" de "vacía". Explica en un comentario qué solución elegiste.</p>
+</div>
+
+<h2>D. Aplicaciones</h2>
+
+<div class="reto">
+<h3>D1. Paréntesis con posición <span class="nivel">Intermedio</span></h3>
+<p>Mejora <code>balanceado</code>: además de decir si está bien o mal, muestra <strong>en qué posición</strong> de la cadena está el primer error y de qué tipo (cierre sin apertura, no coincide, o apertura sin cerrar).</p>
+</div>
+
+<div class="reto">
+<h3>D2. Otras bases <span class="nivel">Intermedio</span></h3>
+<p>Generaliza <code>decimalABinario</code> a <code>convertir(int n, int base)</code>. Debe funcionar para bases 2, 8 y 16 (los residuos 10 a 15 se escriben A a F).</p>
+</div>
+
+<div class="reto">
+<h3>D3. Calculadora postfija <span class="nivel">Reto</span></h3>
+<p>Evalúa una expresión en notación postfija como <code>"5 3 + 2 *"</code> (resultado 16) usando una pila de números. Cada número se apila; cada operador saca dos, opera y apila el resultado. Controla el caso de pila vacía y la división por cero.</p>
+</div>
+
+<div class="reto">
+<h3>D4. Palíndromos de verdad <span class="nivel">Intermedio</span></h3>
+<p>Haz que <code>esPalindromo</code> ignore espacios, tildes comunes y mayúsculas, para que <code>"Anita lava la tina"</code> dé verdadero.</p>
+</div>
+
+<div class="reto">
+<h3>D5. Más datos en Round Robin <span class="nivel">Intermedio</span></h3>
+<p>Modifica la simulación para que muestre el <strong>tiempo total transcurrido</strong> al terminar cada proceso y, al final, el orden en que terminaron. Prueba con 5 procesos y dos valores de quantum distintos.</p>
+</div>
+
+<div class="reto">
+<h3>D6. Procesos con prioridad <span class="nivel">Reto</span></h3>
+<p>Agrega a <code>Proceso</code> un campo <code>bool urgente</code>. Usa dos colas: los urgentes siempre se ejecutan antes que los normales. Explica en un comentario qué pasaría con los normales si siguen llegando urgentes.</p>
+</div>
+
+<h2>E. Mini proyecto: agua del barrio</h2>
+
+<div class="reto">
+<h3>Consumo, reclamos y correcciones <span class="nivel">Proyecto</span></h3>
+<p>Parte de un <code>vector&lt;Vivienda&gt;</code> con <code>id</code>, <code>dueno</code> y <code>m3</code> consumidos en el mes. El programa debe tener un menú con:</p>
+<ol>
+<li>Mostrar todas las viviendas con su consumo y el total del barrio.</li>
+<li>Mostrar la vivienda de mayor consumo y la de menor consumo.</li>
+<li><strong>Facturación por escalones:</strong> hasta 20 m³ un precio por m³, y por encima de 20 otro precio mayor. Muestra el valor de una vivienda.</li>
+<li><strong>Registrar un reclamo</strong> (cola): id de vivienda y motivo.</li>
+<li><strong>Atender el siguiente reclamo</strong> (cola): corrige la lectura de esa vivienda y guarda el valor anterior (pila).</li>
+<li><strong>Deshacer</strong> la última corrección (pila). Debe poder deshacer varias seguidas.</li>
+<li>Salir.</li>
+</ol>
+<p><strong>Extras opcionales:</strong> reclamos urgentes con prioridad (dos colas), guardar viviendas y reclamos pendientes en un archivo al salir y cargarlos al entrar.</p>
+<p class="muted">Se evalúa: que cada estructura se use donde corresponde, que se valide cada caso límite (cola o pila vacía, id inexistente) y que el código esté ordenado y comentado.</p>
+</div>
+
+</div>
+</body>
+</html>

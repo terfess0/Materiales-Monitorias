@@ -225,11 +225,34 @@
       font-size: 0.875rem;
       font-weight: 600;
       border-radius: 6px;
-      transition: background-color 0.2s;
+      transition: background-color 0.2s, color 0.2s, border-color 0.2s;
     }
 
     .guide-btn:hover {
       background-color: #00453c;
+    }
+
+    .guide-btn-secondary {
+      background-color: #ffffff;
+      color: #00594e;
+      border: 1px solid #00594e;
+      padding: 8px 14px;
+    }
+
+    .guide-btn-secondary:hover {
+      background-color: #00594e;
+      color: #ffffff;
+    }
+
+    .guide-card-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .guide-card-actions .guide-btn {
+      flex: 1;
+      min-width: 110px;
     }
 
     /* Banner informativo del dia actual */
@@ -930,7 +953,7 @@
 
         <!-- GUIA 5 (Tema 5 del Sílabo) -->
         <article class="guide-card"
-          data-keywords="pilas colas stack queue lifo fifo filo lilo push pop top front back peek circular cola circular ejercicios c++ guia 5">
+          data-keywords="pilas colas stack queue lifo fifo filo lilo push pop top front back peek circular cola circular ejercicios retos hoja c++ guia 5">
           <div>
             <span class="guide-badge">Guía 05 &bull; Unidad 5: Pilas y Colas</span>
             <h3 class="guide-title">5. Estructuras de Datos: Pilas y Colas</h3>
@@ -945,8 +968,9 @@
               - Contenedores STL (stack/queue) y simuladores
             </div>
           </div>
-          <div>
+          <div class="guide-card-actions">
             <a href="./guia_5_pilas_colas.html" class="guide-btn">Abrir Guía 05 &rarr;</a>
+            <a href="./hoja_retos_pilas_colas.html" class="guide-btn guide-btn-secondary" title="Hoja de retos de Pilas y Colas">Ejercicios &rarr;</a>
           </div>
         </article>
 
