@@ -865,7 +865,7 @@
       right: 14px;
       width: 76px;
       height: 96px;
-      z-index: 998;
+      z-index: 999;
       pointer-events: none;
       user-select: none;
       filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.28));
@@ -875,14 +875,24 @@
     .navidad-widget-deer {
       position: fixed;
       bottom: 12px;
-      left: 14px;
+      left: 0;
       width: 78px;
       height: 90px;
       z-index: 998;
       pointer-events: none;
       user-select: none;
       filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.28));
-      transition: transform 0.3s ease;
+      animation: deerRunAcross 13s linear infinite;
+      will-change: transform;
+    }
+
+    @keyframes deerRunAcross {
+      0% {
+        transform: translateX(-110px);
+      }
+      100% {
+        transform: translateX(calc(100vw + 60px));
+      }
     }
 
     @media (max-width: 600px) {
@@ -896,7 +906,7 @@
         width: 60px;
         height: 70px;
         bottom: 8px;
-        left: 8px;
+        animation: deerRunAcross 9s linear infinite;
       }
     }
 
@@ -971,56 +981,100 @@
       100% { opacity: 1; filter: drop-shadow(0 0 6px #4ade80); }
     }
 
-    /* Animaciones del Venado (Rodolfo) */
+    /* Animaciones del Venado Corriendo (Rodolfo al Trote) */
     .deer-character {
       transform-origin: 40px 75px;
-      animation: deerBreath 3s ease-in-out infinite;
+      animation: deerGallopBounce 0.22s ease-in-out infinite alternate;
     }
 
-    @keyframes deerBreath {
-      0%, 100% { transform: translateY(0) scale(1); }
-      50% { transform: translateY(-2px) scale(1.01); }
+    @keyframes deerGallopBounce {
+      0% {
+        transform: translateY(0px) rotate(-1deg);
+      }
+      100% {
+        transform: translateY(-5px) rotate(2.5deg);
+      }
+    }
+
+    /* Galope / Trote de Patas */
+    .deer-leg-back-1 {
+      transform-origin: 24.5px 68px;
+      animation: legRunBack1 0.44s ease-in-out infinite alternate;
+    }
+
+    .deer-leg-back-2 {
+      transform-origin: 33.5px 66px;
+      animation: legRunBack2 0.44s ease-in-out infinite alternate;
+    }
+
+    .deer-leg-front-1 {
+      transform-origin: 48.5px 66px;
+      animation: legRunFront1 0.44s ease-in-out infinite alternate;
+    }
+
+    .deer-leg-front-2 {
+      transform-origin: 56.5px 68px;
+      animation: legRunFront2 0.44s ease-in-out infinite alternate;
+    }
+
+    @keyframes legRunBack1 {
+      0% { transform: rotate(-26deg); }
+      100% { transform: rotate(22deg); }
+    }
+
+    @keyframes legRunBack2 {
+      0% { transform: rotate(20deg); }
+      100% { transform: rotate(-28deg); }
+    }
+
+    @keyframes legRunFront1 {
+      0% { transform: rotate(28deg); }
+      100% { transform: rotate(-22deg); }
+    }
+
+    @keyframes legRunFront2 {
+      0% { transform: rotate(-22deg); }
+      100% { transform: rotate(26deg); }
     }
 
     .deer-head-group {
       transform-origin: 52px 42px;
-      animation: deerHeadBob 3.6s ease-in-out infinite;
+      animation: deerHeadRun 0.44s ease-in-out infinite alternate;
     }
 
-    @keyframes deerHeadBob {
-      0%, 100% { transform: rotate(0deg); }
-      35% { transform: rotate(-3deg); }
-      70% { transform: rotate(2deg); }
+    @keyframes deerHeadRun {
+      0% { transform: rotate(-3deg); }
+      100% { transform: rotate(3deg); }
     }
 
     .deer-tail {
       transform-origin: 20px 54px;
-      animation: tailWiggle 1.5s ease-in-out infinite alternate;
+      animation: tailWiggleFast 0.25s ease-in-out infinite alternate;
     }
 
-    @keyframes tailWiggle {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(18deg); }
+    @keyframes tailWiggleFast {
+      0% { transform: rotate(-6deg); }
+      100% { transform: rotate(22deg); }
     }
 
     .deer-bell {
       transform-origin: 56px 47px;
-      animation: bellSway 1.8s ease-in-out infinite alternate;
+      animation: bellSwayFast 0.44s ease-in-out infinite alternate;
     }
 
-    @keyframes bellSway {
-      0% { transform: rotate(-8deg); }
-      100% { transform: rotate(10deg); }
+    @keyframes bellSwayFast {
+      0% { transform: rotate(-14deg); }
+      100% { transform: rotate(14deg); }
     }
 
     .deer-ear-left {
       transform-origin: 50px 28px;
-      animation: earTwitchLeft 4s ease-in-out infinite;
+      animation: earTwitchLeft 3s ease-in-out infinite;
     }
 
     .deer-ear-right {
       transform-origin: 60px 28px;
-      animation: earTwitchRight 4s ease-in-out infinite 0.2s;
+      animation: earTwitchRight 3s ease-in-out infinite 0.2s;
     }
 
     @keyframes earTwitchLeft {
@@ -2186,22 +2240,30 @@
     })();
   </script>
   <!-- WIDGETS NAVIDEÑOS CLÁSICOS (BLOGSPOT STYLE) -->
-  <!-- Venado Animado (Esquina Inferior Izquierda) -->
-  <div class="navidad-widget-deer" aria-hidden="true" title="¡Felices Fiestas!">
+  <!-- Venado Animado Corriendo (Cruza de Izquierda a Derecha) -->
+  <div class="navidad-widget-deer" aria-hidden="true" title="¡Rodolfo al galope!">
     <svg viewBox="0 0 85 95" width="100%" height="100%" fill="none" xmlns="http://www.w3.org/2000/svg">
       <g class="deer-character">
         <!-- Cola con animación -->
         <path d="M18 58 Q12 55 13 50 Q16 48 20 54 Z" fill="#b45309" class="deer-tail"/>
         <circle cx="14" cy="50" r="2.5" fill="#fef3c7" class="deer-tail"/>
-        <!-- Patas -->
-        <rect x="22" y="68" width="5" height="18" rx="2" fill="#92400e"/>
-        <rect x="22" y="82" width="5" height="4" rx="1" fill="#451a03"/>
-        <rect x="31" y="66" width="5" height="20" rx="2" fill="#78350f"/>
-        <rect x="31" y="82" width="5" height="4" rx="1" fill="#451a03"/>
-        <rect x="46" y="66" width="5" height="20" rx="2" fill="#78350f"/>
-        <rect x="46" y="82" width="5" height="4" rx="1" fill="#451a03"/>
-        <rect x="54" y="68" width="5" height="18" rx="2" fill="#92400e"/>
-        <rect x="54" y="82" width="5" height="4" rx="1" fill="#451a03"/>
+        <!-- Patas con animación de galope -->
+        <g class="deer-leg-back-1">
+          <rect x="22" y="68" width="5" height="18" rx="2" fill="#92400e"/>
+          <rect x="22" y="82" width="5" height="4" rx="1" fill="#451a03"/>
+        </g>
+        <g class="deer-leg-back-2">
+          <rect x="31" y="66" width="5" height="20" rx="2" fill="#78350f"/>
+          <rect x="31" y="82" width="5" height="4" rx="1" fill="#451a03"/>
+        </g>
+        <g class="deer-leg-front-1">
+          <rect x="46" y="66" width="5" height="20" rx="2" fill="#78350f"/>
+          <rect x="46" y="82" width="5" height="4" rx="1" fill="#451a03"/>
+        </g>
+        <g class="deer-leg-front-2">
+          <rect x="54" y="68" width="5" height="18" rx="2" fill="#92400e"/>
+          <rect x="54" y="82" width="5" height="4" rx="1" fill="#451a03"/>
+        </g>
         <!-- Cuerpo -->
         <ellipse cx="38" cy="60" rx="20" ry="14" fill="#b45309"/>
         <ellipse cx="38" cy="62" rx="14" ry="9" fill="#d97706"/>
