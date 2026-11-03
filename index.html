@@ -257,13 +257,33 @@
 
     /* Banner informativo del dia actual */
     .today-banner {
-      padding: 10px 14px;
+      padding: 12px 16px;
       margin-bottom: 14px;
-      border-radius: 6px;
+      border-radius: 8px;
       background-color: #ecfdf5;
       border: 1px solid #a7f3d0;
       color: #065f46;
       font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .today-banner.live-session {
+      background-color: #ecfdf5;
+      border: 1px solid #10b981;
+      color: #065f46;
+      box-shadow: 0 0 0 1px #10b981;
+    }
+
+    .today-banner.upcoming-session {
+      background-color: #f0fdf4;
+      border: 1px solid #86efac;
+      color: #166534;
+    }
+
+    .today-banner.past-sessions {
+      background-color: #f8fafc;
+      border: 1px solid #cbd5e1;
+      color: #475569;
     }
 
     .today-banner.no-sessions {
@@ -312,10 +332,23 @@
       border-bottom: 1px solid #a2d2c8;
     }
 
+    tr.highlight-today.row-live {
+      background-color: #d1fae5 !important;
+      font-weight: 600;
+    }
+
+    tr.highlight-today.row-live td {
+      border-top: 1px solid #10b981;
+      border-bottom: 1px solid #10b981;
+    }
+
+    tr.highlight-today.row-past {
+      background-color: #f8fafc !important;
+      opacity: 0.85;
+    }
+
     .today-badge {
       display: inline-block;
-      background-color: #00594e;
-      color: #ffffff;
       font-size: 0.72rem;
       font-weight: 600;
       padding: 2px 7px;
@@ -323,6 +356,28 @@
       margin-left: 8px;
       text-transform: uppercase;
       letter-spacing: 0.03em;
+    }
+
+    .today-badge.badge-live {
+      background-color: #059669;
+      color: #ffffff;
+      animation: pulseLiveBadge 1.8s infinite;
+    }
+
+    @keyframes pulseLiveBadge {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.85; transform: scale(1.05); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .today-badge.badge-upcoming {
+      background-color: #00594e;
+      color: #ffffff;
+    }
+
+    .today-badge.badge-past {
+      background-color: #94a3b8;
+      color: #ffffff;
     }
 
     .table-note {
@@ -1396,40 +1451,155 @@
       });
     }
 
-    // 2. Resaltado dinamico del dia actual y conteo de monitorias
-    (function highlightToday() {
-      const dayIndex = new Date().getDay(); // 0 = Domingo, 1 = Lunes, ..., 6 = Sabado
+    // 2. Resaltado dinámico según día y hora del dispositivo
+    function parseTimeString(str) {
+      if (!str) return null;
+      const m = str.trim().match(/^(\d{1,2}):(\d{2})\s*(am|pm)$/i);
+      if (!m) return null;
+      let hour = parseInt(m[1], 10);
+      const min = parseInt(m[2], 10);
+      const meridiem = m[3].toLowerCase();
+      if (meridiem === 'pm' && hour < 12) hour += 12;
+      if (meridiem === 'am' && hour === 12) hour = 0;
+      return hour * 60 + min;
+    }
+
+    function parseTimeRange(rangeStr) {
+      if (!rangeStr) return null;
+      const parts = rangeStr.split('-');
+      if (parts.length !== 2) return null;
+      const startMin = parseTimeString(parts[0]);
+      const endMin = parseTimeString(parts[1]);
+      if (startMin === null || endMin === null) return null;
+      return { startMin, endMin };
+    }
+
+    function highlightToday() {
+      const now = new Date();
+      const dayIndex = now.getDay(); // 0 = Domingo, 1 = Lunes, ..., 6 = Sabado
       const daysNames = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
       const currentDayName = daysNames[dayIndex];
+      const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
       const banner = document.getElementById('todayBanner');
       const rows = document.querySelectorAll('#scheduleTable tbody tr');
 
-      let sessionsToday = 0;
+      const todaySessions = [];
+
       rows.forEach(row => {
         const rowDay = parseInt(row.getAttribute('data-day'), 10);
+        // Limpiar clases y badges previos para permitir actualización en tiempo real
+        row.classList.remove('highlight-today', 'row-live', 'row-upcoming', 'row-past');
+        const oldBadge = row.querySelector('.today-badge');
+        if (oldBadge) oldBadge.remove();
+
         if (rowDay === dayIndex) {
-          row.classList.add('highlight-today');
           const dayCell = row.querySelector('td:first-child');
-          if (dayCell && !dayCell.querySelector('.today-badge')) {
-            const badge = document.createElement('span');
-            badge.className = 'today-badge';
-            badge.textContent = 'Hoy';
-            dayCell.appendChild(badge);
+          const timeCell = row.cells[1];
+          const roomCell = row.cells[2];
+          const timeText = timeCell ? timeCell.textContent.trim() : '';
+          const roomText = roomCell ? roomCell.textContent.trim() : '';
+          const range = parseTimeRange(timeText);
+
+          if (range) {
+            todaySessions.push({
+              row,
+              dayCell,
+              timeText,
+              roomText,
+              startMin: range.startMin,
+              endMin: range.endMin
+            });
           }
-          sessionsToday++;
         }
       });
 
-      if (banner) {
-        if (sessionsToday > 0) {
-          banner.className = 'today-banner';
-          banner.innerHTML = `<strong>Hoy es ${currentDayName}:</strong> Hay <strong>${sessionsToday}</strong> sesión(es) de monitoría programada(s) para hoy (resaltadas en la tabla).`;
+      if (!banner) return;
+
+      if (todaySessions.length === 0) {
+        banner.className = 'today-banner no-sessions';
+        banner.innerHTML = `<strong>Hoy es ${currentDayName}:</strong> No hay monitorías programadas para hoy. Consulta los demás días en la tabla.`;
+        return;
+      }
+
+      // Clasificar sesiones según la hora del dispositivo
+      const live = [];
+      const upcoming = [];
+      const past = [];
+
+      todaySessions.forEach(session => {
+        session.row.classList.add('highlight-today');
+        const badge = document.createElement('span');
+
+        if (currentMinutes >= session.startMin && currentMinutes < session.endMin) {
+          session.row.classList.add('row-live');
+          badge.className = 'today-badge badge-live';
+          badge.textContent = 'En curso';
+          live.push(session);
+        } else if (currentMinutes < session.startMin) {
+          session.row.classList.add('row-upcoming');
+          badge.className = 'today-badge badge-upcoming';
+          badge.textContent = 'Próxima';
+          upcoming.push(session);
         } else {
-          banner.className = 'today-banner no-sessions';
-          banner.innerHTML = `<strong>Hoy es ${currentDayName}:</strong> No hay monitorías programadas para hoy. Consulta los demás días en la tabla.`;
+          session.row.classList.add('row-past');
+          badge.className = 'today-badge badge-past';
+          badge.textContent = 'Finalizada';
+          past.push(session);
+        }
+
+        if (session.dayCell) {
+          session.dayCell.appendChild(badge);
+        }
+      });
+
+      // Generar mensaje contextual adaptado a la hora
+      if (live.length > 0) {
+        banner.className = 'today-banner live-session';
+        const s = live[0];
+        const remainingMin = s.endMin - currentMinutes;
+        const remainText = remainingMin > 0 ? ` (finaliza en ${remainingMin} min)` : '';
+        if (upcoming.length > 0) {
+          const next = upcoming[0];
+          banner.innerHTML = `🟢 <strong>¡Monitoría en curso ahora!</strong> Estamos en <strong>${s.roomText}</strong> (${s.timeText}${remainText}). Queda otra sesión hoy a las <strong>${next.timeText.split('-')[0].trim()}</strong> en ${next.roomText}.`;
+        } else {
+          banner.innerHTML = `🟢 <strong>¡Monitoría en curso ahora!</strong> Estamos en <strong>${s.roomText}</strong> (${s.timeText}${remainText}). ¡Acércate al salón con tus dudas o código!`;
+        }
+      } else if (upcoming.length > 0) {
+        banner.className = 'today-banner upcoming-session';
+        const next = upcoming[0];
+        const diffMin = next.startMin - currentMinutes;
+        let diffText = "";
+        if (diffMin <= 60) {
+          diffText = ` (inicia en ${diffMin} min)`;
+        } else {
+          const h = Math.floor(diffMin / 60);
+          const m = diffMin % 60;
+          diffText = ` (inicia en aprox. ${h} h${m > 0 ? ' ' + m + ' min' : ''})`;
+        }
+
+        if (past.length > 0) {
+          banner.innerHTML = `<strong>Hoy es ${currentDayName}:</strong> La sesión anterior ya finalizó. <strong>Próxima sesión hoy:</strong> ${next.timeText} en <strong>${next.roomText}</strong>${diffText}.`;
+        } else if (upcoming.length === 1) {
+          banner.innerHTML = `<strong>Hoy es ${currentDayName}:</strong> Hay 1 sesión programada para hoy de <strong>${next.timeText}</strong> en <strong>${next.roomText}</strong>${diffText}.`;
+        } else {
+          banner.innerHTML = `<strong>Hoy es ${currentDayName}:</strong> Hay ${upcoming.length} sesiones programadas para hoy. <strong>La más próxima:</strong> ${next.timeText} en <strong>${next.roomText}</strong>${diffText}.`;
+        }
+      } else if (past.length > 0) {
+        banner.className = 'today-banner past-sessions';
+        if (past.length === 1) {
+          const p = past[0];
+          banner.innerHTML = `⏰ <strong>Hoy es ${currentDayName}:</strong> Había una sesión de monitoría programada hoy de <strong>${p.timeText}</strong> (en ${p.roomText}), pero <strong>ya finalizó</strong>. Consulta los horarios de los próximos días en la tabla.`;
+        } else {
+          const last = past[past.length - 1];
+          banner.innerHTML = `⏰ <strong>Hoy es ${currentDayName}:</strong> Las ${past.length} sesiones de monitoría de hoy ya finalizaron (la última fue de <strong>${last.timeText}</strong> en ${last.roomText}). Consulta los horarios de los próximos días en la tabla.`;
         }
       }
-    })();
+    }
+
+    // Ejecutar al cargar y actualizar automáticamente cada minuto
+    highlightToday();
+    setInterval(highlightToday, 60000);
 
     // 3. Botón para compartir horarios con ancla directa y scroll suave
     function compartirHorarios() {
