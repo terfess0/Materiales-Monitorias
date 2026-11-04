@@ -274,40 +274,40 @@
         <section class="slide active" data-name="Inicio">
             <div class="wrap">
                 <h1>Pilas, colas y deque en C++</h1>
-                <p class="muted">Tres estructuras que se distinguen por <em>por dónde entran y salen los datos</em>.</p>
+                <p class="muted">Tres estructuras que se distinguen por <em>por dónde entran y salen los datos</em>, vistas desde cero con <code>struct Nodo</code> y con la librería estándar.</p>
                 <div class="two" style="grid-template-columns:1fr 1fr">
                     <div>
-                        <h3>Desde cero</h3>
+                        <h3>Desde cero (en crudo con <code>struct Nodo</code>)</h3>
                         <ul>
-                            <li>Pila (LIFO): concepto, arreglo y lista enlazada</li>
-                            <li>Cola (FIFO): concepto, arreglo circular y lista enlazada</li>
-                            <li>Deque: doble extremo con lista doblemente enlazada</li>
+                            <li><strong>Pila (LIFO):</strong> concepto, <code>Nodo* tope</code>, <code>push</code>, <code>pop</code>, <code>recorrer</code>, <code>buscar</code>, <code>revertir</code> y <code>esCapicua</code></li>
+                            <li><strong>Cola (FIFO):</strong> concepto, <code>frente</code> y <code>fin</code>, <code>push</code>, <code>pop</code>, <code>recorrer</code>, <code>buscar</code>, <code>revertir</code> y <code>esCapicua</code></li>
+                            <li><strong>Deque:</strong> doble enlace (<code>NodoD</code> con <code>ant</code> y <code>sig</code>), operaciones por ambos extremos, <code>revertir</code> y <code>esCapicua</code></li>
                         </ul>
                     </div>
                     <div>
-                        <h3>Con la biblioteca moderna</h3>
+                        <h3>Con librería estándar (STL)</h3>
                         <ul>
-                            <li><code>std::stack</code>, <code>std::queue</code> y <code>std::deque</code></li>
-                            <li>Adaptadores de contenedor</li>
-                            <li>Relación entre las tres y cuándo usar cada una</li>
+                            <li>Uso completo de <code>std::stack</code>, <code>std::queue</code> y <code>std::deque</code></li>
+                            <li>Cómo pasarlas a funciones (por valor vs. por referencia)</li>
+                            <li>Funciones para recorrer, buscar, revertir y saber si es capicúa con librería</li>
+                            <li>Relación entre las tres y ejercicios resueltos por tema</li>
                         </ul>
-                        <p class="muted">Cada tema tiene ejemplo en C++ y ejercicios. Avanza con las flechas del teclado
-                            o con los botones de abajo.</p>
+                        <p class="muted">Avanza con las flechas del teclado o con los botones de abajo.</p>
                     </div>
                 </div>
             </div>
         </section>
 
+        <!-- ==================== PILA ==================== -->
+
         <!-- PILA 1 -->
-        <section class="slide" data-name="Pila (1/3)">
+        <section class="slide" data-name="Pila (1/6) Concepto">
             <div class="wrap">
-                <h2>Pila (1/3): qué es una pila</h2>
+                <h2>Pila (1/6): qué es una pila</h2>
                 <p class="sub">LIFO: el último en entrar es el primero en salir</p>
                 <div class="two">
                     <div>
-                        <p>Una <strong>pila</strong> (<em>stack</em>) es una colección donde solo se puede entrar y
-                            salir por <strong>un extremo</strong>, llamado <strong>tope</strong>. Es como una pila de
-                            platos: solo puedes tomar o poner el de arriba.</p>
+                        <p>Una <strong>pila</strong> (<em>stack</em>) es una colección donde solo se puede entrar y salir por <strong>un extremo</strong>, llamado <strong>tope</strong>. Es como una pila de platos: solo puedes poner o quitar el plato de arriba.</p>
                         <table>
                             <tr>
                                 <th>Operación</th>
@@ -316,7 +316,7 @@
                             </tr>
                             <tr>
                                 <td><code>push(x)</code></td>
-                                <td>Apila <code>x</code> en el tope</td>
+                                <td>Apila <code>x</code> encima del tope</td>
                                 <td>O(1)</td>
                             </tr>
                             <tr>
@@ -335,26 +335,24 @@
                                 <td>O(1)</td>
                             </tr>
                         </table>
-                        <p class="muted">No se puede leer ni borrar un elemento del medio: si lo necesitas, primero hay
-                            que sacar los de arriba.</p>
+                        <p class="muted">No se puede leer ni borrar un elemento del medio directamente: para llegar a él primero hay que sacar los que están arriba.</p>
                     </div>
                     <div>
                         <p class="label">Cómo se comporta</p>
                         <pre class="salida">push(10)   push(20)   push(30)   pop()      pop()
 
                        | 30 | &lt;-- tope
-            | 20 |     | 20 |     | 20 | &lt;--   | 10 | &lt;--
- | 10 | &lt;--  | 10 |     | 10 |     | 10 |     +----+
+            | 20 |     | 20 |     | 20 | &lt;--  | 10 | &lt;--
+ | 10 | &lt;-- | 10 |     | 10 |     | 10 |      +----+
  +----+     +----+     +----+     +----+
- 
- sale 30, luego 20: el orden de salida es inverso al de entrada</pre>
+
+sale 30, luego 20: el orden de salida es INVERSO al de entrada</pre>
                         <p class="label">Dónde aparece</p>
                         <ul>
-                            <li><strong>Pila de llamadas:</strong> cada llamada a función se apila; por eso la
-                                recursividad es una pila implícita.</li>
+                            <li><strong>Invertir datos:</strong> todo lo que entra a una pila sale al revés.</li>
                             <li><strong>Deshacer</strong> (Ctrl+Z) y el botón «atrás» del navegador.</li>
                             <li>Revisar paréntesis balanceados y evaluar expresiones.</li>
-                            <li>Recorrido en profundidad (DFS) de grafos.</li>
+                            <li>Verificar si una palabra o secuencia es <strong>capicúa / palíndromo</strong>.</li>
                         </ul>
                     </div>
                 </div>
@@ -362,112 +360,293 @@
         </section>
 
         <!-- PILA 2 -->
-        <section class="slide" data-name="Pila (2/3)">
+        <section class="slide" data-name="Pila (2/6) Crudo: Push/Pop">
             <div class="wrap">
-                <h2>Pila (2/3): implementarla desde cero</h2>
-                <p class="sub">Con arreglo (tamaño fijo) o con lista enlazada (crece sola)</p>
+                <h2>Pila (2/6): en crudo con <code>struct Nodo</code></h2>
+                <p class="sub"><code>push</code>, <code>pop</code>, <code>top</code> y <code>recorrer</code> desde cero</p>
                 <div class="two">
                     <div>
+                        <p>Con nodos enlazados, el <strong>tope es la cabeza</strong> de la lista:</p>
                         <ul>
-                            <li><strong>Con arreglo:</strong> <code>tope</code> guarda cuántos elementos hay. Apilar es
-                                <code>datos[tope++] = x</code>; desapilar es <code>datos[--tope]</code>. Hay que
-                                controlar que no esté <strong>llena</strong> (desbordamiento) ni
-                                <strong>vacía</strong> (subdesbordamiento).
-                            </li>
-                            <li><strong>Con lista enlazada:</strong> el tope es la cabeza. <code>push</code> es
-                                <code>insertarInicio</code> y <code>pop</code> es <code>eliminarInicio</code>: ambas
-                                son O(1) sin recorrer nada. Nunca se llena (mientras haya memoria).
-                            </li>
+                            <li><strong>Pila vacía:</strong> <code>Nodo* tope = nullptr;</code></li>
+                            <li><strong><code>push</code>:</strong> crea un nodo cuyo <code>sig</code> apunta al <code>tope</code> actual y mueve <code>tope</code> al nuevo nodo.</li>
+                            <li><strong><code>pop</code>:</strong> guarda el nodo del tope en un temporal <code>t</code>, saca su dato en <code>x</code>, avanza <code>tope = tope-&gt;sig</code> y hace <code>delete t</code>.</li>
+                            <li><strong>¿Por qué <code>Nodo*&amp; tope</code>?</strong> Porque <code>push</code> y <code>pop</code> cambian a qué nodo apunta <code>tope</code>.</li>
+                            <li><strong><code>recorrer</code>:</strong> usa un puntero auxiliar <code>p = tope</code> que avanza con <code>p = p-&gt;sig</code> sin mover <code>tope</code>.</li>
                         </ul>
-                        <p><strong>¿Por qué la cabeza y no el final?</strong> En una lista simple, borrar el último nodo
-                            obliga a recorrer toda la lista (O(n)). En la cabeza todo es O(1).</p>
-                        <p class="muted">En la clase de lista enlazada, <code>cab</code> es un atributo, así que los
-                            métodos no necesitan <code>Nodo*&amp;</code>.</p>
+                        <pre class="salida">tope --&gt; [30|•] --&gt; [20|•] --&gt; [10|null]</pre>
                     </div>
                     <div>
-                        <p class="label">Pila con arreglo</p>
-                        <pre>class PilaArr {
-    int* datos;
-    int  cap;
-    int  tope = 0;               // cantidad de elementos
-public:
-    PilaArr(int c = 10) : datos(new int[c]), cap(c) {}
-    ~PilaArr() { delete[] datos; }
-    PilaArr(const PilaArr&amp;) = delete;
-    PilaArr&amp; operator=(const PilaArr&amp;) = delete;
+                        <p class="label">Programa completo en crudo</p>
+                        <pre>#include &lt;iostream&gt;
+using namespace std;
 
-    bool vacia() const { return tope == 0; }
-    bool llena() const { return tope == cap; }
+struct Nodo {
+    int dato;
+    Nodo* sig;
+};
 
-    bool push(int x) {
-        if (llena()) return false;
-        datos[tope++] = x;
-        return true;
-    }
-    bool pop(int&amp; x) {           // devuelve el dato por parametro
-        if (vacia()) return false;
-        x = datos[--tope];
-        return true;
-    }
-    bool top(int&amp; x) const {
-        if (vacia()) return false;
-        x = datos[tope - 1];
-        return true;
-    }
-};</pre>
-                        <p class="label">Pila con lista enlazada (el tope es la cabeza)</p>
-                        <pre>class PilaLista {
-    struct Nodo { int dato; Nodo* sig; };
-    Nodo* tope = nullptr;
-public:
-    ~PilaLista() { while (tope) { Nodo* t = tope; tope = tope-&gt;sig; delete t; } }
-    PilaLista() {}
-    PilaLista(const PilaLista&amp;) = delete;
-    PilaLista&amp; operator=(const PilaLista&amp;) = delete;
+void push(Nodo*&amp; tope, int x) {
+    tope = new Nodo{x, tope};
+}
 
-    bool vacia() const { return tope == nullptr; }
-    void push(int x)   { tope = new Nodo{x, tope}; }
-    bool pop(int&amp; x) {
-        if (vacia()) return false;
-        Nodo* t = tope;
-        x = t-&gt;dato;
-        tope = tope-&gt;sig;      // avanzar ANTES de borrar
-        delete t;
-        return true;
-    }
-};</pre>
+bool pop(Nodo*&amp; tope, int&amp; x) {
+    if (tope == nullptr) return false;
+    Nodo* t = tope;
+    x = t-&gt;dato;
+    tope = tope-&gt;sig;           // avanzar ANTES de borrar
+    delete t;
+    return true;
+}
+
+void recorrer(const Nodo* tope) {
+    for (const Nodo* p = tope; p != nullptr; p = p-&gt;sig)
+        cout &lt;&lt; p-&gt;dato &lt;&lt; " -&gt; ";
+    cout &lt;&lt; "null\n";
+}
+
+int main() {
+    Nodo* pila = nullptr;
+    push(pila, 10);
+    push(pila, 20);
+    push(pila, 30);
+    recorrer(pila);             // 30 -&gt; 20 -&gt; 10 -&gt; null
+
+    int x;
+    if (pop(pila, x)) cout &lt;&lt; "Salio: " &lt;&lt; x &lt;&lt; endl; // 30
+    recorrer(pila);             // 20 -&gt; 10 -&gt; null
+    return 0;
+}</pre>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- PILA 3 -->
-        <section class="slide" data-name="Pila (3/3)">
+        <section class="slide" data-name="Pila (3/6) Crudo: Útiles">
             <div class="wrap">
-                <h2>Pila (3/3): ejercicios</h2>
-                <p class="muted">Usan <code>#include &lt;iostream&gt;</code>, <code>#include &lt;stack&gt;</code>,
-                    <code>#include &lt;string&gt;</code> y <code>using namespace std;</code>.
-                </p>
-                <ol class="ej">
-                    <li>Invierte una cadena usando una pila.
-                        <details>
-                            <summary>Ver solución</summary>
-                            <pre>string invertir(const string&amp; s) {
-    stack&lt;char&gt; p;
-    for (char c : s) p.push(c);
-    string r;
+                <h2>Pila (3/6): buscar, revertir y capicúa (en crudo)</h2>
+                <p class="sub">Funciones útiles sobre <code>struct Nodo</code></p>
+                <div class="two">
+                    <div>
+                        <ul>
+                            <li><strong><code>buscar</code>:</strong> recorre con <code>p</code> desde <code>tope</code>. Si halla <code>x</code> devuelve <code>true</code>. No mueve <code>tope</code>.</li>
+                            <li><strong><code>revertir</code>:</strong> sacamos cada elemento con <code>pop(tope, x)</code> y lo apilamos con <code>push(nueva, x)</code> en otra pila. Al pasar de una pila a otra el orden se invierte; al final hacemos <code>tope = nueva</code>.</li>
+                            <li><strong><code>esCapicua</code>:</strong> construimos una pila auxiliar <code>rev</code> apilando los datos de la original (queda en orden inverso) y comparamos nodo por nodo.</li>
+                            <li><strong><code>liberar</code>:</strong> vacía todos los nodos con <code>pop</code> para no dejar fugas de memoria.</li>
+                        </ul>
+                        <pre class="salida">Original:  tope --&gt; 1 -&gt; 2 -&gt; 3 -&gt; 2 -&gt; 1
+Invertida: rev  --&gt; 1 -&gt; 2 -&gt; 3 -&gt; 2 -&gt; 1
+Coinciden todos ==&gt; esCapicua devuelve true</pre>
+                    </div>
+                    <div>
+                        <p class="label">Funciones sobre struct Nodo</p>
+                        <pre>bool buscar(const Nodo* tope, int x) {
+    for (const Nodo* p = tope; p != nullptr; p = p-&gt;sig)
+        if (p-&gt;dato == x) return true;
+    return false;
+}
+
+void liberar(Nodo*&amp; tope) {
+    int x;
+    while (pop(tope, x)) {}
+}
+
+void revertir(Nodo*&amp; tope) {
+    Nodo* nueva = nullptr;
+    int x;
+    while (pop(tope, x))
+        push(nueva, x);         // al pasar a otra pila queda al revés
+    tope = nueva;
+}
+
+bool esCapicua(const Nodo* tope) {
+    Nodo* rev = nullptr;
+    for (const Nodo* p = tope; p != nullptr; p = p-&gt;sig)
+        push(rev, p-&gt;dato);     // rev queda invertida
+
+    bool ok = true;
+    for (const Nodo *a = tope, *b = rev; a != nullptr; a = a-&gt;sig, b = b-&gt;sig)
+        if (a-&gt;dato != b-&gt;dato) { ok = false; break; }
+
+    liberar(rev);
+    return ok;
+}</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PILA 4 -->
+        <section class="slide" data-name="Pila (4/6) Uso std::stack">
+            <div class="wrap">
+                <h2>Pila (4/6): cómo se usa con librería (<code>&lt;stack&gt;</code>)</h2>
+                <p class="sub">Declaración, operaciones básicas y paso a funciones</p>
+                <div class="two">
+                    <div>
+                        <p>Con <code>#include &lt;stack&gt;</code> la pila ya viene lista y libera su memoria sola:</p>
+                        <ul>
+                            <li><strong>Declarar:</strong> <code>stack&lt;int&gt; p;</code> (o <code>stack&lt;char&gt;</code>, <code>stack&lt;string&gt;</code>, etc.).</li>
+                            <li><strong>Apilar:</strong> <code>p.push(10);</code></li>
+                            <li><strong>Consultar el tope:</strong> <code>p.top()</code> devuelve el elemento de arriba sin quitarlo.</li>
+                            <li><strong>Desapilar:</strong> <code>p.pop();</code> quita el tope, pero <strong>es <code>void</code> (no devuelve nada)</strong>. Siempre se lee primero con <code>p.top()</code> y luego se hace <code>p.pop()</code>.</li>
+                            <li><strong>Tamaño y vacía:</strong> <code>p.size()</code> y <code>p.empty()</code>.</li>
+                            <li><strong>Pasar a funciones:</strong> usa <code>stack&lt;int&gt;&amp;</code> (por referencia) si quieres modificar la original, o <code>stack&lt;int&gt;</code> (por valor) si quieres vaciar una copia sin dañar la de <code>main</code>.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <p class="label">Programa completo de uso básico con &lt;stack&gt;</p>
+                        <pre>#include &lt;iostream&gt;
+#include &lt;stack&gt;
+using namespace std;
+
+int main() {
+    stack&lt;int&gt; p;
+
+    // 1. Apilar elementos (push)
+    p.push(10);
+    p.push(20);
+    p.push(30);
+
+    // 2. Consultar tope y tamaño
+    cout &lt;&lt; "Tope actual: " &lt;&lt; p.top() &lt;&lt; endl;   // 30
+    cout &lt;&lt; "Cantidad: "    &lt;&lt; p.size() &lt;&lt; endl;  // 3
+
+    // 3. Quitar un elemento (pop)
+    p.pop();                                      // quita el 30
+    cout &lt;&lt; "Nuevo tope: "  &lt;&lt; p.top() &lt;&lt; endl;   // 20
+
+    // 4. Vaciar la pila mostrando cada dato
+    cout &lt;&lt; "Restantes: ";
     while (!p.empty()) {
-        r += p.top();
+        cout &lt;&lt; p.top() &lt;&lt; " ";                   // 20 10
         p.pop();
     }
-    return r;
+    cout &lt;&lt; endl;
+    return 0;
+}</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PILA 5 -->
+        <section class="slide" data-name="Pila (5/6) Funciones stack">
+            <div class="wrap">
+                <h2>Pila (5/6): recorrer, buscar, revertir y capicúa con <code>&lt;stack&gt;</code></h2>
+                <p class="sub">Cómo implementar las mismas funciones usando la librería</p>
+                <div class="two">
+                    <div>
+                        <p>Como <code>std::stack</code> no tiene iteradores ni <code>for</code>, todo se hace combinando <code>top()</code>, <code>pop()</code> y pilas auxiliares:</p>
+                        <ul>
+                            <li><strong><code>recorrer</code> y <code>buscar</code>:</strong> reciben <code>stack&lt;int&gt; copia</code> <strong>por valor</strong>. Así sacamos los elementos de la copia y la pila de <code>main</code> queda intacta.</li>
+                            <li><strong><code>revertir</code>:</strong> recibe <code>stack&lt;int&gt;&amp; p</code> por referencia. Pasar de <code>p -&gt; a</code> invierte, de <code>a -&gt; b</code> vuelve al derecho, y de <code>b -&gt; p</code> deja <code>p</code> invertida.</li>
+                            <li><strong><code>esCapicua</code>:</strong> volcamos una copia en otra pila <code>rev</code> (que queda al revés) y comparamos <code>p.top() == rev.top()</code> paso a paso.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <p class="label">Funciones completas con std::stack</p>
+                        <pre>void recorrer(stack&lt;int&gt; copia) {         // por valor: copia
+    while (!copia.empty()) {
+        cout &lt;&lt; copia.top() &lt;&lt; " ";
+        copia.pop();
+    }
+    cout &lt;&lt; endl;
 }
-// invertir("hola")  -&gt;  "aloh"</pre>
+
+bool buscar(stack&lt;int&gt; copia, int x) {
+    while (!copia.empty()) {
+        if (copia.top() == x) return true;
+        copia.pop();
+    }
+    return false;
+}
+
+void revertir(stack&lt;int&gt;&amp; p) {            // por referencia: cambia p
+    stack&lt;int&gt; a, b;
+    while (!p.empty()) { a.push(p.top()); p.pop(); }
+    while (!a.empty()) { b.push(a.top()); a.pop(); }
+    while (!b.empty()) { p.push(b.top()); b.pop(); }
+}
+
+bool esCapicua(stack&lt;int&gt; p) {
+    stack&lt;int&gt; copia = p, rev;
+    while (!copia.empty()) {
+        rev.push(copia.top());
+        copia.pop();
+    }
+    while (!p.empty()) {
+        if (p.top() != rev.top()) return false;
+        p.pop();
+        rev.pop();
+    }
+    return true;
+}</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PILA 6 -->
+        <section class="slide" data-name="Pila (6/6) Ejercicios">
+            <div class="wrap">
+                <h2>Pila (6/6): ejercicios</h2>
+                <p class="muted">En crudo con <code>struct Nodo</code> y con librería <code>#include &lt;stack&gt;</code>.</p>
+                <ol class="ej">
+                    <li><strong>[Crudo]</strong> Escribe <code>int sumar(const Nodo* tope)</code> y <code>int mayor(const Nodo* tope)</code> en una pila hecha con <code>struct Nodo</code>.
+                        <details>
+                            <summary>Ver solución</summary>
+                            <pre>int sumar(const Nodo* tope) {
+    int s = 0;
+    for (const Nodo* p = tope; p != nullptr; p = p-&gt;sig)
+        s += p-&gt;dato;
+    return s;
+}
+
+int mayor(const Nodo* tope) {
+    int m = tope-&gt;dato;
+    for (const Nodo* p = tope-&gt;sig; p != nullptr; p = p-&gt;sig)
+        if (p-&gt;dato &gt; m) m = p-&gt;dato;
+    return m;
+}</pre>
                         </details>
                     </li>
 
-                    <li>Escribe <code>bool balanceado(const string&amp; s)</code> que revise si los paréntesis
-                        <code>()</code>, <code>[]</code> y <code>{}</code> están bien cerrados.
+                    <li><strong>[Crudo]</strong> Elimina la primera aparición de <code>x</code> en una pila cruda (<code>Nodo*&amp; tope</code>) sin perder el orden de los elementos que estaban encima.
+                        <details>
+                            <summary>Ver solución</summary>
+                            <pre>bool eliminarValor(Nodo*&amp; tope, int x) {
+    Nodo* aux = nullptr;
+    int v;
+    bool hallado = false;
+    while (pop(tope, v)) {
+        if (v == x) { hallado = true; break; } // no lo guardamos
+        push(aux, v);                          // guardamos los de arriba
+    }
+    while (pop(aux, v))
+        push(tope, v);                         // regresan en su orden
+    return hallado;
+}</pre>
+                        </details>
+                    </li>
+
+                    <li><strong>[Librería]</strong> Invierte una cadena y verifica si es capicúa/palíndromo usando <code>stack&lt;char&gt;</code>.
+                        <details>
+                            <summary>Ver solución</summary>
+                            <pre>bool palabraCapicua(const string&amp; s) {
+    stack&lt;char&gt; p;
+    for (char c : s) p.push(c);
+    for (char c : s) {
+        if (c != p.top()) return false;
+        p.pop();
+    }
+    return true;
+}
+// palabraCapicua("reconocer") -&gt; true</pre>
+                        </details>
+                    </li>
+
+                    <li><strong>[Librería]</strong> Escribe <code>bool balanceado(const string&amp; s)</code> que revise si los paréntesis <code>()</code>, <code>[]</code> y <code>{}</code> están bien cerrados.
                         <details>
                             <summary>Ver solución</summary>
                             <pre>bool balanceado(const string&amp; s) {
@@ -476,59 +655,31 @@ public:
         if (c == '(' || c == '[' || c == '{') {
             p.push(c);
         } else if (c == ')' || c == ']' || c == '}') {
-            if (p.empty()) return false;       // cierra sin abrir
+            if (p.empty()) return false;
             char a = p.top(); p.pop();
             if ((c == ')' &amp;&amp; a != '(') ||
                 (c == ']' &amp;&amp; a != '[') ||
                 (c == '}' &amp;&amp; a != '{')) return false;
         }
     }
-    return p.empty();                          // no deben sobrar abiertos
-}
-// "{[()]}" -&gt; true     "([)]" -&gt; false     "((" -&gt; false</pre>
-                        </details>
-                    </li>
-
-                    <li>Evalúa una expresión <strong>posfija</strong> de dígitos, por ejemplo
-                        <code>"34+2*"</code> (equivale a <code>(3+4)*2</code>).
-                        <details>
-                            <summary>Ver solución</summary>
-                            <pre>int evaluar(const string&amp; expr) {
-    stack&lt;int&gt; s;
-    for (char c : expr) {
-        if (isdigit(c)) {
-            s.push(c - '0');
-        } else {
-            int b = s.top(); s.pop();      // el segundo operando sale primero
-            int a = s.top(); s.pop();
-            switch (c) {
-                case '+': s.push(a + b); break;
-                case '-': s.push(a - b); break;
-                case '*': s.push(a * b); break;
-                case '/': s.push(a / b); break;
-            }
-        }
-    }
-    return s.top();
-}
-// evaluar("34+2*")  -&gt;  14</pre>
+    return p.empty();
+}</pre>
                         </details>
                     </li>
                 </ol>
             </div>
         </section>
 
+        <!-- ==================== COLA ==================== -->
+
         <!-- COLA 1 -->
-        <section class="slide" data-name="Cola (1/3)">
+        <section class="slide" data-name="Cola (1/6) Concepto">
             <div class="wrap">
-                <h2>Cola (1/3): qué es una cola</h2>
+                <h2>Cola (1/6): qué es una cola</h2>
                 <p class="sub">FIFO: el primero en entrar es el primero en salir</p>
                 <div class="two">
                     <div>
-                        <p>Una <strong>cola</strong> (<em>queue</em>) tiene <strong>dos extremos con roles
-                                distintos</strong>: los datos entran por el <strong>final</strong> y salen por el
-                            <strong>frente</strong>. Es la fila de un banco.
-                        </p>
+                        <p>Una <strong>cola</strong> (<em>queue</em>) tiene <strong>dos extremos con roles distintos</strong>: los datos entran por el <strong>final</strong> y salen por el <strong>frente</strong>. Es la fila de un banco.</p>
                         <table>
                             <tr>
                                 <th>Operación</th>
@@ -556,12 +707,12 @@ public:
                                 <td>O(1)</td>
                             </tr>
                         </table>
-                        <p class="muted">Igual que la pila, no se accede a los del medio.</p>
+                        <p class="muted">Igual que la pila, no se accede directamente a los elementos del medio.</p>
                     </div>
                     <div>
                         <p class="label">Cómo se comporta</p>
                         <pre class="salida">sale &lt;-- [10] [20] [30] &lt;-- entra
-         frente        final
+         frente        fin
 
 push(40):   sale &lt;-- [10] [20] [30] [40] &lt;-- entra
 pop():      sale &lt;-- [20] [30] [40] &lt;-- entra     (salió el 10)
@@ -571,7 +722,7 @@ el orden de salida es el MISMO orden de entrada</pre>
                         <ul>
                             <li>Turnos de atención y colas de impresión.</li>
                             <li>Planificación de procesos del sistema operativo.</li>
-                            <li>Búferes (teclado, red, streaming) que se leen en el orden en que llegaron.</li>
+                            <li>Búferes que se procesan en el orden de llegada.</li>
                             <li>Recorrido en anchura (BFS) de grafos y árboles por niveles.</li>
                         </ul>
                     </div>
@@ -580,170 +731,328 @@ el orden de salida es el MISMO orden de entrada</pre>
         </section>
 
         <!-- COLA 2 -->
-        <section class="slide" data-name="Cola (2/3)">
+        <section class="slide" data-name="Cola (2/6) Crudo: Push/Pop">
             <div class="wrap">
-                <h2>Cola (2/3): implementarla desde cero</h2>
-                <p class="sub">Arreglo circular o lista enlazada con puntero al final</p>
+                <h2>Cola (2/6): en crudo con <code>struct Nodo</code></h2>
+                <p class="sub">Dos punteros: <code>frente</code> (cabeza) y <code>fin</code> (último nodo)</p>
                 <div class="two">
                     <div>
+                        <p>Para que tanto encolar como desencolar sean O(1), mantenemos dos punteros:</p>
                         <ul>
-                            <li><strong>Arreglo ingenuo:</strong> si desencolas moviendo todos los elementos una
-                                posición, cada <code>pop</code> cuesta O(n). Mala idea.</li>
-                            <li><strong>Arreglo circular:</strong> se guarda <code>frente</code> y <code>cant</code>. El
-                                final está en <code>(frente + cant) % cap</code>. Al llegar al límite del arreglo se
-                                «da la vuelta» con el módulo: todo es O(1).</li>
-                            <li><strong>Lista enlazada:</strong> hace falta un puntero <code>fin</code> además de
-                                <code>frente</code>. Encolar enlaza después de <code>fin</code>; desencolar quita la
-                                cabeza. Sin <code>fin</code>, encolar tendría que recorrer toda la lista.
-                            </li>
+                            <li><strong>Cola vacía:</strong> <code>frente = nullptr; fin = nullptr;</code></li>
+                            <li><strong><code>push</code> (encolar):</strong> crea un nodo al final. Si estaba vacía, tanto <code>frente</code> como <code>fin</code> apuntan al nuevo. Si no, se enlaza tras <code>fin</code> (<code>fin-&gt;sig = nuevo</code>) y se mueve <code>fin = nuevo</code>.</li>
+                            <li><strong><code>pop</code> (desencolar):</strong> saca el nodo de <code>frente</code>. <strong>Caso borde importante:</strong> si al avanzar <code>frente</code> queda en <code>nullptr</code>, también hay que poner <code>fin = nullptr</code>.</li>
                         </ul>
-                        <p><strong>Caso borde:</strong> al desencolar el último nodo, hay que poner
-                            <code>fin = nullptr</code> también; si no, <code>fin</code> queda apuntando a un nodo
-                            liberado.
-                        </p>
                         <pre class="salida">frente --&gt; [10|•] --&gt; [20|•] --&gt; [30|null] &lt;-- fin</pre>
                     </div>
                     <div>
-                        <p class="label">Cola circular con arreglo</p>
-                        <pre>class ColaCirc {
-    int* d;
-    int  cap, frente = 0, cant = 0;
-public:
-    ColaCirc(int c = 10) : d(new int[c]), cap(c) {}
-    ~ColaCirc() { delete[] d; }
-    ColaCirc(const ColaCirc&amp;) = delete;
-    ColaCirc&amp; operator=(const ColaCirc&amp;) = delete;
+                        <p class="label">Programa completo en crudo</p>
+                        <pre>#include &lt;iostream&gt;
+using namespace std;
 
-    bool vacia() const { return cant == 0; }
+struct Nodo {
+    int dato;
+    Nodo* sig;
+};
 
-    bool encolar(int x) {
-        if (cant == cap) return false;        // llena
-        d[(frente + cant) % cap] = x;         // posicion del final
-        cant++;
-        return true;
-    }
-    bool desencolar(int&amp; x) {
-        if (cant == 0) return false;
-        x = d[frente];
-        frente = (frente + 1) % cap;          // da la vuelta
-        cant--;
-        return true;
-    }
-};</pre>
-                        <p class="label">Cola con lista enlazada</p>
-                        <pre>class ColaLista {
-    struct Nodo { int dato; Nodo* sig; };
-    Nodo* frente = nullptr;
-    Nodo* fin    = nullptr;
-public:
-    ColaLista() {}
-    ~ColaLista() { int x; while (desencolar(x)) {} }
-    ColaLista(const ColaLista&amp;) = delete;
-    ColaLista&amp; operator=(const ColaLista&amp;) = delete;
+void push(Nodo*&amp; frente, Nodo*&amp; fin, int x) {
+    Nodo* nuevo = new Nodo{x, nullptr};
+    if (frente == nullptr) frente = fin = nuevo;
+    else { fin-&gt;sig = nuevo; fin = nuevo; }
+}
 
-    void encolar(int x) {
-        Nodo* n = new Nodo{x, nullptr};
-        if (fin == nullptr) frente = fin = n;   // estaba vacia
-        else { fin-&gt;sig = n; fin = n; }
-    }
-    bool desencolar(int&amp; x) {
-        if (frente == nullptr) return false;
-        Nodo* t = frente;
-        x = t-&gt;dato;
-        frente = frente-&gt;sig;
-        if (frente == nullptr) fin = nullptr;   // quedo vacia
-        delete t;
-        return true;
-    }
-};</pre>
+bool pop(Nodo*&amp; frente, Nodo*&amp; fin, int&amp; x) {
+    if (frente == nullptr) return false;
+    Nodo* t = frente;
+    x = t-&gt;dato;
+    frente = frente-&gt;sig;
+    if (frente == nullptr) fin = nullptr; // quedó vacía
+    delete t;
+    return true;
+}
+
+void recorrer(const Nodo* frente) {
+    for (const Nodo* p = frente; p != nullptr; p = p-&gt;sig)
+        cout &lt;&lt; p-&gt;dato &lt;&lt; " -&gt; ";
+    cout &lt;&lt; "null\n";
+}
+
+int main() {
+    Nodo *frente = nullptr, *fin = nullptr;
+    push(frente, fin, 10);
+    push(frente, fin, 20);
+    push(frente, fin, 30);
+    recorrer(frente);             // 10 -&gt; 20 -&gt; 30 -&gt; null
+
+    int x;
+    if (pop(frente, fin, x)) cout &lt;&lt; "Salio: " &lt;&lt; x &lt;&lt; endl; // 10
+    recorrer(frente);             // 20 -&gt; 30 -&gt; null
+    return 0;
+}</pre>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- COLA 3 -->
-        <section class="slide" data-name="Cola (3/3)">
+        <section class="slide" data-name="Cola (3/6) Crudo: Útiles">
             <div class="wrap">
-                <h2>Cola (3/3): ejercicios</h2>
-                <p class="muted">Usan <code>#include &lt;iostream&gt;</code>, <code>#include &lt;queue&gt;</code>,
-                    <code>#include &lt;stack&gt;</code> y <code>using namespace std;</code>.
-                </p>
-                <ol class="ej">
-                    <li>Simula una fila: encola los números 1 al 5 y luego desencólalos mostrando cada uno.
-                        <details>
-                            <summary>Ver solución</summary>
-                            <pre>int main() {
+                <h2>Cola (3/6): buscar, revertir y capicúa (en crudo)</h2>
+                <p class="sub">Funciones útiles sobre <code>frente</code> y <code>fin</code></p>
+                <div class="two">
+                    <div>
+                        <ul>
+                            <li><strong><code>buscar</code>:</strong> recorre desde <code>frente</code> hasta <code>nullptr</code> con un puntero auxiliar <code>p</code>.</li>
+                            <li><strong><code>revertir</code>:</strong> invierte las flechas <code>sig</code> de todos los nodos y actualiza <code>frente</code> y <code>fin</code> (el antiguo <code>frente</code> pasa a ser el nuevo <code>fin</code>).</li>
+                            <li><strong><code>esCapicua</code>:</strong> mientras recorremos la cola, apilamos los datos en una pila cruda <code>tope</code>. Como la cola va al derecho y la pila al revés, basta compararlas elemento a elemento.</li>
+                        </ul>
+                        <pre class="salida">Cola (frente a fin): 1 -&gt; 2 -&gt; 3 -&gt; 2 -&gt; 1
+Pila (tope a fondo): 1 -&gt; 2 -&gt; 3 -&gt; 2 -&gt; 1
+Si coinciden todos ==&gt; esCapicua devuelve true</pre>
+                    </div>
+                    <div>
+                        <p class="label">Funciones sobre struct Nodo</p>
+                        <pre>bool buscar(const Nodo* frente, int x) {
+    for (const Nodo* p = frente; p != nullptr; p = p-&gt;sig)
+        if (p-&gt;dato == x) return true;
+    return false;
+}
+
+void revertir(Nodo*&amp; frente, Nodo*&amp; fin) {
+    Nodo* ant = nullptr;
+    Nodo* act = frente;
+    fin = frente;                   // el viejo frente queda de fin
+    while (act != nullptr) {
+        Nodo* sig = act-&gt;sig;
+        act-&gt;sig = ant;
+        ant = act;
+        act = sig;
+    }
+    frente = ant;                   // el último pasa a ser el frente
+}
+
+bool esCapicua(const Nodo* frente) {
+    Nodo* pila = nullptr;
+    for (const Nodo* p = frente; p != nullptr; p = p-&gt;sig)
+        pila = new Nodo{p-&gt;dato, pila}; // apilar cada dato
+
+    bool ok = true;
+    for (const Nodo* p = frente; p != nullptr; p = p-&gt;sig) {
+        if (p-&gt;dato != pila-&gt;dato) ok = false;
+        Nodo* t = pila;
+        pila = pila-&gt;sig;
+        delete t;
+    }
+    return ok;
+}</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- COLA 4 -->
+        <section class="slide" data-name="Cola (4/6) Uso std::queue">
+            <div class="wrap">
+                <h2>Cola (4/6): cómo se usa con librería (<code>&lt;queue&gt;</code>)</h2>
+                <p class="sub">Declaración, operaciones básicas y recorrido</p>
+                <div class="two">
+                    <div>
+                        <p>Con <code>#include &lt;queue&gt;</code> no necesitas administrar los punteros <code>frente</code> ni <code>fin</code>:</p>
+                        <ul>
+                            <li><strong>Declarar:</strong> <code>queue&lt;int&gt; q;</code></li>
+                            <li><strong>Encolar al final:</strong> <code>q.push(10);</code></li>
+                            <li><strong>Consultar extremos:</strong> <code>q.front()</code> devuelve el primero de la fila y <code>q.back()</code> devuelve el último que llegó.</li>
+                            <li><strong>Desencolar del frente:</strong> <code>q.pop();</code> quita el primero (es <code>void</code>: primero lee <code>q.front()</code> y luego haz <code>q.pop()</code>).</li>
+                            <li><strong>Tamaño y vacía:</strong> <code>q.size()</code> y <code>q.empty()</code>.</li>
+                            <li><strong>Pasar a funciones:</strong> <code>queue&lt;int&gt;&amp;</code> si la función modifica la cola original; <code>queue&lt;int&gt;</code> (por valor) si solo quieres vaciar una copia para mostrarla.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <p class="label">Programa completo de uso básico con &lt;queue&gt;</p>
+                        <pre>#include &lt;iostream&gt;
+#include &lt;queue&gt;
+using namespace std;
+
+int main() {
     queue&lt;int&gt; q;
-    for (int i = 1; i &lt;= 5; i++) q.push(i);
+
+    // 1. Encolar elementos al final (push)
+    q.push(10);
+    q.push(20);
+    q.push(30);
+
+    // 2. Consultar frente, final y tamaño
+    cout &lt;&lt; "Frente: "   &lt;&lt; q.front() &lt;&lt; endl;    // 10
+    cout &lt;&lt; "Final: "    &lt;&lt; q.back()  &lt;&lt; endl;    // 30
+    cout &lt;&lt; "Cantidad: " &lt;&lt; q.size()  &lt;&lt; endl;    // 3
+
+    // 3. Desencolar el primero (pop)
+    q.pop();                                      // sale el 10
+    cout &lt;&lt; "Nuevo frente: " &lt;&lt; q.front() &lt;&lt; endl;// 20
+
+    // 4. Vaciar la cola en orden de llegada
+    cout &lt;&lt; "Restantes: ";
     while (!q.empty()) {
-        cout &lt;&lt; q.front() &lt;&lt; " ";    // leer ANTES de hacer pop
+        cout &lt;&lt; q.front() &lt;&lt; " ";                 // 20 30
         q.pop();
     }
-    return 0;                          // 1 2 3 4 5
+    cout &lt;&lt; endl;
+    return 0;
+}</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- COLA 5 -->
+        <section class="slide" data-name="Cola (5/6) Funciones queue">
+            <div class="wrap">
+                <h2>Cola (5/6): recorrer, buscar, revertir y capicúa con <code>&lt;queue&gt;</code></h2>
+                <p class="sub">Implementación con la librería estándar</p>
+                <div class="two">
+                    <div>
+                        <ul>
+                            <li><strong><code>recorrer</code> y <code>buscar</code>:</strong> reciben <code>queue&lt;int&gt; copia</code> por valor y sacan con <code>copia.front()</code> y <code>copia.pop()</code> sin tocar la cola original.</li>
+                            <li><strong>Truco sin copia:</strong> también puedes recorrer o modificar una cola dando exactamente <code>n = q.size()</code> pasos: sacas el <code>front()</code> y lo vuelves a meter al final con <code>push()</code>.</li>
+                            <li><strong><code>revertir</code>:</strong> se apoya en una <code>stack&lt;int&gt;</code>. Al pasar la cola a la pila y devolverla a la cola, queda invertida.</li>
+                            <li><strong><code>esCapicua</code>:</strong> metemos los elementos en una pila auxiliar y comparamos <code>q.front() == s.top()</code>.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <p class="label">Funciones completas con std::queue</p>
+                        <pre>#include &lt;queue&gt;
+#include &lt;stack&gt;
+
+void recorrer(queue&lt;int&gt; copia) {         // por valor: copia
+    while (!copia.empty()) {
+        cout &lt;&lt; copia.front() &lt;&lt; " ";
+        copia.pop();
+    }
+    cout &lt;&lt; endl;
+}
+
+bool buscar(queue&lt;int&gt; copia, int x) {
+    while (!copia.empty()) {
+        if (copia.front() == x) return true;
+        copia.pop();
+    }
+    return false;
+}
+
+void revertir(queue&lt;int&gt;&amp; q) {            // usa stack como auxiliar
+    stack&lt;int&gt; s;
+    while (!q.empty()) { s.push(q.front()); q.pop(); }
+    while (!s.empty()) { q.push(s.top());   s.pop(); }
+}
+
+bool esCapicua(queue&lt;int&gt; q) {
+    stack&lt;int&gt; s;
+    queue&lt;int&gt; copia = q;
+    while (!copia.empty()) {
+        s.push(copia.front());
+        copia.pop();
+    }
+    while (!q.empty()) {
+        if (q.front() != s.top()) return false;
+        q.pop();
+        s.pop();
+    }
+    return true;
+}</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- COLA 6 -->
+        <section class="slide" data-name="Cola (6/6) Ejercicios">
+            <div class="wrap">
+                <h2>Cola (6/6): ejercicios</h2>
+                <p class="muted">En crudo con <code>struct Nodo</code> y con librería <code>#include &lt;queue&gt;</code>.</p>
+                <ol class="ej">
+                    <li><strong>[Crudo]</strong> Escribe <code>int contar(const Nodo* frente)</code> y una función que elimine todos los números negativos de una cola cruda conservando los positivos en su orden.
+                        <details>
+                            <summary>Ver solución</summary>
+                            <pre>int contar(const Nodo* frente) {
+    int n = 0;
+    for (const Nodo* p = frente; p != nullptr; p = p-&gt;sig) n++;
+    return n;
+}
+
+void quitarNegativos(Nodo*&amp; frente, Nodo*&amp; fin) {
+    Nodo *nf = nullptr, *nfin = nullptr;
+    int x;
+    while (pop(frente, fin, x))
+        if (x &gt;= 0) push(nf, nfin, x);
+    frente = nf;
+    fin = nfin;
 }</pre>
                         </details>
                     </li>
 
-                    <li>Invierte una <code>queue&lt;int&gt;</code> usando una pila auxiliar.
+                    <li><strong>[Librería]</strong> Reemplaza todas las apariciones de <code>viejo</code> por <code>nuevo</code> dentro de una <code>queue&lt;int&gt;&amp; q</code> sin crear otra estructura, dando una vuelta con <code>q.size()</code>.
                         <details>
                             <summary>Ver solución</summary>
-                            <pre>void invertir(queue&lt;int&gt;&amp; q) {
-    stack&lt;int&gt; s;
-    while (!q.empty()) {          // la cola pasa a la pila (se invierte el orden)
-        s.push(q.front());
+                            <pre>void reemplazar(queue&lt;int&gt;&amp; q, int viejo, int nuevo) {
+    int n = (int)q.size();
+    for (int i = 0; i &lt; n; i++) {
+        int x = q.front();
         q.pop();
+        if (x == viejo) x = nuevo;
+        q.push(x);                  // tras n giros recupera su orden original
     }
-    while (!s.empty()) {          // la pila vuelve a la cola
-        q.push(s.top());
-        s.pop();
-    }
-}
-// 1 2 3 4  -&gt;  4 3 2 1</pre>
+}</pre>
                         </details>
                     </li>
 
-                    <li>Construye una <strong>cola usando dos pilas</strong>.
+                    <li><strong>[Librería]</strong> Dado un número entero <code>n</code> (ej. <code>12321</code>), usa una <code>queue&lt;int&gt;</code> y una <code>stack&lt;int&gt;</code> para determinar si es capicúa.
                         <details>
                             <summary>Ver solución</summary>
-                            <pre>class ColaConPilas {
-    stack&lt;int&gt; entrada, salida;
-    void pasar() {                       // solo si salida esta vacia
-        if (salida.empty())
-            while (!entrada.empty()) {
-                salida.push(entrada.top());
-                entrada.pop();
-            }
+                            <pre>bool numeroCapicua(int n) {
+    queue&lt;int&gt; q;
+    stack&lt;int&gt; s;
+    while (n &gt; 0) {
+        q.push(n % 10);
+        s.push(n % 10);
+        n /= 10;
     }
-public:
-    void encolar(int x) { entrada.push(x); }
-    bool desencolar(int&amp; x) {
-        pasar();
-        if (salida.empty()) return false;
-        x = salida.top();
-        salida.pop();
-        return true;
+    while (!q.empty()) {
+        if (q.front() != s.top()) return false;
+        q.pop();
+        s.pop();
     }
-};
-// Pasar de una pila a otra invierte el orden DOS veces: queda FIFO.
-// Cada elemento se mueve a lo sumo una vez, asi que el costo
-// amortizado de cada operacion es O(1).</pre>
+    return true;
+}</pre>
+                        </details>
+                    </li>
+
+                    <li><strong>[Librería]</strong> Intercala los elementos de dos colas <code>a</code> y <code>b</code> en una nueva cola.
+                        <details>
+                            <summary>Ver solución</summary>
+                            <pre>queue&lt;int&gt; intercalar(queue&lt;int&gt; a, queue&lt;int&gt; b) {
+    queue&lt;int&gt; r;
+    while (!a.empty() || !b.empty()) {
+        if (!a.empty()) { r.push(a.front()); a.pop(); }
+        if (!b.empty()) { r.push(b.front()); b.pop(); }
+    }
+    return r;
+}</pre>
                         </details>
                     </li>
                 </ol>
             </div>
         </section>
 
+        <!-- ==================== DEQUE ==================== -->
+
         <!-- DEQUE 1 -->
-        <section class="slide" data-name="Deque (1/3)">
+        <section class="slide" data-name="Deque (1/6) Concepto">
             <div class="wrap">
-                <h2>Deque (1/3): qué es un deque</h2>
+                <h2>Deque (1/6): qué es un deque</h2>
                 <p class="sub">Double-ended queue: se entra y se sale por los dos extremos</p>
                 <div class="two">
                     <div>
-                        <p>Un <strong>deque</strong> (se lee «dec») permite insertar y quitar tanto por el
-                            <strong>frente</strong> como por el <strong>final</strong>. Es una cola y una pila al mismo
-                            tiempo.
-                        </p>
+                        <p>Un <strong>deque</strong> (se lee «dec») permite insertar y quitar tanto por el <strong>frente</strong> como por el <strong>final</strong>. Es una cola y una pila al mismo tiempo.</p>
                         <table>
                             <tr>
                                 <th>Operación</th>
@@ -770,11 +1079,6 @@ public:
                                 <td>Acceso por posición (<code>std::deque</code>)</td>
                                 <td>O(1)</td>
                             </tr>
-                            <tr>
-                                <td><code>insert</code> / <code>erase</code> en el medio</td>
-                                <td>Mueve los elementos de un lado</td>
-                                <td>O(n)</td>
-                            </tr>
                         </table>
                     </div>
                     <div>
@@ -787,10 +1091,10 @@ pop_front()    --&gt;  [5] [10] [20] [30]  &lt;--  pop_back()
           frente         final   (ambos extremos son de entrada y salida)</pre>
                         <p class="label">Dónde aparece</p>
                         <ul>
-                            <li>Palíndromos: comparar el primero con el último y avanzar hacia el centro.</li>
-                            <li>Máximo/mínimo en una <strong>ventana deslizante</strong>.</li>
+                            <li><strong>Capicúas y palíndromos:</strong> comparar el primero con el último y avanzar hacia el centro sin usar memoria extra.</li>
+                            <li>Rotar elementos hacia la izquierda o hacia la derecha.</li>
                             <li>Historial acotado: agregar al final y descartar lo más viejo por el frente.</li>
-                            <li>Reparto de trabajo entre hilos (se toma de un extremo o del otro).</li>
+                            <li>Filas con prioridad VIP (entran por el frente) y turnos normales (entran por el final).</li>
                         </ul>
                     </div>
                 </div>
@@ -798,94 +1102,246 @@ pop_front()    --&gt;  [5] [10] [20] [30]  &lt;--  pop_back()
         </section>
 
         <!-- DEQUE 2 -->
-        <section class="slide" data-name="Deque (2/3)">
+        <section class="slide" data-name="Deque (2/6) Crudo: Push/Pop">
             <div class="wrap">
-                <h2>Deque (2/3): implementarlo y usarlo</h2>
-                <p class="sub">Lista doblemente enlazada desde cero y <code>std::deque</code></p>
+                <h2>Deque (2/6): en crudo con <code>struct NodoD</code></h2>
+                <p class="sub">Lista doblemente enlazada con punteros <code>ini</code> y <code>fin</code></p>
                 <div class="two">
                     <div>
                         <ul>
-                            <li><strong>Con lista simple no alcanza:</strong> <code>pop_back</code> necesita llegar al
-                                penúltimo nodo y eso es O(n). Por eso cada nodo guarda también
-                                <code>ant</code> (el anterior).
-                            </li>
-                            <li>La clase mantiene dos punteros: <code>ini</code> y <code>fin</code>. Al quedar vacía,
-                                ambos deben volver a <code>nullptr</code>.</li>
-                            <li><strong><code>std::deque</code></strong> no es una lista enlazada: guarda los datos en
-                                <strong>bloques de memoria</strong> y un índice de bloques. Por eso tiene acceso
-                                <code>d[i]</code> en O(1) y a la vez inserta en los dos extremos en O(1).
-                            </li>
-                            <li>A diferencia de <code>std::vector</code>, no garantiza memoria contigua.</li>
+                            <li><strong>¿Por qué doble enlace?</strong> En una lista simple, quitar el último (<code>popBack</code>) obliga a recorrer hasta el penúltimo en O(n). Con <code>ant</code> (anterior) y <code>sig</code> (siguiente), ambos extremos operan en O(1).</li>
+                            <li><strong>Deque vacío:</strong> <code>ini = nullptr; fin = nullptr;</code></li>
+                            <li>Al insertar el primer nodo o al borrar el último, hay que actualizar <strong>tanto <code>ini</code> como <code>fin</code></strong>.</li>
                         </ul>
-                        <p class="muted">Insertar en el medio de un <code>std::deque</code> invalida los iteradores.
-                            Insertar en los extremos invalida los iteradores, pero no las referencias a los
-                            elementos.</p>
+                        <pre class="salida">null &lt;-- [10] &lt;==&gt; [20] &lt;==&gt; [30] --&gt; null
+          ^                   ^
+         ini                 fin</pre>
                     </div>
                     <div>
-                        <p class="label">Deque con lista doblemente enlazada</p>
-                        <pre>class Deque {
-    struct Nodo { int dato; Nodo* ant; Nodo* sig; };
-    Nodo* ini = nullptr;
-    Nodo* fin = nullptr;
-public:
-    Deque() {}
-    ~Deque() { while (ini) popFront(); }
-    Deque(const Deque&amp;) = delete;
-    Deque&amp; operator=(const Deque&amp;) = delete;
+                        <p class="label">struct NodoD y operaciones por ambos extremos</p>
+                        <pre>#include &lt;iostream&gt;
+using namespace std;
 
-    bool vacio() const { return ini == nullptr; }
+struct NodoD {
+    int dato;
+    NodoD* ant;
+    NodoD* sig;
+};
 
-    void pushFront(int x) {
-        Nodo* n = new Nodo{x, nullptr, ini};
-        if (ini) ini-&gt;ant = n; else fin = n;
-        ini = n;
-    }
-    void pushBack(int x) {
-        Nodo* n = new Nodo{x, fin, nullptr};
-        if (fin) fin-&gt;sig = n; else ini = n;
-        fin = n;
-    }
-    bool popFront() {
-        if (!ini) return false;
-        Nodo* t = ini;
-        ini = ini-&gt;sig;
-        if (ini) ini-&gt;ant = nullptr; else fin = nullptr;
-        delete t;
-        return true;
-    }
-    bool popBack() {
-        if (!fin) return false;
-        Nodo* t = fin;
-        fin = fin-&gt;ant;                  // posible gracias a 'ant'
-        if (fin) fin-&gt;sig = nullptr; else ini = nullptr;
-        delete t;
-        return true;
-    }
-};</pre>
-                        <p class="label">std::deque</p>
-                        <pre>#include &lt;deque&gt;
-deque&lt;int&gt; d = {20, 30};
-d.push_front(10);              // 10 20 30
-d.push_back(40);               // 10 20 30 40
-cout &lt;&lt; d[2];                  // 30 (acceso directo)
-d.pop_front();                 // 20 30 40
-d.pop_back();                  // 20 30</pre>
+void pushFront(NodoD*&amp; ini, NodoD*&amp; fin, int x) {
+    NodoD* n = new NodoD{x, nullptr, ini};
+    if (ini != nullptr) ini-&gt;ant = n;
+    else                fin = n;
+    ini = n;
+}
+
+void pushBack(NodoD*&amp; ini, NodoD*&amp; fin, int x) {
+    NodoD* n = new NodoD{x, fin, nullptr};
+    if (fin != nullptr) fin-&gt;sig = n;
+    else                ini = n;
+    fin = n;
+}
+
+bool popFront(NodoD*&amp; ini, NodoD*&amp; fin, int&amp; x) {
+    if (ini == nullptr) return false;
+    NodoD* t = ini;
+    x = t-&gt;dato;
+    ini = ini-&gt;sig;
+    if (ini != nullptr) ini-&gt;ant = nullptr;
+    else                fin = nullptr;
+    delete t;
+    return true;
+}
+
+bool popBack(NodoD*&amp; ini, NodoD*&amp; fin, int&amp; x) {
+    if (fin == nullptr) return false;
+    NodoD* t = fin;
+    x = t-&gt;dato;
+    fin = fin-&gt;ant;
+    if (fin != nullptr) fin-&gt;sig = nullptr;
+    else                ini = nullptr;
+    delete t;
+    return true;
+}</pre>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- DEQUE 3 -->
-        <section class="slide" data-name="Deque (3/3)">
+        <section class="slide" data-name="Deque (3/6) Crudo: Útiles">
             <div class="wrap">
-                <h2>Deque (3/3): ejercicios</h2>
-                <p class="muted">Usan <code>#include &lt;iostream&gt;</code>, <code>#include &lt;deque&gt;</code>,
-                    <code>#include &lt;vector&gt;</code>, <code>#include &lt;cctype&gt;</code> y
-                    <code>using namespace std;</code>.
-                </p>
+                <h2>Deque (3/6): recorrer, buscar, revertir y capicúa (en crudo)</h2>
+                <p class="sub">Funciones útiles sobre <code>struct NodoD</code></p>
+                <div class="two">
+                    <div>
+                        <ul>
+                            <li><strong><code>recorrer</code>:</strong> avanza desde <code>ini</code> con <code>p = p-&gt;sig</code> (y si quisieras recorrer al revés, empiezas en <code>fin</code> con <code>p = p-&gt;ant</code>).</li>
+                            <li><strong><code>buscar</code>:</strong> busca el valor desde <code>ini</code> hasta <code>nullptr</code>.</li>
+                            <li><strong><code>revertir</code>:</strong> acerca dos punteros (<code>ini</code> avanza y <code>fin</code> retrocede) intercambiando sus datos hasta que se encuentran en el centro.</li>
+                            <li><strong><code>esCapicua</code>:</strong> compara <code>ini-&gt;dato == fin-&gt;dato</code> avanzando <code>ini = ini-&gt;sig</code> y retrocediendo <code>fin = fin-&gt;ant</code> al mismo tiempo.</li>
+                        </ul>
+                        <pre class="salida">ini --&gt; [10] &lt;=&gt; [20] &lt;=&gt; [30] &lt;=&gt; [20] &lt;=&gt; [10] &lt;-- fin
+         10 == 10  y  20 == 20  ==&gt;  esCapicua = true</pre>
+                    </div>
+                    <div>
+                        <p class="label">Funciones sobre struct NodoD</p>
+                        <pre>void recorrer(const NodoD* ini) {
+    for (const NodoD* p = ini; p != nullptr; p = p-&gt;sig)
+        cout &lt;&lt; p-&gt;dato &lt;&lt; " &lt;-&gt; ";
+    cout &lt;&lt; "null\n";
+}
+
+bool buscar(const NodoD* ini, int x) {
+    for (const NodoD* p = ini; p != nullptr; p = p-&gt;sig)
+        if (p-&gt;dato == x) return true;
+    return false;
+}
+
+void revertir(NodoD* ini, NodoD* fin) {
+    while (ini != nullptr &amp;&amp; ini != fin &amp;&amp; ini-&gt;ant != fin) {
+        int tmp = ini-&gt;dato;
+        ini-&gt;dato = fin-&gt;dato;
+        fin-&gt;dato = tmp;
+        ini = ini-&gt;sig;
+        fin = fin-&gt;ant;
+    }
+}
+
+bool esCapicua(const NodoD* ini, const NodoD* fin) {
+    while (ini != nullptr &amp;&amp; ini != fin &amp;&amp; ini-&gt;ant != fin) {
+        if (ini-&gt;dato != fin-&gt;dato) return false;
+        ini = ini-&gt;sig;
+        fin = fin-&gt;ant;
+    }
+    return true;
+}</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DEQUE 4 -->
+        <section class="slide" data-name="Deque (4/6) Uso std::deque">
+            <div class="wrap">
+                <h2>Deque (4/6): cómo se usa con librería (<code>&lt;deque&gt;</code>)</h2>
+                <p class="sub">Declaración, operaciones en ambos extremos y acceso por índice</p>
+                <div class="two">
+                    <div>
+                        <p>A diferencia de <code>stack</code> y <code>queue</code>, <code>std::deque</code> (de <code>#include &lt;deque&gt;</code>) es un <strong>contenedor completo</strong>:</p>
+                        <ul>
+                            <li><strong>Insertar:</strong> <code>d.push_front(x)</code> (al inicio) y <code>d.push_back(x)</code> (al final).</li>
+                            <li><strong>Eliminar:</strong> <code>d.pop_front()</code> (quita el primero) y <code>d.pop_back()</code> (quita el último). Ambos son <code>void</code>.</li>
+                            <li><strong>Consultar extremos:</strong> <code>d.front()</code> y <code>d.back()</code>.</li>
+                            <li><strong>Recorrer y acceder por índice:</strong> sí tiene <code>d[i]</code> y se puede recorrer directamente con <code>for (int x : d)</code> sin vaciarlo.</li>
+                            <li><strong>Pasar a funciones:</strong> <code>const deque&lt;int&gt;&amp;</code> para solo leer (sin copiar), o <code>deque&lt;int&gt;&amp;</code> si la función lo modifica.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <p class="label">Programa completo de uso básico con &lt;deque&gt;</p>
+                        <pre>#include &lt;iostream&gt;
+#include &lt;deque&gt;
+using namespace std;
+
+int main() {
+    deque&lt;int&gt; d = {20, 30};
+
+    // 1. Insertar por ambos extremos
+    d.push_front(10);                             // 10 20 30
+    d.push_back(40);                              // 10 20 30 40
+
+    // 2. Consultar extremos y por índice
+    cout &lt;&lt; "Frente: " &lt;&lt; d.front() &lt;&lt; endl;      // 10
+    cout &lt;&lt; "Final: "  &lt;&lt; d.back()  &lt;&lt; endl;      // 40
+    cout &lt;&lt; "En pos 2: " &lt;&lt; d[2]    &lt;&lt; endl;      // 30
+
+    // 3. Quitar de ambos extremos
+    d.pop_front();                                // quita el 10
+    d.pop_back();                                 // quita el 40
+
+    // 4. Recorrer con for normal (no se vacía)
+    for (int x : d) cout &lt;&lt; x &lt;&lt; " ";             // 20 30
+    cout &lt;&lt; endl;
+    return 0;
+}</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DEQUE 5 -->
+        <section class="slide" data-name="Deque (5/6) Funciones deque">
+            <div class="wrap">
+                <h2>Deque (5/6): recorrer, buscar, revertir y capicúa con <code>&lt;deque&gt;</code></h2>
+                <p class="sub">Implementación con la librería estándar</p>
+                <div class="two">
+                    <div>
+                        <ul>
+                            <li><strong><code>recorrer</code> y <code>buscar</code>:</strong> como <code>std::deque</code> sí permite <code>for</code>, reciben <code>const deque&lt;int&gt;&amp; d</code> sin necesidad de copiar ni vaciar la estructura.</li>
+                            <li><strong><code>revertir</code>:</strong> podemos intercambiar los extremos con índices o pasar los elementos a un deque auxiliar usando <code>push_front</code>.</li>
+                            <li><strong><code>esCapicua</code>:</strong> recibe una copia <code>deque&lt;int&gt; d</code> y mientras <code>d.size() &gt; 1</code> compara <code>d.front() == d.back()</code>, quitando ambos extremos con <code>pop_front()</code> y <code>pop_back()</code>.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <p class="label">Funciones completas con std::deque</p>
+                        <pre>#include &lt;deque&gt;
+
+void recorrer(const deque&lt;int&gt;&amp; d) {
+    for (int x : d) cout &lt;&lt; x &lt;&lt; " ";
+    cout &lt;&lt; endl;
+}
+
+bool buscar(const deque&lt;int&gt;&amp; d, int x) {
+    for (int v : d)
+        if (v == x) return true;
+    return false;
+}
+
+void revertir(deque&lt;int&gt;&amp; d) {
+    deque&lt;int&gt; aux;
+    while (!d.empty()) {
+        aux.push_front(d.front());
+        d.pop_front();
+    }
+    d = aux;
+}
+
+bool esCapicua(deque&lt;int&gt; d) {
+    while (d.size() &gt; 1) {
+        if (d.front() != d.back()) return false;
+        d.pop_front();
+        d.pop_back();
+    }
+    return true;
+}</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DEQUE 6 -->
+        <section class="slide" data-name="Deque (6/6) Ejercicios">
+            <div class="wrap">
+                <h2>Deque (6/6): ejercicios</h2>
+                <p class="muted">En crudo con <code>struct NodoD</code> y con librería <code>#include &lt;deque&gt;</code>.</p>
                 <ol class="ej">
-                    <li>Escribe <code>bool esPalindromo(const string&amp; s)</code> con un deque, ignorando espacios y
-                        mayúsculas.
+                    <li><strong>[Crudo]</strong> Inserta una lista de números en un deque crudo (<code>NodoD</code>) metiendo los pares por el frente (<code>pushFront</code>) y los impares por el final (<code>pushBack</code>).
+                        <details>
+                            <summary>Ver solución</summary>
+                            <pre>int main() {
+    NodoD *ini = nullptr, *fin = nullptr;
+    int datos[] = {1, 2, 3, 4, 5, 6};
+    for (int x : datos) {
+        if (x % 2 == 0) pushFront(ini, fin, x);
+        else            pushBack(ini, fin, x);
+    }
+    recorrer(ini); // 6 &lt;-&gt; 4 &lt;-&gt; 2 &lt;-&gt; 1 &lt;-&gt; 3 &lt;-&gt; 5 &lt;-&gt; null
+    return 0;
+}</pre>
+                        </details>
+                    </li>
+
+                    <li><strong>[Librería]</strong> Escribe <code>bool esPalindromo(const string&amp; s)</code> con un <code>deque&lt;char&gt;</code>, ignorando espacios y mayúsculas.
                         <details>
                             <summary>Ver solución</summary>
                             <pre>bool esPalindromo(const string&amp; s) {
@@ -903,181 +1359,50 @@ d.pop_back();                  // 20 30</pre>
                         </details>
                     </li>
 
-                    <li>Rota un <code>deque&lt;int&gt;</code> <code>k</code> posiciones a la izquierda.
+                    <li><strong>[Librería]</strong> Rota un <code>deque&lt;int&gt;</code> <code>k</code> posiciones a la izquierda y <code>k</code> posiciones a la derecha.
                         <details>
                             <summary>Ver solución</summary>
                             <pre>void rotarIzq(deque&lt;int&gt;&amp; d, int k) {
     if (d.empty()) return;
     k %= (int)d.size();
     while (k--) {
-        d.push_back(d.front());    // el primero pasa al final
+        d.push_back(d.front());
         d.pop_front();
     }
 }
-// {1,2,3,4,5} con k=2  -&gt;  {3,4,5,1,2}</pre>
+
+void rotarDer(deque&lt;int&gt;&amp; d, int k) {
+    if (d.empty()) return;
+    k %= (int)d.size();
+    while (k--) {
+        d.push_front(d.back());
+        d.pop_back();
+    }
+}</pre>
                         </details>
                     </li>
 
-                    <li>Dado un arreglo y un tamaño de ventana <code>k</code>, devuelve el <strong>máximo de cada
-                            ventana</strong> en O(n). Pista: guarda índices en el deque, con valores decrecientes.
+                    <li><strong>[Librería]</strong> Simula un historial con capacidad máxima <code>cap</code>: cada acción nueva entra al final, y si ya estaba lleno se descarta la más antigua por el frente.
                         <details>
                             <summary>Ver solución</summary>
-                            <pre>vector&lt;int&gt; maxVentana(const vector&lt;int&gt;&amp; a, int k) {
-    deque&lt;int&gt; d;                  // indices; a[d.front()] es el maximo
-    vector&lt;int&gt; r;
-    for (int i = 0; i &lt; (int)a.size(); i++) {
-        if (!d.empty() &amp;&amp; d.front() &lt;= i - k)
-            d.pop_front();                       // salio de la ventana
-        while (!d.empty() &amp;&amp; a[d.back()] &lt;= a[i])
-            d.pop_back();                        // ya no pueden ser maximo
-        d.push_back(i);
-        if (i &gt;= k - 1) r.push_back(a[d.front()]);
-    }
-    return r;
-}
-// {1,3,-1,-3,5,3,6,7}, k=3  -&gt;  {3,3,5,5,6,7}
-// Cada indice entra y sale una sola vez: O(n).</pre>
+                            <pre>void registrar(deque&lt;string&gt;&amp; hist, const string&amp; accion, int cap) {
+    if ((int)hist.size() == cap)
+        hist.pop_front();
+    hist.push_back(accion);
+}</pre>
                         </details>
                     </li>
                 </ol>
             </div>
         </section>
 
-        <!-- STD 1 -->
-        <section class="slide" data-name="Biblioteca (1/2)">
+        <!-- ==================== RELACION Y RESUMEN ==================== -->
+
+        <!-- RELACION -->
+        <section class="slide" data-name="Relación">
             <div class="wrap">
-                <h2>Biblioteca moderna (1/2): std::stack y std::queue</h2>
-                <p class="sub">Adaptadores: usan otro contenedor por dentro y muestran solo lo permitido</p>
-                <div class="two">
-                    <div>
-                        <p><code>std::stack</code> y <code>std::queue</code> son <strong>adaptadores de
-                                contenedor</strong>: envuelven un contenedor (por defecto un
-                            <code>std::deque</code>) y exponen únicamente las operaciones de la pila o de la cola.
-                        </p>
-                        <ul>
-                            <li>No tienen iteradores ni <code>[]</code>: no se puede recorrer sin vaciarlas. Es a
-                                propósito.</li>
-                            <li><code>pop()</code> <strong>no devuelve</strong> el elemento (es <code>void</code>). Se
-                                lee primero con <code>top()</code> o <code>front()</code> y luego se hace
-                                <code>pop()</code>.
-                            </li>
-                            <li>Llamar a <code>top()</code>, <code>front()</code> o <code>pop()</code> con la
-                                estructura vacía es <strong>comportamiento indefinido</strong>: revisa
-                                <code>empty()</code> antes.
-                            </li>
-                            <li>Se pueden elegir otro contenedor base: <code>stack&lt;int, vector&lt;int&gt;&gt;</code>
-                                o <code>queue&lt;int, list&lt;int&gt;&gt;</code>.</li>
-                            <li><code>priority_queue</code> también es un adaptador, pero <strong>no es FIFO</strong>:
-                                siempre sale el mayor (usa un heap).</li>
-                        </ul>
-                    </div>
-                    <div>
-                        <p class="label">std::stack</p>
-                        <pre>#include &lt;stack&gt;
-stack&lt;int&gt; s;
-s.push(10);
-s.push(20);
-s.push(30);
-cout &lt;&lt; s.top() &lt;&lt; endl;      // 30
-s.pop();                       // quita el 30
-cout &lt;&lt; s.size() &lt;&lt; endl;     // 2
-
-while (!s.empty()) {           // vaciarla mostrando
-    cout &lt;&lt; s.top() &lt;&lt; " ";
-    s.pop();
-}                              // 20 10</pre>
-                        <p class="label">std::queue</p>
-                        <pre>#include &lt;queue&gt;
-queue&lt;int&gt; q;
-q.push(10);
-q.push(20);
-q.push(30);
-cout &lt;&lt; q.front() &lt;&lt; endl;     // 10
-cout &lt;&lt; q.back()  &lt;&lt; endl;     // 30
-q.pop();                       // quita el 10
-
-while (!q.empty()) {
-    cout &lt;&lt; q.front() &lt;&lt; " ";
-    q.pop();
-}                              // 20 30</pre>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- STD 2 -->
-        <section class="slide" data-name="Biblioteca (2/2)">
-            <div class="wrap">
-                <h2>Biblioteca moderna (2/2): pasarlas a funciones</h2>
-                <p class="sub">Son objetos: se pasan por referencia, no por valor</p>
-                <div class="two">
-                    <div>
-                        <p>Como en <code>std::list</code>, aquí no hay punteros que cambiar, así que no hace falta
-                            referencia a puntero.</p>
-                        <ul>
-                            <li><code>stack&lt;int&gt;&amp;</code> si la función la modifica (apila o desapila).</li>
-                            <li><code>const stack&lt;int&gt;&amp;</code> no sirve para recorrerla: sin iteradores, la
-                                única forma de ver los elementos es sacándolos. Para mostrarla sin destruir la original,
-                                se pasa <strong>por valor</strong> (una copia) a propósito.</li>
-                            <li>Por valor copia toda la estructura: úsalo solo cuando esa copia sea lo que quieres.</li>
-                        </ul>
-                        <table>
-                            <tr>
-                                <th>La función...</th>
-                                <th>Parámetro</th>
-                            </tr>
-                            <tr>
-                                <td>Agrega o quita elementos</td>
-                                <td><code>stack&lt;T&gt;&amp;</code>, <code>queue&lt;T&gt;&amp;</code></td>
-                            </tr>
-                            <tr>
-                                <td>Solo consulta el tope / frente / tamaño</td>
-                                <td><code>const stack&lt;T&gt;&amp;</code></td>
-                            </tr>
-                            <tr>
-                                <td>Necesita vaciar una copia para mostrar</td>
-                                <td><code>stack&lt;T&gt;</code> (por valor)</td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div>
-                        <p class="label">Firmas y uso</p>
-                        <pre>void apilar(stack&lt;int&gt;&amp; s, int x) {
-    s.push(x);                       // cambia la pila de main
-}
-
-bool vacia(const stack&lt;int&gt;&amp; s) {
-    return s.empty();                // solo consulta
-}
-
-// copia a proposito: la original queda intacta
-void mostrar(stack&lt;int&gt; copia) {
-    while (!copia.empty()) {
-        cout &lt;&lt; copia.top() &lt;&lt; " ";
-        copia.pop();
-    }
-    cout &lt;&lt; endl;
-}
-
-int main() {
-    stack&lt;int&gt; s;
-    apilar(s, 1);
-    apilar(s, 2);
-    apilar(s, 3);
-    mostrar(s);                      // 3 2 1
-    cout &lt;&lt; s.size();                // 3: sigue completa
-    return 0;
-}</pre>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- RELACION 1 -->
-        <section class="slide" data-name="Relación (1/2)">
-            <div class="wrap">
-                <h2>Relación entre pila, cola y deque (1/2)</h2>
-                <p class="sub">Todas son una secuencia con acceso restringido a los extremos</p>
+                <h2>Relación entre pila, cola y deque</h2>
+                <p class="sub">Todas son secuencias con acceso controlado en los extremos</p>
                 <div class="two" style="grid-template-columns:1.2fr 1fr">
                     <div>
                         <table>
@@ -1094,6 +1419,12 @@ int main() {
                                 <td>Ambas, a elección</td>
                             </tr>
                             <tr>
+                                <td>En crudo</td>
+                                <td><code>Nodo* tope</code></td>
+                                <td><code>Nodo *frente, *fin</code></td>
+                                <td><code>NodoD *ini, *fin</code></td>
+                            </tr>
+                            <tr>
                                 <td>Entra por</td>
                                 <td>Tope</td>
                                 <td>Final</td>
@@ -1106,22 +1437,16 @@ int main() {
                                 <td>Frente y final</td>
                             </tr>
                             <tr>
-                                <td>Acceso al medio</td>
-                                <td>No</td>
-                                <td>No</td>
-                                <td>Sí en <code>std::deque</code> (<code>[i]</code>)</td>
+                                <td>Librería STL</td>
+                                <td><code>std::stack</code></td>
+                                <td><code>std::queue</code></td>
+                                <td><code>std::deque</code></td>
                             </tr>
                             <tr>
-                                <td>Iteradores en STL</td>
-                                <td>No</td>
-                                <td>No</td>
-                                <td>Sí</td>
-                            </tr>
-                            <tr>
-                                <td>Contenedor STL</td>
-                                <td><code>stack</code> (adaptador)</td>
-                                <td><code>queue</code> (adaptador)</td>
-                                <td><code>deque</code> (contenedor)</td>
+                                <td>Recorrido en STL</td>
+                                <td>Vaciando copia</td>
+                                <td>Vaciando copia</td>
+                                <td>Directo con <code>for</code> / <code>[i]</code></td>
                             </tr>
                             <tr>
                                 <td>Orden de salida</td>
@@ -1134,8 +1459,8 @@ int main() {
                     <div>
                         <p class="label">Mismo deque, tres comportamientos</p>
                         <pre class="salida">DEQUE: [a] [b] [c] [d]
-       ^               ^
-    frente           final
+        ^           ^
+     frente       final
 
 PILA   usa solo UN extremo:
        push_back  /  pop_back
@@ -1145,109 +1470,7 @@ COLA   entra por un lado, sale por el otro:
 
 DEQUE  usa los cuatro:
        push_front push_back pop_front pop_back</pre>
-                        <p><strong>Idea central:</strong> pila y cola son un deque con <em>menos</em> operaciones
-                            permitidas. Restringir la interfaz no es una limitación: garantiza el orden de salida y
-                            evita usos indebidos.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- RELACION 2 -->
-        <section class="slide" data-name="Relación (2/2)">
-            <div class="wrap">
-                <h2>Relación entre pila, cola y deque (2/2): implementación y elección</h2>
-                <p class="sub">Qué hay por debajo y cuándo usar cada una</p>
-                <div class="two">
-                    <div>
-                        <p class="label">Una pila y una cola construidas sobre un deque</p>
-                        <pre>#include &lt;deque&gt;
-
-class PilaD {
-    deque&lt;int&gt; d;
-public:
-    void push(int x) { d.push_back(x); }
-    void pop()       { d.pop_back(); }
-    int  top() const { return d.back(); }
-    bool empty() const { return d.empty(); }
-};
-
-class ColaD {
-    deque&lt;int&gt; d;
-public:
-    void push(int x) { d.push_back(x); }
-    void pop()       { d.pop_front(); }
-    int  front() const { return d.front(); }
-    bool empty() const { return d.empty(); }
-};
-
-// Es lo mismo que hace la STL:
-// stack&lt;int&gt;  == stack&lt;int, deque&lt;int&gt;&gt;
-// queue&lt;int&gt;  == queue&lt;int, deque&lt;int&gt;&gt;</pre>
-                        <p class="label">Costo según la estructura base</p>
-                        <table>
-                            <tr>
-                                <th>Base</th>
-                                <th>Pila</th>
-                                <th>Cola</th>
-                            </tr>
-                            <tr>
-                                <td>Arreglo / <code>vector</code></td>
-                                <td>O(1) amortizado</td>
-                                <td>Mal: <code>pop_front</code> es O(n)</td>
-                            </tr>
-                            <tr>
-                                <td>Lista simple (solo cabeza)</td>
-                                <td>O(1) en la cabeza</td>
-                                <td>Mal: falta <code>fin</code></td>
-                            </tr>
-                            <tr>
-                                <td>Lista con <code>fin</code></td>
-                                <td>O(1)</td>
-                                <td>O(1)</td>
-                            </tr>
-                            <tr>
-                                <td>Deque</td>
-                                <td>O(1)</td>
-                                <td>O(1)</td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div>
-                        <p class="label">¿Cuál uso?</p>
-                        <table>
-                            <tr>
-                                <th>Si necesitas...</th>
-                                <th>Usa</th>
-                            </tr>
-                            <tr>
-                                <td>Deshacer, revertir, procesar lo más reciente primero, simular recursividad, DFS</td>
-                                <td><strong>Pila</strong></td>
-                            </tr>
-                            <tr>
-                                <td>Respetar el orden de llegada, turnos, búferes, BFS</td>
-                                <td><strong>Cola</strong></td>
-                            </tr>
-                            <tr>
-                                <td>Sacar o meter por ambos extremos, ventana deslizante, historial acotado, acceso por
-                                    índice</td>
-                                <td><strong>Deque</strong></td>
-                            </tr>
-                            <tr>
-                                <td>Que salga siempre el mayor o el menor, no el más antiguo</td>
-                                <td><code>priority_queue</code></td>
-                            </tr>
-                        </table>
-                        <p class="label">Recorrido de un árbol o grafo: solo cambia la estructura</p>
-                        <pre>// Con PILA   -&gt; recorrido en profundidad (DFS)
-// Con COLA   -&gt; recorrido en anchura   (BFS)
-
-stack&lt;int&gt; pend;     // cambiar por queue&lt;int&gt; y push/top
-pend.push(inicio);   // por push/front convierte DFS en BFS
-while (!pend.empty()) {
-    int u = pend.top(); pend.pop();
-    // visitar u y agregar sus vecinos
-}</pre>
+                        <p><strong>Por debajo en la STL:</strong> tanto <code>std::stack</code> como <code>std::queue</code> son adaptadores construidos por defecto sobre un <code>std::deque</code>.</p>
                     </div>
                 </div>
             </div>
@@ -1263,42 +1486,31 @@ while (!pend.empty()) {
                         <th>Idea clave</th>
                     </tr>
                     <tr>
-                        <td>Pila</td>
-                        <td>LIFO. <code>push</code>, <code>pop</code>, <code>top</code> por un solo extremo, todas O(1).
-                            Con lista enlazada, el tope es la cabeza.</td>
+                        <td>Pila en crudo</td>
+                        <td><code>struct Nodo { int dato; Nodo* sig; }</code> con un solo puntero <code>tope</code>. <code>push</code> y <code>pop</code> reciben <code>Nodo*&amp; tope</code>.</td>
                     </tr>
                     <tr>
-                        <td>Cola</td>
-                        <td>FIFO. Entra por el final, sale por el frente. Con arreglo, circular con
-                            <code>%</code>; con lista, hace falta el puntero <code>fin</code>.
-                        </td>
+                        <td>Cola en crudo</td>
+                        <td>Mismo <code>struct Nodo</code> pero con dos punteros: <code>frente</code> y <code>fin</code>. Al vaciarla, recordar poner <code>fin = nullptr</code>.</td>
                     </tr>
                     <tr>
-                        <td>Deque</td>
-                        <td>Entra y sale por ambos extremos. Con lista, doblemente enlazada (<code>ant</code> y
-                            <code>sig</code>). <code>std::deque</code> añade acceso por índice.
-                        </td>
+                        <td>Deque en crudo</td>
+                        <td><code>struct NodoD { int dato; NodoD *ant, *sig; }</code> con <code>ini</code> y <code>fin</code> para operar en O(1) por ambos extremos.</td>
                     </tr>
                     <tr>
-                        <td><code>std::stack</code>, <code>std::queue</code></td>
-                        <td>Adaptadores sobre <code>deque</code>. Sin iteradores. <code>pop()</code> no devuelve el
-                            elemento: leer primero con <code>top()</code> o <code>front()</code>.</td>
+                        <td>Con librería STL</td>
+                        <td><code>stack</code>, <code>queue</code> y <code>deque</code>. En las tres, <code>pop()</code> no devuelve el dato: primero se consulta con <code>top()</code>, <code>front()</code> o <code>back()</code>.</td>
                     </tr>
                     <tr>
-                        <td>Relación</td>
-                        <td>Pila y cola son un deque con operaciones restringidas. Lo que cambia es el orden de salida.
-                        </td>
+                        <td>Recorrer y Buscar</td>
+                        <td>En crudo se usa un puntero auxiliar <code>p</code> sin mover el original. En <code>std::stack</code> y <code>std::queue</code> se pasa por valor (copia).</td>
                     </tr>
                     <tr>
-                        <td>Elección</td>
-                        <td>Lo más reciente primero: pila. Orden de llegada: cola. Ambos extremos o índice: deque.</td>
+                        <td>Revertir y Capicúa</td>
+                        <td>La pila invierte el orden; la cola lo conserva; el deque compara <code>front()</code> y <code>back()</code> hacia el centro sin estructuras extra.</td>
                     </tr>
                 </table>
-                <p>Errores comunes: llamar <code>top()</code>, <code>front()</code> o <code>pop()</code> con la
-                    estructura vacía, esperar que <code>pop()</code> devuelva el dato, olvidar
-                    <code>fin = nullptr</code>
-                    al vaciar una cola enlazada, implementar una cola con <code>pop_front</code> sobre un arreglo (O(n))
-                    y confundir el orden de salida de la pila con el de la cola.</p>
+                <p>Errores comunes: olvidar el <code>&amp;</code> en <code>Nodo*&amp;</code> al insertar o sacar, olvidar <code>fin = nullptr</code> al desencolar el último nodo, hacer <code>delete t</code> antes de avanzar el puntero, y llamar <code>top()</code>, <code>front()</code> o <code>pop()</code> con la estructura vacía.</p>
                 <p><button class="btn primary" type="button" id="home">Volver al inicio</button></p>
             </div>
         </section>
