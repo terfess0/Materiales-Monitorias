@@ -275,15 +275,15 @@
                     <div>
                         <h3>Pilas (LIFO)</h3>
                         <ul>
-                            <li>Concepto y operaciones</li>
-                            <li>Con <code>std::stack</code>, con arreglo y con vector</li>
+                            <li>Concepto y operaciones con <code>std::stack</code></li>
+                            <li>Implementación con lista enlazada</li>
                             <li>Recorrer y reemplazar un campo</li>
                             <li>Ejercicios</li>
                         </ul>
                         <h3>Colas (FIFO)</h3>
                         <ul>
-                            <li>Concepto y operaciones</li>
-                            <li>Con <code>std::queue</code>, con arreglo circular y con vector</li>
+                            <li>Concepto y operaciones con <code>std::queue</code></li>
+                            <li>Implementación con lista enlazada</li>
                             <li>Recorrer y reemplazar un campo</li>
                             <li>Ejercicios</li>
                         </ul>
@@ -294,8 +294,9 @@
                             <li>Aplicaciones: paréntesis balanceados, decimal a binario, palíndromos y turnos</li>
                             <li>Resumen</li>
                         </ul>
-                        <p class="muted">Todo se hace con arreglos, vectores y la biblioteca estándar; no se usan nodos
-                            ni punteros.</p>
+                        <p class="muted">La librería (<code>stack</code>, <code>queue</code>) se usa para entender qué
+                            hace cada operación. Después se hace lo mismo "a mano" con un <code>struct Nodo</code> que
+                            solo tiene <code>dato</code> y <code>siguiente</code>, y con funciones escritas afuera.</p>
                         <p class="muted">Avanza con las flechas del teclado o con los botones de abajo.</p>
                     </div>
                 </div>
@@ -303,9 +304,9 @@
         </section>
 
         <!-- PILA 1 -->
-        <section class="slide" data-name="Pila (1/3) Concepto">
+        <section class="slide" data-name="Pila (1/2) Concepto">
             <div class="wrap">
-                <h2>Pila (1/3): concepto y std::stack</h2>
+                <h2>Pila (1/2): concepto y std::stack</h2>
                 <p class="sub">LIFO: el último en entrar es el primero en salir</p>
                 <div class="two">
                     <div>
@@ -378,144 +379,121 @@ int main() {
         </section>
 
         <!-- PILA 2 -->
-        <section class="slide" data-name="Pila (2/3) Arreglo">
+        <section class="slide" data-name="Pila (2/2) Lista enlazada">
             <div class="wrap">
-                <h2>Pila (2/3): con un arreglo, sin librería</h2>
-                <p class="sub">Un arreglo y una variable <code>tope</code></p>
+                <h2>Pila (2/2): con lista enlazada</h2>
+                <p class="sub">Lo mismo que std::stack, pero con nodos y funciones afuera</p>
                 <div class="two">
                     <div>
                         <ul>
-                            <li>El arreglo guarda los datos y tiene un tamaño máximo <code>MAX</code>.</li>
-                            <li><code>tope</code> es el índice del último dato. Vacía: <code>tope == -1</code>.</li>
-                            <li><strong>push:</strong> sube el tope y guarda ahí el dato.</li>
-                            <li><strong>pop:</strong> lee el dato del tope y baja el tope.</li>
-                            <li>Llena: <code>tope == MAX - 1</code>. Si se intenta un <code>push</code> así, hay
-                                <em>desbordamiento</em> (overflow).</li>
-                            <li>Los métodos devuelven <code>true</code> o <code>false</code> para avisar si pudieron; el
-                                dato sale por el parámetro <code>int&amp; x</code> (referencia).</li>
+                            <li>Cada <strong>nodo</strong> guarda un <code>dato</code> y un puntero
+                                <code>siguiente</code> al nodo de abajo.
+                            </li>
+                            <li><code>tope</code> es un puntero al primer nodo. Pila vacía:
+                                <code>tope == nullptr</code>.
+                            </li>
+                            <li>El último nodo (el fondo) apunta a <code>nullptr</code>.</li>
+                            <li>Las funciones reciben <code>Nodo*&amp; tope</code> (referencia al puntero) cuando
+                                <strong>cambian</strong> el tope: <code>apilar</code> y <code>desapilar</code>.
+                            </li>
+                            <li><strong>apilar:</strong> crear el nodo, hacer que apunte al tope actual y luego mover
+                                el tope al nodo nuevo. El orden importa.</li>
+                            <li><strong>desapilar:</strong> guardar el tope en <code>aux</code>, mover el tope al
+                                siguiente y hacer <code>delete aux</code>.</li>
+                            <li>No existe "pila llena": crece mientras haya memoria.</li>
                         </ul>
-                        <pre class="salida">MAX = 5, despues de 3 push:
-indice:  0    1    2    3    4
-dato:   [10] [20] [30]  .    .
-                  ^ tope = 2</pre>
-                    </div>
-                    <div>
-                        <p class="label">Programa completo</p>
-                        <pre>#include &lt;iostream&gt;
-using namespace std;
-
-const int MAX = 5;
-
-struct Pila {
-    int datos[MAX];
-    int tope = -1;                 // -1 = vacia
-
-    bool vacia() const { return tope == -1; }
-    bool llena() const { return tope == MAX - 1; }
-
-    bool push(int x) {
-        if (llena()) return false; // desbordamiento
-        tope++;
-        datos[tope] = x;
-        return true;
-    }
-
-    bool pop(int&amp; x) {
-        if (vacia()) return false; // nada que sacar
-        x = datos[tope];
-        tope--;
-        return true;
-    }
-
-    bool top(int&amp; x) const {
-        if (vacia()) return false;
-        x = datos[tope];
-        return true;
-    }
-};
-
-int main() {
-    Pila p;
-    for (int i = 1; i &lt;= 6; i++) {          // el 6.o no cabe
-        if (p.push(i * 10)) cout &lt;&lt; "push " &lt;&lt; i * 10 &lt;&lt; endl;
-        else cout &lt;&lt; "Pila llena, no cabe " &lt;&lt; i * 10 &lt;&lt; endl;
-    }
-    int x;
-    p.top(x);
-    cout &lt;&lt; "Tope: " &lt;&lt; x &lt;&lt; endl;            // 50
-    while (p.pop(x))
-        cout &lt;&lt; "pop " &lt;&lt; x &lt;&lt; endl;         // 50 40 30 20 10
-    return 0;
-}</pre>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- PILA 3 -->
-        <section class="slide" data-name="Pila (3/3) Vector">
-            <div class="wrap">
-                <h2>Pila (3/3): con un vector</h2>
-                <p class="sub">El final del vector hace de tope</p>
-                <div class="two">
-                    <div>
-                        <p>Un <code>vector</code> ya se comporta como una pila si solo se usa su final:</p>
                         <table>
                             <tr>
-                                <th>Pila</th>
-                                <th>Vector</th>
+                                <th>Librería</th>
+                                <th>Nuestra función</th>
                             </tr>
                             <tr>
                                 <td><code>push(x)</code></td>
-                                <td><code>push_back(x)</code></td>
+                                <td><code>apilar(tope, x)</code></td>
                             </tr>
                             <tr>
                                 <td><code>pop()</code></td>
-                                <td><code>pop_back()</code></td>
+                                <td><code>desapilar(tope)</code></td>
                             </tr>
                             <tr>
                                 <td><code>top()</code></td>
-                                <td><code>back()</code></td>
+                                <td><code>verTope(tope)</code></td>
                             </tr>
                             <tr>
                                 <td><code>empty()</code></td>
-                                <td><code>empty()</code></td>
+                                <td><code>vacia(tope)</code></td>
                             </tr>
                             <tr>
                                 <td><code>size()</code></td>
-                                <td><code>size()</code></td>
+                                <td><code>tamano(tope)</code></td>
                             </tr>
                         </table>
-                        <ul>
-                            <li>No tiene límite <code>MAX</code>: crece solo.</li>
-                            <li>Como es un vector, <strong>sí se puede recorrer</strong> con un <code>for</code>, cosa
-                                que <code>std::stack</code> no permite.</li>
-                        </ul>
+                        <pre class="salida">tope -&gt; [30|•] -&gt; [20|•] -&gt; [10|nullptr]
+
+apilar(tope, 40):
+tope -&gt; [40|•] -&gt; [30|•] -&gt; [20|•] -&gt; [10|nullptr]</pre>
                     </div>
                     <div>
                         <p class="label">Programa completo</p>
                         <pre>#include &lt;iostream&gt;
-#include &lt;vector&gt;
 using namespace std;
 
+struct Nodo {
+    int dato;
+    Nodo* siguiente;
+};
+
+bool vacia(Nodo* tope) {
+    return tope == nullptr;
+}
+
+void apilar(Nodo*&amp; tope, int x) {
+    Nodo* nuevo = new Nodo;
+    nuevo-&gt;dato = x;
+    nuevo-&gt;siguiente = tope;     // el nuevo apunta al antiguo tope
+    tope = nuevo;                // el nuevo pasa a ser el tope
+}
+
+int verTope(Nodo* tope) {
+    return tope-&gt;dato;           // la pila no debe estar vacia
+}
+
+void desapilar(Nodo*&amp; tope) {    // la pila no debe estar vacia
+    Nodo* aux = tope;
+    tope = tope-&gt;siguiente;      // el tope baja un nodo
+    delete aux;                  // liberar el nodo quitado
+}
+
+int tamano(Nodo* tope) {
+    int n = 0;
+    Nodo* aux = tope;
+    while (aux != nullptr) {
+        n++;
+        aux = aux-&gt;siguiente;
+    }
+    return n;
+}
+
 int main() {
-    vector&lt;int&gt; pila;               // el final es el tope
+    Nodo* tope = nullptr;        // pila vacia
 
-    pila.push_back(10);             // push
-    pila.push_back(20);
-    pila.push_back(30);
+    apilar(tope, 10);
+    apilar(tope, 20);
+    apilar(tope, 30);
 
-    cout &lt;&lt; "Tope: " &lt;&lt; pila.back() &lt;&lt; endl;      // 30
-    pila.pop_back();                                 // pop
-    cout &lt;&lt; "Tamano: " &lt;&lt; pila.size() &lt;&lt; endl;   // 2
+    cout &lt;&lt; "Tope: " &lt;&lt; verTope(tope) &lt;&lt; endl;       // 30
+    cout &lt;&lt; "Tamano: " &lt;&lt; tamano(tope) &lt;&lt; endl;     // 3
 
-    // Recorrer del tope al fondo sin sacar nada
-    for (int i = (int)pila.size() - 1; i &gt;= 0; i--)
-        cout &lt;&lt; pila[i] &lt;&lt; " ";                 // 20 10
+    desapilar(tope);                                  // quita el 30
+    cout &lt;&lt; "Nuevo tope: " &lt;&lt; verTope(tope) &lt;&lt; endl;  // 20
+
+    // Vaciar la pila mostrando cada elemento
+    while (!vacia(tope)) {
+        cout &lt;&lt; verTope(tope) &lt;&lt; " ";               // 20 10
+        desapilar(tope);
+    }
     cout &lt;&lt; endl;
-
-    pila.clear();                                    // vaciar
-    cout &lt;&lt; (pila.empty() ? "vacia" : "con datos");
+    cout &lt;&lt; "Vacia? " &lt;&lt; (vacia(tope) ? "si" : "no");
     return 0;
 }</pre>
                     </div>
@@ -524,9 +502,9 @@ int main() {
         </section>
 
         <!-- RECORRER PILA 1 -->
-        <section class="slide" data-name="Recorrer pila (1/3) stack">
+        <section class="slide" data-name="Recorrer pila (1/2) stack">
             <div class="wrap">
-                <h2>Recorrer una pila (1/3): std::stack</h2>
+                <h2>Recorrer una pila (1/2): std::stack</h2>
                 <p class="sub">No tiene índices: se saca de a uno y se usa una pila auxiliar</p>
                 <div class="two">
                     <div>
@@ -607,32 +585,37 @@ int main() {
         </section>
 
         <!-- RECORRER PILA 2 -->
-        <section class="slide" data-name="Recorrer pila (2/3) vector">
+        <section class="slide" data-name="Recorrer pila (2/2) lista">
             <div class="wrap">
-                <h2>Recorrer una pila (2/3): vector o arreglo</h2>
-                <p class="sub">Se recorre con índices y se modifica en el lugar</p>
+                <h2>Recorrer una pila (2/2): lista enlazada</h2>
+                <p class="sub">Un puntero auxiliar va de nodo en nodo, sin sacar nada</p>
                 <div class="two">
                     <div>
-                        <p>Si la pila es un vector o un arreglo, se puede recorrer directamente, sin pila auxiliar.</p>
+                        <p>Con nodos no hace falta pila auxiliar ni copia: basta un puntero <code>aux</code> que
+                            empieza en el tope y avanza con <code>aux = aux-&gt;siguiente</code> hasta llegar a
+                            <code>nullptr</code>.
+                        </p>
+                        <pre>Nodo* aux = tope;
+while (aux != nullptr) {
+    // aux-&gt;dato es el elemento actual
+    aux = aux-&gt;siguiente;
+}</pre>
                         <ul>
-                            <li><strong>Del tope al fondo:</strong> <code>for (int i = tope; i &gt;= 0; i--)</code>. Con
-                                vector, <code>tope</code> es <code>size() - 1</code>.</li>
-                            <li><strong>Reemplazar un campo:</strong> <code>pila[i].nota = 4.8f;</code></li>
-                            <li><strong>Con <code>for (auto&amp; e : pila)</code></strong> la <code>&amp;</code> es lo
-                                que hace que <code>e</code> sea el elemento original. Sin ella, <code>e</code> es una
-                                copia y el cambio se pierde.</li>
+                            <li>Recorre <strong>del tope al fondo</strong>.</li>
+                            <li><strong>Mostrar:</strong> se imprime <code>aux-&gt;dato</code>.</li>
+                            <li><strong>Reemplazar un campo:</strong> se asigna directamente:
+                                <code>aux-&gt;dato.nota = nueva;</code>
+                            </li>
+                            <li>Si la función solo mira o cambia un campo (no mueve el tope), el puntero se puede
+                                pasar <strong>por valor</strong>: <code>Nodo* tope</code>. Con <code>Nodo*&amp;</code>
+                                solo cuando cambia el propio tope.</li>
+                            <li>Nunca se usa <code>tope</code> para recorrer: se perdería el inicio de la pila. Se
+                                recorre con <code>aux</code>.</li>
                         </ul>
-                        <p class="label">Misma idea con la pila de arreglo (tema 2/3)</p>
-                        <pre>for (int i = p.tope; i &gt;= 0; i--)
-    if (p.datos[i].nombre == "Luis")
-        p.datos[i].nota = 4.8f;</pre>
-                        <p class="muted">Esto rompe la regla de "solo se toca el tope", pero sirve para entender cómo se
-                            guardan los datos.</p>
                     </div>
                     <div>
-                        <p class="label">Programa completo con vector</p>
+                        <p class="label">Programa completo: mostrar y reemplazar un campo</p>
                         <pre>#include &lt;iostream&gt;
-#include &lt;vector&gt;
 #include &lt;string&gt;
 using namespace std;
 
@@ -641,38 +624,68 @@ struct Estudiante {
     float  nota;
 };
 
+struct Nodo {
+    Estudiante dato;
+    Nodo* siguiente;
+};
+
+void apilar(Nodo*&amp; tope, const Estudiante&amp; e) {
+    Nodo* nuevo = new Nodo;
+    nuevo-&gt;dato = e;
+    nuevo-&gt;siguiente = tope;
+    tope = nuevo;
+}
+
+void desapilar(Nodo*&amp; tope) {
+    Nodo* aux = tope;
+    tope = tope-&gt;siguiente;
+    delete aux;
+}
+
+void mostrar(Nodo* tope) {
+    cout &lt;&lt; "Pila (tope primero):" &lt;&lt; endl;
+    Nodo* aux = tope;
+    while (aux != nullptr) {
+        cout &lt;&lt; "  " &lt;&lt; aux-&gt;dato.nombre &lt;&lt; " "
+             &lt;&lt; aux-&gt;dato.nota &lt;&lt; endl;
+        aux = aux-&gt;siguiente;
+    }
+}
+
+bool reemplazarNota(Nodo* tope, const string&amp; nombre, float nueva) {
+    Nodo* aux = tope;
+    while (aux != nullptr) {
+        if (aux-&gt;dato.nombre == nombre) {
+            aux-&gt;dato.nota = nueva;     // cambiar el campo
+            return true;
+        }
+        aux = aux-&gt;siguiente;
+    }
+    return false;
+}
+
 int main() {
-    vector&lt;Estudiante&gt; pila;
-    pila.push_back({"Ana", 4.2f});
-    pila.push_back({"Luis", 3.5f});
-    pila.push_back({"Marta", 4.5f});
+    Nodo* tope = nullptr;
+    apilar(tope, {"Ana", 4.2f});
+    apilar(tope, {"Luis", 3.5f});
+    apilar(tope, {"Marta", 4.5f});
 
-    // 1. Recorrer del tope al fondo
-    cout &lt;&lt; "Antes:" &lt;&lt; endl;
-    for (int i = (int)pila.size() - 1; i &gt;= 0; i--)
-        cout &lt;&lt; "  " &lt;&lt; pila[i].nombre &lt;&lt; " " &lt;&lt; pila[i].nota &lt;&lt; endl;
+    mostrar(tope);
+    if (reemplazarNota(tope, "Luis", 4.8f))
+        cout &lt;&lt; "Nota de Luis actualizada" &lt;&lt; endl;
+    mostrar(tope);
 
-    // 2. Reemplazar un campo (auto&amp; = el elemento original)
-    for (auto&amp; e : pila)
-        if (e.nombre == "Luis")
-            e.nota = 4.8f;
-
-    // 3. Error comun: sin &amp; se modifica una COPIA
-    for (auto e : pila)
-        if (e.nombre == "Ana")
-            e.nota = 1.0f;               // no cambia la pila
-
-    cout &lt;&lt; "Despues:" &lt;&lt; endl;
-    for (int i = (int)pila.size() - 1; i &gt;= 0; i--)
-        cout &lt;&lt; "  " &lt;&lt; pila[i].nombre &lt;&lt; " " &lt;&lt; pila[i].nota &lt;&lt; endl;
+    while (tope != nullptr)              // liberar la memoria
+        desapilar(tope);
     return 0;
 }</pre>
                         <p class="label">Salida</p>
-                        <pre class="salida">Antes:
+                        <pre class="salida">Pila (tope primero):
   Marta 4.5
   Luis 3.5
   Ana 4.2
-Despues:
+Nota de Luis actualizada
+Pila (tope primero):
   Marta 4.5
   Luis 4.8
   Ana 4.2</pre>
@@ -681,28 +694,45 @@ Despues:
             </div>
         </section>
 
-        <!-- RECORRER PILA 3 EJERCICIOS -->
+        <!-- EJERCICIOS PILAS -->
         <section class="slide" data-name="Ejercicios de pilas">
             <div class="wrap">
-                <h2>Ejercicios de pilas (3/3)</h2>
+                <h2>Ejercicios de pilas</h2>
                 <ol class="ej">
-                    <li>Invierte un texto usando una pila de caracteres.
+                    <li>Invierte un texto usando una pila de caracteres (nodos con <code>char</code>).
                         <details>
                             <summary>Ver solución</summary>
                             <pre>#include &lt;iostream&gt;
-#include &lt;stack&gt;
 #include &lt;string&gt;
 using namespace std;
 
+struct Nodo {
+    char dato;
+    Nodo* siguiente;
+};
+
+void apilar(Nodo*&amp; tope, char x) {
+    Nodo* nuevo = new Nodo;
+    nuevo-&gt;dato = x;
+    nuevo-&gt;siguiente = tope;
+    tope = nuevo;
+}
+
+void desapilar(Nodo*&amp; tope) {
+    Nodo* aux = tope;
+    tope = tope-&gt;siguiente;
+    delete aux;
+}
+
 int main() {
     string s = "hola mundo";
-    stack&lt;char&gt; p;
-    for (char c : s) p.push(c);
+    Nodo* tope = nullptr;
+    for (char c : s) apilar(tope, c);
 
     string r;
-    while (!p.empty()) {
-        r += p.top();
-        p.pop();
+    while (tope != nullptr) {
+        r += tope-&gt;dato;
+        desapilar(tope);
     }
     cout &lt;&lt; r;          // odnum aloh
     return 0;
@@ -711,29 +741,55 @@ int main() {
                     </li>
 
                     <li>Escribe una función que muestre la suma y el mayor de una pila de enteros <strong>sin
-                            destruirla</strong>. Pista: recíbela por valor.
+                            destruirla</strong>. Pista: recórrela con un puntero auxiliar.
                         <details>
                             <summary>Ver solución</summary>
                             <pre>#include &lt;iostream&gt;
-#include &lt;stack&gt;
 using namespace std;
 
-void resumen(stack&lt;int&gt; copia) {       // por valor: copia
-    if (copia.empty()) return;
-    int suma = 0, mayor = copia.top();
-    while (!copia.empty()) {
-        suma += copia.top();
-        if (copia.top() &gt; mayor) mayor = copia.top();
-        copia.pop();
+struct Nodo {
+    int dato;
+    Nodo* siguiente;
+};
+
+void apilar(Nodo*&amp; tope, int x) {
+    Nodo* nuevo = new Nodo;
+    nuevo-&gt;dato = x;
+    nuevo-&gt;siguiente = tope;
+    tope = nuevo;
+}
+
+void desapilar(Nodo*&amp; tope) {
+    Nodo* aux = tope;
+    tope = tope-&gt;siguiente;
+    delete aux;
+}
+
+int tamano(Nodo* tope) {
+    int n = 0;
+    for (Nodo* aux = tope; aux != nullptr; aux = aux-&gt;siguiente) n++;
+    return n;
+}
+
+void resumen(Nodo* tope) {
+    if (tope == nullptr) return;
+    int suma = 0, mayor = tope-&gt;dato;
+    Nodo* aux = tope;
+    while (aux != nullptr) {
+        suma += aux-&gt;dato;
+        if (aux-&gt;dato &gt; mayor) mayor = aux-&gt;dato;
+        aux = aux-&gt;siguiente;
     }
     cout &lt;&lt; "Suma: " &lt;&lt; suma &lt;&lt; "  Mayor: " &lt;&lt; mayor &lt;&lt; endl;
 }
 
 int main() {
-    stack&lt;int&gt; p;
-    p.push(4); p.push(9); p.push(2);
-    resumen(p);                          // Suma: 15  Mayor: 9
-    cout &lt;&lt; "Sigue con " &lt;&lt; p.size() &lt;&lt; " elementos";   // 3
+    Nodo* tope = nullptr;
+    apilar(tope, 4); apilar(tope, 9); apilar(tope, 2);
+    resumen(tope);                       // Suma: 15  Mayor: 9
+    cout &lt;&lt; "Sigue con " &lt;&lt; tamano(tope) &lt;&lt; " elementos";   // 3
+
+    while (tope != nullptr) desapilar(tope);
     return 0;
 }</pre>
                         </details>
@@ -744,31 +800,48 @@ int main() {
                         <details>
                             <summary>Ver solución</summary>
                             <pre>#include &lt;iostream&gt;
-#include &lt;stack&gt;
 using namespace std;
 
-void eliminarValor(stack&lt;int&gt;&amp; p, int x) {
-    stack&lt;int&gt; aux;
-    while (!p.empty()) {
-        if (p.top() != x) aux.push(p.top());
-        p.pop();
+struct Nodo {
+    int dato;
+    Nodo* siguiente;
+};
+
+void apilar(Nodo*&amp; tope, int x) {
+    Nodo* nuevo = new Nodo;
+    nuevo-&gt;dato = x;
+    nuevo-&gt;siguiente = tope;
+    tope = nuevo;
+}
+
+void desapilar(Nodo*&amp; tope) {
+    Nodo* aux = tope;
+    tope = tope-&gt;siguiente;
+    delete aux;
+}
+
+void eliminarValor(Nodo*&amp; tope, int x) {
+    Nodo* aux = nullptr;                 // pila auxiliar
+    while (tope != nullptr) {
+        if (tope-&gt;dato != x) apilar(aux, tope-&gt;dato);
+        desapilar(tope);
     }
-    while (!aux.empty()) {               // devolver en el orden original
-        p.push(aux.top());
-        aux.pop();
+    while (aux != nullptr) {             // devolver en el orden original
+        apilar(tope, aux-&gt;dato);
+        desapilar(aux);
     }
 }
 
 int main() {
-    stack&lt;int&gt; p;
+    Nodo* tope = nullptr;
     int datos[] = {1, 2, 3, 2, 5};
-    for (int d : datos) p.push(d);
+    for (int d : datos) apilar(tope, d);
 
-    eliminarValor(p, 2);
+    eliminarValor(tope, 2);
 
-    while (!p.empty()) {
-        cout &lt;&lt; p.top() &lt;&lt; " ";         // 5 3 1
-        p.pop();
+    while (tope != nullptr) {
+        cout &lt;&lt; tope-&gt;dato &lt;&lt; " ";     // 5 3 1
+        desapilar(tope);
     }
     return 0;
 }</pre>
@@ -779,9 +852,9 @@ int main() {
         </section>
 
         <!-- COLA 1 -->
-        <section class="slide" data-name="Cola (1/3) Concepto">
+        <section class="slide" data-name="Cola (1/2) Concepto">
             <div class="wrap">
-                <h2>Cola (1/3): concepto y std::queue</h2>
+                <h2>Cola (1/2): concepto y std::queue</h2>
                 <p class="sub">FIFO: el primero en entrar es el primero en salir</p>
                 <div class="two">
                     <div>
@@ -852,150 +925,131 @@ int main() {
         </section>
 
         <!-- COLA 2 -->
-        <section class="slide" data-name="Cola (2/3) Arreglo circular">
+        <section class="slide" data-name="Cola (2/2) Lista enlazada">
             <div class="wrap">
-                <h2>Cola (2/3): con un arreglo circular, sin librería</h2>
-                <p class="sub">El índice vuelve al inicio con el operador %</p>
+                <h2>Cola (2/2): con lista enlazada</h2>
+                <p class="sub">Lo mismo que std::queue, pero con nodos y funciones afuera</p>
                 <div class="two">
                     <div>
-                        <p>Si el frente solo avanzara, al llegar al final del arreglo no se podría seguir aunque haya
-                            espacios libres atrás. La solución es la <strong>cola circular</strong>: después del último
-                            índice se vuelve al 0 con <code>% MAX</code>.</p>
                         <ul>
-                            <li><code>frente</code>: índice del primer elemento.</li>
-                            <li><code>cuenta</code>: cuántos elementos hay.</li>
-                            <li>Posición libre para encolar: <code>(frente + cuenta) % MAX</code>.</li>
-                            <li>Al desencolar: <code>frente = (frente + 1) % MAX</code>.</li>
-                            <li>Vacía: <code>cuenta == 0</code>. Llena: <code>cuenta == MAX</code>.</li>
+                            <li>Mismo nodo de la pila: <code>dato</code> y <code>siguiente</code>.</li>
+                            <li>Se usan <strong>dos punteros</strong>: <code>frente</code> (primer nodo, por donde
+                                sale) y <code>fin</code> (último nodo, por donde entra).</li>
+                            <li>Cola vacía: <code>frente == nullptr</code>.</li>
+                            <li><strong>encolar:</strong> crear el nodo con <code>siguiente = nullptr</code> y
+                                engancharlo detrás de <code>fin</code>. Si la cola estaba vacía, el nuevo es también el
+                                <code>frente</code>.
+                            </li>
+                            <li><strong>desencolar:</strong> guardar el frente en <code>aux</code>, avanzar
+                                <code>frente</code> y <code>delete aux</code>. Si la cola quedó vacía,
+                                <code>fin</code> también debe volver a <code>nullptr</code>.
+                            </li>
+                            <li>Las funciones que cambian la cola reciben
+                                <code>Nodo*&amp; frente, Nodo*&amp; fin</code>.
+                            </li>
                         </ul>
-                        <pre class="salida">MAX = 5. Se encolaron 10..50, se sacaron 10 y 20,
-y se encolaron 60 y 70 (vuelven al inicio):
-indice:  0    1    2    3    4
-dato:   [60] [70] [30] [40] [50]
-                  ^ frente = 2, cuenta = 5</pre>
+                        <table>
+                            <tr>
+                                <th>Librería</th>
+                                <th>Nuestra función</th>
+                            </tr>
+                            <tr>
+                                <td><code>push(x)</code></td>
+                                <td><code>encolar(frente, fin, x)</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>pop()</code></td>
+                                <td><code>desencolar(frente, fin)</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>front()</code></td>
+                                <td><code>verFrente(frente)</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>back()</code></td>
+                                <td><code>verFin(fin)</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>empty()</code>, <code>size()</code></td>
+                                <td><code>vacia(frente)</code>, <code>tamano(frente)</code></td>
+                            </tr>
+                        </table>
+                        <pre class="salida">frente -&gt; [10|•] -&gt; [20|•] -&gt; [30|nullptr] &lt;- fin
+
+encolar(frente, fin, 40):
+frente -&gt; [10|•] -&gt; [20|•] -&gt; [30|•] -&gt; [40|nullptr] &lt;- fin</pre>
                     </div>
                     <div>
                         <p class="label">Programa completo</p>
                         <pre>#include &lt;iostream&gt;
 using namespace std;
 
-const int MAX = 5;
-
-struct Cola {
-    int datos[MAX];
-    int frente = 0;               // indice del primero
-    int cuenta = 0;               // elementos actuales
-
-    bool vacia() const { return cuenta == 0; }
-    bool llena() const { return cuenta == MAX; }
-
-    bool encolar(int x) {
-        if (llena()) return false;
-        int fin = (frente + cuenta) % MAX;   // espacio libre
-        datos[fin] = x;
-        cuenta++;
-        return true;
-    }
-
-    bool desencolar(int&amp; x) {
-        if (vacia()) return false;
-        x = datos[frente];
-        frente = (frente + 1) % MAX;         // avanza circular
-        cuenta--;
-        return true;
-    }
-
-    void mostrar() const {                   // recorre sin sacar
-        for (int i = 0; i &lt; cuenta; i++)
-            cout &lt;&lt; datos[(frente + i) % MAX] &lt;&lt; " ";
-        cout &lt;&lt; endl;
-    }
+struct Nodo {
+    int dato;
+    Nodo* siguiente;
 };
 
-int main() {
-    Cola c;
-    for (int i = 1; i &lt;= 6; i++) {           // el 6.o no cabe
-        if (!c.encolar(i * 10)) cout &lt;&lt; "Cola llena, no cabe " &lt;&lt; i * 10 &lt;&lt; endl;
+bool vacia(Nodo* frente) {
+    return frente == nullptr;
+}
+
+void encolar(Nodo*&amp; frente, Nodo*&amp; fin, int x) {
+    Nodo* nuevo = new Nodo;
+    nuevo-&gt;dato = x;
+    nuevo-&gt;siguiente = nullptr;
+    if (fin == nullptr)            // cola vacia
+        frente = nuevo;
+    else
+        fin-&gt;siguiente = nuevo;    // enganchar detras del ultimo
+    fin = nuevo;
+}
+
+int verFrente(Nodo* frente) {
+    return frente-&gt;dato;           // la cola no debe estar vacia
+}
+
+int verFin(Nodo* fin) {
+    return fin-&gt;dato;              // la cola no debe estar vacia
+}
+
+void desencolar(Nodo*&amp; frente, Nodo*&amp; fin) {   // no debe estar vacia
+    Nodo* aux = frente;
+    frente = frente-&gt;siguiente;
+    if (frente == nullptr)         // se quedo sin elementos
+        fin = nullptr;
+    delete aux;
+}
+
+int tamano(Nodo* frente) {
+    int n = 0;
+    Nodo* aux = frente;
+    while (aux != nullptr) {
+        n++;
+        aux = aux-&gt;siguiente;
     }
-    c.mostrar();                             // 10 20 30 40 50
-
-    int x;
-    c.desencolar(x);                         // sale 10
-    c.desencolar(x);                         // sale 20
-    c.encolar(60);                           // usa el espacio liberado
-    c.encolar(70);
-    c.mostrar();                             // 30 40 50 60 70
-    return 0;
-}</pre>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- COLA 3 -->
-        <section class="slide" data-name="Cola (3/3) Vector">
-            <div class="wrap">
-                <h2>Cola (3/3): con un vector</h2>
-                <p class="sub">Se agrega por el final y se saca por el principio</p>
-                <div class="two">
-                    <div>
-                        <table>
-                            <tr>
-                                <th>Cola</th>
-                                <th>Vector</th>
-                            </tr>
-                            <tr>
-                                <td><code>push(x)</code></td>
-                                <td><code>push_back(x)</code></td>
-                            </tr>
-                            <tr>
-                                <td><code>pop()</code></td>
-                                <td><code>erase(begin())</code></td>
-                            </tr>
-                            <tr>
-                                <td><code>front()</code></td>
-                                <td><code>front()</code></td>
-                            </tr>
-                            <tr>
-                                <td><code>back()</code></td>
-                                <td><code>back()</code></td>
-                            </tr>
-                        </table>
-                        <ul>
-                            <li>Sin límite de tamaño y se puede recorrer con <code>for</code>.</li>
-                            <li><strong>Costo:</strong> borrar el primero obliga a mover todos los demás un lugar. Es
-                                lento si hay muchos datos, pero para aprender y para pocos datos sirve.</li>
-                            <li>Si necesitas una opción rápida con la biblioteca, usa <code>std::deque</code>: tiene
-                                <code>push_back</code>, <code>pop_front</code>, <code>front</code> y se recorre con
-                                índices.</li>
-                        </ul>
-                    </div>
-                    <div>
-                        <p class="label">Programa completo con vector</p>
-                        <pre>#include &lt;iostream&gt;
-#include &lt;vector&gt;
-using namespace std;
+    return n;
+}
 
 int main() {
-    vector&lt;int&gt; cola;
+    Nodo* frente = nullptr;        // cola vacia
+    Nodo* fin = nullptr;
 
-    cola.push_back(10);                // encolar
-    cola.push_back(20);
-    cola.push_back(30);
+    encolar(frente, fin, 10);
+    encolar(frente, fin, 20);
+    encolar(frente, fin, 30);
 
-    cout &lt;&lt; "Frente: " &lt;&lt; cola.front() &lt;&lt; endl;   // 10
-    cout &lt;&lt; "Final: "  &lt;&lt; cola.back()  &lt;&lt; endl;   // 30
+    cout &lt;&lt; "Frente: " &lt;&lt; verFrente(frente) &lt;&lt; endl;   // 10
+    cout &lt;&lt; "Final: "  &lt;&lt; verFin(fin) &lt;&lt; endl;         // 30
+    cout &lt;&lt; "En fila: " &lt;&lt; tamano(frente) &lt;&lt; endl;    // 3
 
-    cola.erase(cola.begin());          // desencolar (sale el 10)
+    desencolar(frente, fin);                            // sale el 10
+    cout &lt;&lt; "Siguiente: " &lt;&lt; verFrente(frente) &lt;&lt; endl; // 20
 
-    // Recorrer del frente al final
-    for (int i = 0; i &lt; (int)cola.size(); i++)
-        cout &lt;&lt; cola[i] &lt;&lt; " ";        // 20 30
-    cout &lt;&lt; endl;
-
-    // Version con deque (pop_front es rapido)
-    // #include &lt;deque&gt;
-    // deque&lt;int&gt; d;  d.push_back(1);  d.pop_front();
+    // Atender a todos en orden de llegada
+    while (!vacia(frente)) {
+        cout &lt;&lt; "Atendiendo a " &lt;&lt; verFrente(frente) &lt;&lt; endl;
+        desencolar(frente, fin);
+    }
     return 0;
 }</pre>
                     </div>
@@ -1004,9 +1058,9 @@ int main() {
         </section>
 
         <!-- RECORRER COLA 1 -->
-        <section class="slide" data-name="Recorrer cola (1/3) queue">
+        <section class="slide" data-name="Recorrer cola (1/2) queue">
             <div class="wrap">
-                <h2>Recorrer una cola (1/3): std::queue</h2>
+                <h2>Recorrer una cola (1/2): std::queue</h2>
                 <p class="sub">Se rota: sacar el del frente y volver a meterlo al final</p>
                 <div class="two">
                     <div>
@@ -1081,91 +1135,105 @@ int main() {
         </section>
 
         <!-- RECORRER COLA 2 -->
-        <section class="slide" data-name="Recorrer cola (2/3) arreglo">
+        <section class="slide" data-name="Recorrer cola (2/2) lista">
             <div class="wrap">
-                <h2>Recorrer una cola (2/3): arreglo circular</h2>
-                <p class="sub">El elemento número i está en (frente + i) % MAX</p>
+                <h2>Recorrer una cola (2/2): lista enlazada</h2>
+                <p class="sub">Un puntero auxiliar va del frente hasta nullptr</p>
                 <div class="two">
                     <div>
-                        <p>Con la cola de arreglo se recorre desde el frente, <code>cuenta</code> elementos, y el índice
-                            real se calcula con el módulo:</p>
-                        <pre>for (int i = 0; i &lt; cuenta; i++) {
-    int pos = (frente + i) % MAX;
-    // datos[pos] es el elemento i-esimo
+                        <p>Igual que con la pila, pero se empieza en el <code>frente</code>. No hace falta rotar ni
+                            copiar nada.</p>
+                        <pre>Nodo* aux = frente;
+while (aux != nullptr) {
+    // aux-&gt;dato es el elemento actual
+    aux = aux-&gt;siguiente;
 }</pre>
                         <ul>
-                            <li>Para <strong>mostrar</strong>, se imprime <code>datos[pos]</code>.</li>
+                            <li>Recorre <strong>del frente al final</strong>, en el orden de llegada.</li>
+                            <li>Para <strong>mostrar</strong>, se imprime <code>aux-&gt;dato</code>.</li>
                             <li>Para <strong>reemplazar un campo</strong>, se asigna directamente:
-                                <code>datos[pos].nota = nueva;</code></li>
-                            <li>No hace falta rotar ni copiar nada.</li>
+                                <code>aux-&gt;dato.nota = nueva;</code>
+                            </li>
+                            <li>Para estas funciones basta pasar <code>Nodo* frente</code> por valor, porque no se
+                                cambia ni el frente ni el fin.</li>
+                            <li>No se mueve <code>frente</code> para recorrer: se perdería la cola. Se recorre con
+                                <code>aux</code>.
+                            </li>
                         </ul>
-                        <p class="muted">Importante: no se recorre de 0 a <code>MAX</code>, porque la cola puede empezar
-                            en cualquier posición y haber espacios sin uso.</p>
                     </div>
                     <div>
-                        <p class="label">Programa completo</p>
+                        <p class="label">Programa completo: mostrar y reemplazar un campo</p>
                         <pre>#include &lt;iostream&gt;
 #include &lt;string&gt;
 using namespace std;
-
-const int MAX = 5;
 
 struct Estudiante {
     string nombre;
     float  nota;
 };
 
-struct Cola {
-    Estudiante datos[MAX];
-    int frente = 0;
-    int cuenta = 0;
-
-    bool encolar(const Estudiante&amp; e) {
-        if (cuenta == MAX) return false;
-        datos[(frente + cuenta) % MAX] = e;
-        cuenta++;
-        return true;
-    }
-
-    bool desencolar(Estudiante&amp; e) {
-        if (cuenta == 0) return false;
-        e = datos[frente];
-        frente = (frente + 1) % MAX;
-        cuenta--;
-        return true;
-    }
-
-    void mostrar() const {
-        for (int i = 0; i &lt; cuenta; i++) {
-            const Estudiante&amp; e = datos[(frente + i) % MAX];
-            cout &lt;&lt; "  " &lt;&lt; e.nombre &lt;&lt; " " &lt;&lt; e.nota &lt;&lt; endl;
-        }
-    }
-
-    bool reemplazarNota(const string&amp; nombre, float nueva) {
-        for (int i = 0; i &lt; cuenta; i++) {
-            int pos = (frente + i) % MAX;
-            if (datos[pos].nombre == nombre) {
-                datos[pos].nota = nueva;
-                return true;
-            }
-        }
-        return false;
-    }
+struct Nodo {
+    Estudiante dato;
+    Nodo* siguiente;
 };
 
+void encolar(Nodo*&amp; frente, Nodo*&amp; fin, const Estudiante&amp; e) {
+    Nodo* nuevo = new Nodo;
+    nuevo-&gt;dato = e;
+    nuevo-&gt;siguiente = nullptr;
+    if (fin == nullptr)
+        frente = nuevo;
+    else
+        fin-&gt;siguiente = nuevo;
+    fin = nuevo;
+}
+
+void desencolar(Nodo*&amp; frente, Nodo*&amp; fin) {
+    Nodo* aux = frente;
+    frente = frente-&gt;siguiente;
+    if (frente == nullptr)
+        fin = nullptr;
+    delete aux;
+}
+
+void mostrar(Nodo* frente) {
+    cout &lt;&lt; "Cola (frente primero):" &lt;&lt; endl;
+    Nodo* aux = frente;
+    while (aux != nullptr) {
+        cout &lt;&lt; "  " &lt;&lt; aux-&gt;dato.nombre &lt;&lt; " "
+             &lt;&lt; aux-&gt;dato.nota &lt;&lt; endl;
+        aux = aux-&gt;siguiente;
+    }
+}
+
+bool reemplazarNota(Nodo* frente, const string&amp; nombre, float nueva) {
+    Nodo* aux = frente;
+    while (aux != nullptr) {
+        if (aux-&gt;dato.nombre == nombre) {
+            aux-&gt;dato.nota = nueva;     // cambiar el campo
+            return true;
+        }
+        aux = aux-&gt;siguiente;
+    }
+    return false;
+}
+
 int main() {
-    Cola c;
-    c.encolar({"Ana", 4.2f});
-    c.encolar({"Luis", 3.5f});
-    c.encolar({"Marta", 4.5f});
+    Nodo* frente = nullptr;
+    Nodo* fin = nullptr;
+    encolar(frente, fin, {"Ana", 4.2f});
+    encolar(frente, fin, {"Luis", 3.5f});
+    encolar(frente, fin, {"Marta", 4.5f});
 
-    Estudiante x;
-    c.desencolar(x);                  // sale Ana
-    c.encolar({"Pedro", 3.9f});       // el arreglo ya esta dando la vuelta
+    desencolar(frente, fin);                 // sale Ana
+    encolar(frente, fin, {"Pedro", 3.9f});
 
-    c.reemplazarNota("Luis", 4.8f);
-    c.mostrar();                      // Luis 4.8, Marta 4.5, Pedro 3.9
+    if (reemplazarNota(frente, "Luis", 4.8f))
+        cout &lt;&lt; "Nota de Luis actualizada" &lt;&lt; endl;
+    mostrar(frente);                         // Luis 4.8, Marta 4.5, Pedro 3.9
+
+    while (frente != nullptr)                // liberar la memoria
+        desencolar(frente, fin);
     return 0;
 }</pre>
                     </div>
@@ -1173,31 +1241,65 @@ int main() {
             </div>
         </section>
 
-        <!-- RECORRER COLA 3 EJERCICIOS -->
+        <!-- EJERCICIOS COLAS -->
         <section class="slide" data-name="Ejercicios de colas">
             <div class="wrap">
-                <h2>Ejercicios de colas (3/3)</h2>
+                <h2>Ejercicios de colas</h2>
                 <ol class="ej">
-                    <li>Suma los elementos de una cola sin destruirla, usando la rotación completa.
+                    <li>Suma los elementos de una cola sin destruirla, recorriéndola con un puntero auxiliar.
                         <details>
                             <summary>Ver solución</summary>
                             <pre>#include &lt;iostream&gt;
-#include &lt;queue&gt;
 using namespace std;
 
-int main() {
-    queue&lt;int&gt; q;
-    q.push(5); q.push(10); q.push(15);
+struct Nodo {
+    int dato;
+    Nodo* siguiente;
+};
 
-    int suma = 0, n = q.size();
-    for (int i = 0; i &lt; n; i++) {
-        int v = q.front();
-        q.pop();
-        suma += v;
-        q.push(v);                      // vuelve a entrar
+void encolar(Nodo*&amp; frente, Nodo*&amp; fin, int x) {
+    Nodo* nuevo = new Nodo;
+    nuevo-&gt;dato = x;
+    nuevo-&gt;siguiente = nullptr;
+    if (fin == nullptr) frente = nuevo;
+    else fin-&gt;siguiente = nuevo;
+    fin = nuevo;
+}
+
+void desencolar(Nodo*&amp; frente, Nodo*&amp; fin) {
+    Nodo* aux = frente;
+    frente = frente-&gt;siguiente;
+    if (frente == nullptr) fin = nullptr;
+    delete aux;
+}
+
+int tamano(Nodo* frente) {
+    int n = 0;
+    for (Nodo* aux = frente; aux != nullptr; aux = aux-&gt;siguiente) n++;
+    return n;
+}
+
+int sumar(Nodo* frente) {
+    int suma = 0;
+    Nodo* aux = frente;
+    while (aux != nullptr) {
+        suma += aux-&gt;dato;
+        aux = aux-&gt;siguiente;
     }
-    cout &lt;&lt; "Suma: " &lt;&lt; suma &lt;&lt; endl;            // 30
-    cout &lt;&lt; "Elementos: " &lt;&lt; q.size();          // 3
+    return suma;
+}
+
+int main() {
+    Nodo* frente = nullptr;
+    Nodo* fin = nullptr;
+    encolar(frente, fin, 5);
+    encolar(frente, fin, 10);
+    encolar(frente, fin, 15);
+
+    cout &lt;&lt; "Suma: " &lt;&lt; sumar(frente) &lt;&lt; endl;         // 30
+    cout &lt;&lt; "Elementos: " &lt;&lt; tamano(frente);            // 3
+
+    while (frente != nullptr) desencolar(frente, fin);
     return 0;
 }</pre>
                         </details>
@@ -1207,26 +1309,61 @@ int main() {
                         <details>
                             <summary>Ver solución</summary>
                             <pre>#include &lt;iostream&gt;
-#include &lt;queue&gt;
-#include &lt;stack&gt;
 using namespace std;
 
-int main() {
-    queue&lt;int&gt; q;
-    q.push(1); q.push(2); q.push(3);
+struct Nodo {
+    int dato;
+    Nodo* siguiente;
+};
 
-    stack&lt;int&gt; p;
-    while (!q.empty()) {                // cola -&gt; pila
-        p.push(q.front());
-        q.pop();
+void apilar(Nodo*&amp; tope, int x) {
+    Nodo* nuevo = new Nodo;
+    nuevo-&gt;dato = x;
+    nuevo-&gt;siguiente = tope;
+    tope = nuevo;
+}
+
+void desapilar(Nodo*&amp; tope) {
+    Nodo* aux = tope;
+    tope = tope-&gt;siguiente;
+    delete aux;
+}
+
+void encolar(Nodo*&amp; frente, Nodo*&amp; fin, int x) {
+    Nodo* nuevo = new Nodo;
+    nuevo-&gt;dato = x;
+    nuevo-&gt;siguiente = nullptr;
+    if (fin == nullptr) frente = nuevo;
+    else fin-&gt;siguiente = nuevo;
+    fin = nuevo;
+}
+
+void desencolar(Nodo*&amp; frente, Nodo*&amp; fin) {
+    Nodo* aux = frente;
+    frente = frente-&gt;siguiente;
+    if (frente == nullptr) fin = nullptr;
+    delete aux;
+}
+
+int main() {
+    Nodo* frente = nullptr;
+    Nodo* fin = nullptr;
+    Nodo* tope = nullptr;
+    encolar(frente, fin, 1);
+    encolar(frente, fin, 2);
+    encolar(frente, fin, 3);
+
+    while (frente != nullptr) {          // cola -&gt; pila
+        apilar(tope, frente-&gt;dato);
+        desencolar(frente, fin);
     }
-    while (!p.empty()) {                // pila -&gt; cola (invertida)
-        q.push(p.top());
-        p.pop();
+    while (tope != nullptr) {            // pila -&gt; cola (invertida)
+        encolar(frente, fin, tope-&gt;dato);
+        desapilar(tope);
     }
-    while (!q.empty()) {
-        cout &lt;&lt; q.front() &lt;&lt; " ";       // 3 2 1
-        q.pop();
+    while (frente != nullptr) {
+        cout &lt;&lt; frente-&gt;dato &lt;&lt; " ";    // 3 2 1
+        desencolar(frente, fin);
     }
     return 0;
 }</pre>
@@ -1237,30 +1374,54 @@ int main() {
                         <details>
                             <summary>Ver solución</summary>
                             <pre>#include &lt;iostream&gt;
-#include &lt;queue&gt;
 using namespace std;
 
-void mostrar(queue&lt;int&gt; q) {          // por valor: no destruye
-    while (!q.empty()) {
-        cout &lt;&lt; q.front() &lt;&lt; " ";
-        q.pop();
-    }
+struct Nodo {
+    int dato;
+    Nodo* siguiente;
+};
+
+void encolar(Nodo*&amp; frente, Nodo*&amp; fin, int x) {
+    Nodo* nuevo = new Nodo;
+    nuevo-&gt;dato = x;
+    nuevo-&gt;siguiente = nullptr;
+    if (fin == nullptr) frente = nuevo;
+    else fin-&gt;siguiente = nuevo;
+    fin = nuevo;
+}
+
+void desencolar(Nodo*&amp; frente, Nodo*&amp; fin) {
+    Nodo* aux = frente;
+    frente = frente-&gt;siguiente;
+    if (frente == nullptr) fin = nullptr;
+    delete aux;
+}
+
+void mostrar(Nodo* frente) {            // solo recorre, no destruye
+    for (Nodo* aux = frente; aux != nullptr; aux = aux-&gt;siguiente)
+        cout &lt;&lt; aux-&gt;dato &lt;&lt; " ";
     cout &lt;&lt; endl;
 }
 
 int main() {
-    queue&lt;int&gt; q, pares, impares;
-    int datos[] = {7, 2, 9, 4, 5, 6};
-    for (int d : datos) q.push(d);
+    Nodo* frente = nullptr;   Nodo* fin = nullptr;
+    Nodo* frenteP = nullptr;  Nodo* finP = nullptr;   // pares
+    Nodo* frenteI = nullptr;  Nodo* finI = nullptr;   // impares
 
-    while (!q.empty()) {
-        int v = q.front();
-        q.pop();
-        if (v % 2 == 0) pares.push(v);
-        else            impares.push(v);
+    int datos[] = {7, 2, 9, 4, 5, 6};
+    for (int d : datos) encolar(frente, fin, d);
+
+    while (frente != nullptr) {
+        int v = frente-&gt;dato;
+        desencolar(frente, fin);
+        if (v % 2 == 0) encolar(frenteP, finP, v);
+        else            encolar(frenteI, finI, v);
     }
-    mostrar(pares);      // 2 4 6
-    mostrar(impares);    // 7 9 5
+    mostrar(frenteP);    // 2 4 6
+    mostrar(frenteI);    // 7 9 5
+
+    while (frenteP != nullptr) desencolar(frenteP, finP);
+    while (frenteI != nullptr) desencolar(frenteI, finI);
     return 0;
 }</pre>
                         </details>
@@ -1273,7 +1434,7 @@ int main() {
         <section class="slide" data-name="Aplicaciones con pila">
             <div class="wrap">
                 <h2>Aplicaciones con pila</h2>
-                <p class="sub">Dos problemas clásicos</p>
+                <p class="sub">Dos problemas clásicos, con nodos de <code>char</code></p>
                 <div class="two">
                     <div>
                         <p><strong>1. Paréntesis balanceados.</strong> Cada símbolo que abre se apila. Cada símbolo que
@@ -1282,8 +1443,9 @@ int main() {
                         <pre class="salida">"{[()]}"  -&gt; balanceado
 "(]"      -&gt; no
 "(("      -&gt; no (sobra un parentesis)</pre>
-                        <p><strong>2. Decimal a binario.</strong> Se divide entre 2 y se apila cada residuo. Al
-                            desapilar salen en el orden correcto, porque el último residuo es el primer dígito.</p>
+                        <p><strong>2. Decimal a binario.</strong> Se divide entre 2 y se apila cada residuo (como
+                            carácter <code>'0'</code> o <code>'1'</code>). Al desapilar salen en el orden correcto,
+                            porque el último residuo es el primer dígito.</p>
                         <pre class="salida">13 / 2 = 6  residuo 1
  6 / 2 = 3  residuo 0
  3 / 2 = 1  residuo 1
@@ -1293,38 +1455,70 @@ al desapilar: 1 1 0 1</pre>
                     <div>
                         <p class="label">Programa completo</p>
                         <pre>#include &lt;iostream&gt;
-#include &lt;stack&gt;
 #include &lt;string&gt;
 using namespace std;
 
+struct Nodo {
+    char dato;
+    Nodo* siguiente;
+};
+
+bool vacia(Nodo* tope) {
+    return tope == nullptr;
+}
+
+void apilar(Nodo*&amp; tope, char x) {
+    Nodo* nuevo = new Nodo;
+    nuevo-&gt;dato = x;
+    nuevo-&gt;siguiente = tope;
+    tope = nuevo;
+}
+
+char verTope(Nodo* tope) {
+    return tope-&gt;dato;
+}
+
+void desapilar(Nodo*&amp; tope) {
+    Nodo* aux = tope;
+    tope = tope-&gt;siguiente;
+    delete aux;
+}
+
+void liberar(Nodo*&amp; tope) {
+    while (!vacia(tope)) desapilar(tope);
+}
+
 bool balanceado(const string&amp; s) {
-    stack&lt;char&gt; p;
+    Nodo* tope = nullptr;
+    bool ok = true;
     for (char c : s) {
         if (c == '(' || c == '[' || c == '{') {
-            p.push(c);
+            apilar(tope, c);
         } else if (c == ')' || c == ']' || c == '}') {
-            if (p.empty()) return false;
-            char t = p.top();
-            p.pop();
+            if (vacia(tope)) { ok = false; break; }
+            char t = verTope(tope);
+            desapilar(tope);
             if ((c == ')' &amp;&amp; t != '(') ||
                 (c == ']' &amp;&amp; t != '[') ||
-                (c == '}' &amp;&amp; t != '{')) return false;
+                (c == '}' &amp;&amp; t != '{')) { ok = false; break; }
         }
     }
-    return p.empty();
+    if (!vacia(tope)) ok = false;      // sobraron simbolos abiertos
+    liberar(tope);
+    return ok;
 }
 
 string decimalABinario(int n) {
     if (n == 0) return "0";
-    stack&lt;int&gt; residuos;
+    Nodo* tope = nullptr;
     while (n &gt; 0) {
-        residuos.push(n % 2);
+        apilar(tope, (char)('0' + n % 2));
         n /= 2;
     }
     string bin;
-    while (!residuos.empty()) {
-        bin += to_string(residuos.top());
-        residuos.pop();
+    while (!vacia(tope)) {
+        bin += verTope(tope);
+        desapilar(tope);
     }
     return bin;
 }
@@ -1341,18 +1535,103 @@ int main() {
         </section>
 
         <!-- APLICACIONES 2 -->
-        <section class="slide" data-name="Aplicaciones con cola">
+        <section class="slide" data-name="Aplicación: palíndromo">
             <div class="wrap">
-                <h2>Aplicaciones con pila y cola</h2>
-                <p class="sub">Palíndromos y turnos de procesos</p>
+                <h2>Aplicación con pila y cola: palíndromo</h2>
+                <p class="sub">Una pila y una cola, ambas con el mismo struct Nodo</p>
                 <div class="two">
                     <div>
-                        <p><strong>1. Palíndromo.</strong> Se mete cada letra en una pila y en una cola. La pila las
-                            entrega de atrás hacia adelante y la cola de adelante hacia atrás. Si todas coinciden, la
-                            palabra se lee igual en los dos sentidos.</p>
-                        <p><strong>2. Turnos (Round Robin).</strong> Cada proceso recibe un tiempo máximo llamado
-                            <em>quantum</em>. Si no termina, vuelve al final de la cola con el tiempo que le falta. Así
-                            todos avanzan por turnos.</p>
+                        <p>Se mete cada letra en una pila y en una cola. La pila las entrega de atrás hacia adelante y
+                            la cola de adelante hacia atrás. Si todas coinciden, la palabra se lee igual en los dos
+                            sentidos.</p>
+                        <pre class="salida">"reconocer"
+pila entrega: r e c o n o c e r
+cola entrega: r e c o n o c e r  -&gt; iguales
+
+"casa"
+pila entrega: a s a c
+cola entrega: c a s a  -&gt; distintos</pre>
+                        <p class="muted">Se necesitan los dos punteros de la cola (<code>frente</code>,
+                            <code>fin</code>) y el puntero de la pila (<code>tope</code>). Se recorren completas para
+                            liberar la memoria, aunque ya se sepa la respuesta.
+                        </p>
+                    </div>
+                    <div>
+                        <p class="label">Programa completo</p>
+                        <pre>#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+struct Nodo {
+    char dato;
+    Nodo* siguiente;
+};
+
+void apilar(Nodo*&amp; tope, char x) {
+    Nodo* nuevo = new Nodo;
+    nuevo-&gt;dato = x;
+    nuevo-&gt;siguiente = tope;
+    tope = nuevo;
+}
+
+void desapilar(Nodo*&amp; tope) {
+    Nodo* aux = tope;
+    tope = tope-&gt;siguiente;
+    delete aux;
+}
+
+void encolar(Nodo*&amp; frente, Nodo*&amp; fin, char x) {
+    Nodo* nuevo = new Nodo;
+    nuevo-&gt;dato = x;
+    nuevo-&gt;siguiente = nullptr;
+    if (fin == nullptr) frente = nuevo;
+    else fin-&gt;siguiente = nuevo;
+    fin = nuevo;
+}
+
+void desencolar(Nodo*&amp; frente, Nodo*&amp; fin) {
+    Nodo* aux = frente;
+    frente = frente-&gt;siguiente;
+    if (frente == nullptr) fin = nullptr;
+    delete aux;
+}
+
+bool esPalindromo(const string&amp; s) {
+    Nodo* tope = nullptr;
+    Nodo* frente = nullptr;
+    Nodo* fin = nullptr;
+    for (char c : s) {
+        apilar(tope, c);
+        encolar(frente, fin, c);
+    }
+    bool igual = true;
+    while (tope != nullptr) {
+        if (tope-&gt;dato != frente-&gt;dato) igual = false;
+        desapilar(tope);
+        desencolar(frente, fin);
+    }
+    return igual;
+}
+
+int main() {
+    cout &lt;&lt; esPalindromo("reconocer") &lt;&lt; endl;   // 1
+    cout &lt;&lt; esPalindromo("casa") &lt;&lt; endl;        // 0
+    return 0;
+}</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- APLICACIONES 3 -->
+        <section class="slide" data-name="Aplicación: Round Robin">
+            <div class="wrap">
+                <h2>Aplicación con cola: turnos (Round Robin)</h2>
+                <p class="sub">Un nodo cuyo dato es un struct Proceso</p>
+                <div class="two">
+                    <div>
+                        <p>Cada proceso recibe un tiempo máximo llamado <em>quantum</em>. Si no termina, vuelve al final
+                            de la cola con el tiempo que le falta. Así todos avanzan por turnos.</p>
                         <pre class="salida">A(5) B(3) C(8), quantum 3
 A ejecuto 3, resta 2   (vuelve a la cola)
 B termino (3)
@@ -1360,44 +1639,52 @@ C ejecuto 3, resta 5   (vuelve a la cola)
 A termino (2)
 C ejecuto 3, resta 2   (vuelve a la cola)
 C termino (2)</pre>
+                        <p class="muted">El <code>dato</code> del nodo puede ser cualquier tipo, incluso un
+                            <code>struct</code>. Reencolar es sacar el frente y volver a llamar a
+                            <code>encolar</code> con el proceso actualizado.
+                        </p>
                     </div>
                     <div>
                         <p class="label">Programa completo</p>
                         <pre>#include &lt;iostream&gt;
-#include &lt;stack&gt;
-#include &lt;queue&gt;
 #include &lt;string&gt;
 using namespace std;
-
-bool esPalindromo(const string&amp; s) {
-    stack&lt;char&gt; p;
-    queue&lt;char&gt; q;
-    for (char c : s) {
-        p.push(c);
-        q.push(c);
-    }
-    while (!p.empty()) {
-        if (p.top() != q.front()) return false;
-        p.pop();
-        q.pop();
-    }
-    return true;
-}
 
 struct Proceso {
     string nombre;
     int    tiempo;
 };
 
-void roundRobin(queue&lt;Proceso&gt;&amp; q, int quantum) {
-    while (!q.empty()) {
-        Proceso p = q.front();
-        q.pop();
+struct Nodo {
+    Proceso dato;
+    Nodo* siguiente;
+};
+
+void encolar(Nodo*&amp; frente, Nodo*&amp; fin, const Proceso&amp; p) {
+    Nodo* nuevo = new Nodo;
+    nuevo-&gt;dato = p;
+    nuevo-&gt;siguiente = nullptr;
+    if (fin == nullptr) frente = nuevo;
+    else fin-&gt;siguiente = nuevo;
+    fin = nuevo;
+}
+
+void desencolar(Nodo*&amp; frente, Nodo*&amp; fin) {
+    Nodo* aux = frente;
+    frente = frente-&gt;siguiente;
+    if (frente == nullptr) fin = nullptr;
+    delete aux;
+}
+
+void roundRobin(Nodo*&amp; frente, Nodo*&amp; fin, int quantum) {
+    while (frente != nullptr) {
+        Proceso p = frente-&gt;dato;
+        desencolar(frente, fin);
         if (p.tiempo &gt; quantum) {
             p.tiempo -= quantum;
             cout &lt;&lt; p.nombre &lt;&lt; " ejecuto " &lt;&lt; quantum
                  &lt;&lt; ", resta " &lt;&lt; p.tiempo &lt;&lt; endl;
-            q.push(p);                    // vuelve al final
+            encolar(frente, fin, p);      // vuelve al final
         } else {
             cout &lt;&lt; p.nombre &lt;&lt; " termino (" &lt;&lt; p.tiempo &lt;&lt; ")" &lt;&lt; endl;
         }
@@ -1405,14 +1692,12 @@ void roundRobin(queue&lt;Proceso&gt;&amp; q, int quantum) {
 }
 
 int main() {
-    cout &lt;&lt; esPalindromo("reconocer") &lt;&lt; endl;   // 1
-    cout &lt;&lt; esPalindromo("casa") &lt;&lt; endl;        // 0
-
-    queue&lt;Proceso&gt; cola;
-    cola.push({"A", 5});
-    cola.push({"B", 3});
-    cola.push({"C", 8});
-    roundRobin(cola, 3);
+    Nodo* frente = nullptr;
+    Nodo* fin = nullptr;
+    encolar(frente, fin, {"A", 5});
+    encolar(frente, fin, {"B", 3});
+    encolar(frente, fin, {"C", 8});
+    roundRobin(frente, fin, 3);
     return 0;
 }</pre>
                     </div>
@@ -1444,17 +1729,24 @@ int main() {
                         <td>Con librería</td>
                         <td><code>stack</code>: <code>push</code>, <code>pop</code>, <code>top</code></td>
                         <td><code>queue</code>: <code>push</code>, <code>pop</code>, <code>front</code>,
-                            <code>back</code></td>
+                            <code>back</code>
+                        </td>
                     </tr>
                     <tr>
-                        <td>Con arreglo</td>
-                        <td><code>tope</code> sube y baja</td>
-                        <td>Circular con <code>% MAX</code>, <code>frente</code> y <code>cuenta</code></td>
+                        <td>Con lista enlazada</td>
+                        <td>Un puntero <code>tope</code>. <code>apilar</code>: el nuevo apunta al tope y pasa a ser el
+                            tope. <code>desapilar</code>: el tope baja al <code>siguiente</code> y se hace
+                            <code>delete</code>
+                        </td>
+                        <td>Dos punteros <code>frente</code> y <code>fin</code>. <code>encolar</code>: se engancha
+                            detrás de <code>fin</code>. <code>desencolar</code>: el frente avanza y, si queda vacía,
+                            <code>fin = nullptr</code>
+                        </td>
                     </tr>
                     <tr>
-                        <td>Con vector</td>
-                        <td><code>push_back</code>, <code>pop_back</code>, <code>back</code></td>
-                        <td><code>push_back</code>, <code>erase(begin())</code>, <code>front</code></td>
+                        <td>Estructura</td>
+                        <td colspan="2"><code>struct Nodo { dato; Nodo* siguiente; }</code> y las funciones van
+                            afuera, recibiendo <code>Nodo*&amp;</code> cuando cambian el tope, el frente o el fin</td>
                     </tr>
                     <tr>
                         <td>Recorrer con librería</td>
@@ -1462,20 +1754,24 @@ int main() {
                         <td>Rotación <code>n</code> veces o copia por valor</td>
                     </tr>
                     <tr>
-                        <td>Recorrer con arreglo o vector</td>
-                        <td><code>for</code> del tope al fondo</td>
-                        <td><code>for</code> con <code>(frente + i) % MAX</code></td>
+                        <td>Recorrer con lista</td>
+                        <td><code>aux = tope</code> y <code>aux = aux-&gt;siguiente</code> hasta <code>nullptr</code>
+                        </td>
+                        <td><code>aux = frente</code> y <code>aux = aux-&gt;siguiente</code> hasta <code>nullptr</code>
+                        </td>
                     </tr>
                     <tr>
                         <td>Reemplazar un campo</td>
-                        <td><code>auto&amp; e</code> o <code>datos[i].campo</code></td>
-                        <td><code>datos[pos].campo</code> o rotando</td>
+                        <td colspan="2"><code>aux-&gt;dato.campo = nuevo;</code> (o sacar y reinsertar con la
+                            librería)</td>
                     </tr>
                 </table>
-                <p><strong>Errores comunes:</strong> usar <code>top()</code> o <code>front()</code> con la estructura
-                    vacía, esperar que <code>pop()</code> devuelva el valor, olvidar la <code>&amp;</code> al modificar
-                    (se cambia una copia), recorrer el arreglo circular de 0 a <code>MAX</code> y no revisar si está
-                    llena antes de agregar.</p>
+                <p><strong>Errores comunes:</strong> usar <code>verTope</code> o <code>verFrente</code> con la
+                    estructura vacía (<code>nullptr</code>), olvidar la <code>&amp;</code> en
+                    <code>Nodo*&amp;</code> al cambiar tope, frente o fin, no poner <code>fin = nullptr</code> al
+                    vaciar la cola, perder la lista por mover <code>tope</code> o <code>frente</code> al recorrer en
+                    vez de usar <code>aux</code>, y olvidar el <code>delete</code> al sacar un nodo.
+                </p>
                 <p><button class="btn primary" type="button" id="home">Volver al inicio</button></p>
             </div>
         </section>
