@@ -496,30 +496,6 @@
       backdrop-filter: blur(4px);
     }
 
-    .carousel-item-date-badge {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      background: rgba(15, 23, 42, 0.78);
-      color: #ffffff;
-      font-size: 0.72rem;
-      font-weight: 600;
-      padding: 3px 8px;
-      border-radius: 6px;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
-      z-index: 2;
-    }
-
-    .carousel-item-date-badge svg {
-      opacity: 0.9;
-    }
-
     .carousel-item-info {
       padding: 12px 14px;
     }
@@ -897,256 +873,153 @@
       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
     }
 
-    /* Widgets Navideños (Estilo Blogspot Clásico) */
-    .navidad-widget-tree {
+    /* Widgets Navideños: Rampa de Nieve y Papá Noel en Trineo */
+    .navidad-widget-rampa {
       position: fixed;
-      bottom: 12px;
-      right: 14px;
-      width: 76px;
-      height: 96px;
-      z-index: 999;
+      bottom: 0;
+      right: 0;
+      width: 145px;
+      height: 100px;
+      z-index: 996;
       pointer-events: none;
       user-select: none;
-      filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.28));
-      transition: transform 0.3s ease;
+      filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.22));
     }
 
-    .navidad-widget-deer {
+    .navidad-widget-santa {
       position: fixed;
-      bottom: 12px;
+      bottom: 8px;
       left: 0;
-      width: 78px;
-      height: 90px;
+      width: 140px;
+      height: 85px;
       z-index: 998;
       pointer-events: none;
       user-select: none;
-      filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.28));
-      animation: deerRunAcross 13s linear infinite;
+      filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.3));
+      animation: santaSleighRideAndLaunch 12s linear infinite;
       will-change: transform;
     }
 
-    @keyframes deerRunAcross {
+    /* Recorrido Horizontal y Salida en Curva por la Rampa */
+    @keyframes santaSleighRideAndLaunch {
       0% {
-        transform: translateX(-110px);
+        transform: translateX(-160px) translateY(0px) rotate(0deg);
+        opacity: 1;
+      }
+      20% {
+        transform: translateX(calc((100vw - 230px) * 0.28)) translateY(-2px) rotate(0.5deg);
+        opacity: 1;
+      }
+      40% {
+        transform: translateX(calc((100vw - 230px) * 0.58)) translateY(0px) rotate(-0.5deg);
+        opacity: 1;
+      }
+      62% {
+        transform: translateX(calc((100vw - 230px) * 0.88)) translateY(-2px) rotate(0.5deg);
+        opacity: 1;
+      }
+      68% {
+        /* Llega a la base de la rampa de nieve */
+        transform: translateX(calc(100vw - 215px)) translateY(0px) rotate(0deg);
+        opacity: 1;
+      }
+      73% {
+        /* Comienza a subir la pendiente suave */
+        transform: translateX(calc(100vw - 165px)) translateY(-10px) rotate(-8deg);
+        opacity: 1;
+      }
+      78% {
+        /* Sube la curva pronunciada de la rampa */
+        transform: translateX(calc(100vw - 120px)) translateY(-28px) rotate(-18deg);
+        opacity: 1;
+      }
+      82% {
+        /* Alcanza el borde de despegue */
+        transform: translateX(calc(100vw - 80px)) translateY(-62px) rotate(-28deg);
+        opacity: 1;
+      }
+      86% {
+        /* ¡Despega volando en parábola hacia el cielo! */
+        transform: translateX(calc(100vw - 30px)) translateY(-125px) rotate(-38deg) scale(0.96);
+        opacity: 1;
+      }
+      91% {
+        /* Vuelo ascendente en curva */
+        transform: translateX(calc(100vw + 25px)) translateY(-220px) rotate(-46deg) scale(0.88);
+        opacity: 1;
+      }
+      95% {
+        /* Se aleja en el cielo nocturno */
+        transform: translateX(calc(100vw + 90px)) translateY(-330px) rotate(-52deg) scale(0.78);
+        opacity: 0.95;
+      }
+      98% {
+        transform: translateX(calc(100vw + 140px)) translateY(-400px) rotate(-56deg) scale(0.68);
+        opacity: 0;
+      }
+      99.9% {
+        transform: translateX(-160px) translateY(0px) rotate(0deg);
+        opacity: 0;
       }
       100% {
-        transform: translateX(calc(100vw + 60px));
+        transform: translateX(-160px) translateY(0px) rotate(0deg);
+        opacity: 1;
       }
     }
 
     @media (max-width: 600px) {
-      .navidad-widget-tree {
-        width: 58px;
-        height: 74px;
-        bottom: 8px;
-        right: 8px;
+      .navidad-widget-rampa {
+        width: 110px;
+        height: 76px;
       }
-      .navidad-widget-deer {
-        width: 60px;
-        height: 70px;
-        bottom: 8px;
-        animation: deerRunAcross 9s linear infinite;
+      .navidad-widget-santa {
+        width: 105px;
+        height: 64px;
+        bottom: 4px;
+        animation: santaSleighRideAndLaunch 8.5s linear infinite;
       }
     }
 
-    /* Animaciones del Árbol */
-    .xmas-star {
-      transform-origin: 40px 17px;
-      animation: starTwinkle 1.8s ease-in-out infinite alternate;
+    /* Animaciones internas de Papá Noel y Rodolfo */
+    .santa-waving-arm {
+      transform-origin: 52px 36px;
+      animation: santaWave 0.5s ease-in-out infinite alternate;
+    }
+    @keyframes santaWave {
+      0% { transform: rotate(-8deg); }
+      100% { transform: rotate(18deg); }
     }
 
-    @keyframes starTwinkle {
-      0% {
-        transform: scale(0.95) rotate(-3deg);
-        filter: drop-shadow(0 0 3px #fde047);
-      }
-      100% {
-        transform: scale(1.15) rotate(4deg);
-        filter: drop-shadow(0 0 9px #facc15);
-      }
+    .santa-pompom {
+      transform-origin: 76px 15px;
+      animation: pompomBob 0.35s ease-in-out infinite alternate;
+    }
+    @keyframes pompomBob {
+      0% { transform: translateY(0px) scale(0.95); }
+      100% { transform: translateY(-3px) scale(1.05); }
     }
 
-    .xmas-bulb {
-      transition: filter 0.2s ease;
+    .reindeer-leg-front {
+      transform-origin: 132px 46px;
+      animation: legStrideFront 0.35s ease-in-out infinite alternate;
+    }
+    .reindeer-leg-back {
+      transform-origin: 110px 46px;
+      animation: legStrideBack 0.35s ease-in-out infinite alternate;
+    }
+    @keyframes legStrideFront {
+      0% { transform: rotate(-18deg); }
+      100% { transform: rotate(18deg); }
+    }
+    @keyframes legStrideBack {
+      0% { transform: rotate(18deg); }
+      100% { transform: rotate(-18deg); }
     }
 
-    .bulb-red {
-      fill: #ef4444;
-      animation: blinkRed 0.8s infinite alternate ease-in-out;
-    }
-
-    .bulb-gold {
-      fill: #facc15;
-      animation: blinkGold 1.1s infinite alternate ease-in-out 0.25s;
-    }
-
-    .bulb-blue {
-      fill: #38bdf8;
-      animation: blinkBlue 0.9s infinite alternate ease-in-out 0.45s;
-    }
-
-    .bulb-magenta {
-      fill: #ec4899;
-      animation: blinkMagenta 1.2s infinite alternate ease-in-out 0.2s;
-    }
-
-    .bulb-lime {
-      fill: #4ade80;
-      animation: blinkLime 1.0s infinite alternate ease-in-out 0.6s;
-    }
-
-    @keyframes blinkRed {
-      0% { opacity: 0.35; filter: drop-shadow(0 0 1px #ef4444); }
-      100% { opacity: 1; filter: drop-shadow(0 0 6px #ef4444); }
-    }
-
-    @keyframes blinkGold {
-      0% { opacity: 0.35; filter: drop-shadow(0 0 1px #facc15); }
-      100% { opacity: 1; filter: drop-shadow(0 0 6px #facc15); }
-    }
-
-    @keyframes blinkBlue {
-      0% { opacity: 0.35; filter: drop-shadow(0 0 1px #38bdf8); }
-      100% { opacity: 1; filter: drop-shadow(0 0 6px #38bdf8); }
-    }
-
-    @keyframes blinkMagenta {
-      0% { opacity: 0.35; filter: drop-shadow(0 0 1px #ec4899); }
-      100% { opacity: 1; filter: drop-shadow(0 0 6px #ec4899); }
-    }
-
-    @keyframes blinkLime {
-      0% { opacity: 0.35; filter: drop-shadow(0 0 1px #4ade80); }
-      100% { opacity: 1; filter: drop-shadow(0 0 6px #4ade80); }
-    }
-
-    /* Animaciones del Venado Corriendo (Rodolfo al Trote) */
-    .deer-character {
-      transform-origin: 40px 75px;
-      animation: deerGallopBounce 0.22s ease-in-out infinite alternate;
-    }
-
-    @keyframes deerGallopBounce {
-      0% {
-        transform: translateY(0px) rotate(-1deg);
-      }
-      100% {
-        transform: translateY(-5px) rotate(2.5deg);
-      }
-    }
-
-    /* Galope / Trote de Patas */
-    .deer-leg-back-1 {
-      transform-origin: 24.5px 68px;
-      animation: legRunBack1 0.44s ease-in-out infinite alternate;
-    }
-
-    .deer-leg-back-2 {
-      transform-origin: 33.5px 66px;
-      animation: legRunBack2 0.44s ease-in-out infinite alternate;
-    }
-
-    .deer-leg-front-1 {
-      transform-origin: 48.5px 66px;
-      animation: legRunFront1 0.44s ease-in-out infinite alternate;
-    }
-
-    .deer-leg-front-2 {
-      transform-origin: 56.5px 68px;
-      animation: legRunFront2 0.44s ease-in-out infinite alternate;
-    }
-
-    @keyframes legRunBack1 {
-      0% { transform: rotate(-26deg); }
-      100% { transform: rotate(22deg); }
-    }
-
-    @keyframes legRunBack2 {
-      0% { transform: rotate(20deg); }
-      100% { transform: rotate(-28deg); }
-    }
-
-    @keyframes legRunFront1 {
-      0% { transform: rotate(28deg); }
-      100% { transform: rotate(-22deg); }
-    }
-
-    @keyframes legRunFront2 {
-      0% { transform: rotate(-22deg); }
-      100% { transform: rotate(26deg); }
-    }
-
-    .deer-head-group {
-      transform-origin: 52px 42px;
-      animation: deerHeadRun 0.44s ease-in-out infinite alternate;
-    }
-
-    @keyframes deerHeadRun {
-      0% { transform: rotate(-3deg); }
-      100% { transform: rotate(3deg); }
-    }
-
-    .deer-tail {
-      transform-origin: 20px 54px;
-      animation: tailWiggleFast 0.25s ease-in-out infinite alternate;
-    }
-
-    @keyframes tailWiggleFast {
-      0% { transform: rotate(-6deg); }
-      100% { transform: rotate(22deg); }
-    }
-
-    .deer-bell {
-      transform-origin: 56px 47px;
-      animation: bellSwayFast 0.44s ease-in-out infinite alternate;
-    }
-
-    @keyframes bellSwayFast {
-      0% { transform: rotate(-14deg); }
-      100% { transform: rotate(14deg); }
-    }
-
-    .deer-ear-left {
-      transform-origin: 50px 28px;
-      animation: earTwitchLeft 3s ease-in-out infinite;
-    }
-
-    .deer-ear-right {
-      transform-origin: 60px 28px;
-      animation: earTwitchRight 3s ease-in-out infinite 0.2s;
-    }
-
-    @keyframes earTwitchLeft {
-      0%, 88%, 100% { transform: rotate(0deg); }
-      92% { transform: rotate(-9deg); }
-      96% { transform: rotate(4deg); }
-    }
-
-    @keyframes earTwitchRight {
-      0%, 88%, 100% { transform: rotate(0deg); }
-      92% { transform: rotate(9deg); }
-      96% { transform: rotate(-4deg); }
-    }
-
-    .deer-eye {
-      transform-origin: 55px 32px;
-      animation: deerBlink 4.5s infinite;
-    }
-
-    .deer-eye-shine {
-      animation: deerBlink 4.5s infinite;
-    }
-
-    @keyframes deerBlink {
-      0%, 96%, 100% { transform: scaleY(1); opacity: 1; }
-      98% { transform: scaleY(0.1); opacity: 0.2; }
-    }
-
-    .deer-red-nose {
+    .santa-red-nose {
       fill: #ef4444;
       animation: noseGlow 1.2s infinite alternate ease-in-out;
     }
-
     @keyframes noseGlow {
       0% {
         filter: drop-shadow(0 0 2px #dc2626);
@@ -1156,6 +1029,29 @@
         filter: drop-shadow(0 0 9px #ef4444) drop-shadow(0 0 3px #f87171);
         opacity: 1;
       }
+    }
+
+    .trail-star {
+      animation: starFlicker 0.4s infinite alternate;
+    }
+    .trail-puff {
+      animation: puffFade 0.6s infinite alternate;
+    }
+    @keyframes starFlicker {
+      0% { opacity: 0.3; transform: scale(0.7); }
+      100% { opacity: 1; transform: scale(1.2); }
+    }
+    @keyframes puffFade {
+      0% { opacity: 0.2; transform: translateY(0); }
+      100% { opacity: 0.8; transform: translateY(-2px); }
+    }
+
+    .ramp-sparkle {
+      animation: rampTwinkle 1.2s ease-in-out infinite alternate;
+    }
+    @keyframes rampTwinkle {
+      0% { opacity: 0.3; transform: scale(0.8); }
+      100% { opacity: 1; transform: scale(1.3); }
     }
   </style>
 </head>
@@ -1444,15 +1340,6 @@
               data-img-title="Infografía: Encolar en una Cola (FIFO) con Listas Enlazadas" title="Toca para ampliar y explorar con zoom">
               <div class="carousel-item-img-wrap">
                 <img src="./images/infografia-encolar-en-una-cola.png" alt="Infografía de Función encolar() en Cola FIFO con Listas Enlazadas" loading="lazy">
-                <span class="carousel-item-date-badge">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                  </svg>
-                  14 nov 2026
-                </span>
                 <span class="carousel-item-badge">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="11" cy="11" r="8"></circle>
@@ -1483,15 +1370,6 @@
               data-img-title="Infografía: Función verTope() en Pilas (Listas Enlazadas)" title="Toca para ampliar y explorar con zoom">
               <div class="carousel-item-img-wrap">
                 <img src="./images/infografia_funcion_tope_pila.png" alt="Infografía de Función verTope() en Pilas con Listas Enlazadas" loading="lazy">
-                <span class="carousel-item-date-badge">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                  </svg>
-                  13 nov 2026
-                </span>
                 <span class="carousel-item-badge">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="11" cy="11" r="8"></circle>
@@ -1522,15 +1400,6 @@
               data-img-title="Infografía: Deque en C++ (Doble Extremo)" title="Toca para ampliar y explorar con zoom">
               <div class="carousel-item-img-wrap">
                 <img src="./images/deque_infografia.png" alt="Infografía de Deque en C++ (Doble Extremo)" loading="lazy">
-                <span class="carousel-item-date-badge">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                  </svg>
-                  4 nov 2026
-                </span>
                 <span class="carousel-item-badge">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="11" cy="11" r="8"></circle>
@@ -1561,15 +1430,6 @@
               data-img-title="Infografía: Colas en C++ (FIFO)" title="Toca para ampliar y explorar con zoom">
               <div class="carousel-item-img-wrap">
                 <img src="./images/colas-en-c++.png" alt="Infografía de Colas en C++ (FIFO)" loading="lazy">
-                <span class="carousel-item-date-badge">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                  </svg>
-                  4 nov 2026
-                </span>
                 <span class="carousel-item-badge">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="11" cy="11" r="8"></circle>
@@ -1600,15 +1460,6 @@
               data-img-title="Infografía: Listas en C++ (std::list)" title="Toca para ampliar y explorar con zoom">
               <div class="carousel-item-img-wrap">
                 <img src="./images/infografia-listas.en-cmasmas.png" alt="Infografía de Listas en C++ (std::list)" loading="lazy">
-                <span class="carousel-item-date-badge">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                  </svg>
-                  31 oct 2026
-                </span>
                 <span class="carousel-item-badge">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="11" cy="11" r="8"></circle>
@@ -1639,15 +1490,6 @@
               data-img-title="Infografía: Pilas en C++ (LIFO)" title="Toca para ampliar y explorar con zoom">
               <div class="carousel-item-img-wrap">
                 <img src="./images/pilas-infografia.png" alt="Infografía de Pilas en C++ (LIFO)" loading="lazy">
-                <span class="carousel-item-date-badge">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                  </svg>
-                  30 oct 2026
-                </span>
                 <span class="carousel-item-badge">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="11" cy="11" r="8"></circle>
@@ -1678,15 +1520,6 @@
               data-img-title="Infografía: Ordenamiento Quicksort en C++" title="Toca para ampliar y explorar con zoom">
               <div class="carousel-item-img-wrap">
                 <img src="./images/infografia3.png" alt="Infografía de Ordenamiento Quicksort en C++" loading="lazy">
-                <span class="carousel-item-date-badge">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                  </svg>
-                  27 oct 2026
-                </span>
                 <span class="carousel-item-badge">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="11" cy="11" r="8"></circle>
@@ -1717,15 +1550,6 @@
               data-img-title="Infografía: Lista enlazada en C++ desde cero" title="Toca para ampliar y explorar con zoom">
               <div class="carousel-item-img-wrap">
                 <img src="./images/infografia2.png" alt="Infografía de Lista Enlazada en C++ desde Cero" loading="lazy">
-                <span class="carousel-item-date-badge">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                  </svg>
-                  24 oct 2026
-                </span>
                 <span class="carousel-item-badge">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="11" cy="11" r="8"></circle>
@@ -1756,15 +1580,6 @@
               data-img-title="Infografía: Paso por valor vs. paso por referencia en C++" title="Toca para ampliar y explorar con zoom">
               <div class="carousel-item-img-wrap">
                 <img src="./images/Infografia_01.png" alt="Infografía de Paso por Valor vs Referencia" loading="lazy">
-                <span class="carousel-item-date-badge">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                  </svg>
-                  24 oct 2026
-                </span>
                 <span class="carousel-item-badge">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="11" cy="11" r="8"></circle>
@@ -1920,7 +1735,7 @@
             <tr data-day="1">
               <td><strong>Lunes</strong></td>
               <td>11:00 am - 12:00 pm</td>
-              <td>Biblioteca</td>
+              <td>Biblioteca (mesas segundo piso)</td>
             </tr>
             <tr data-day="2">
               <td><strong>Martes</strong></td>
@@ -1960,7 +1775,7 @@
             <tr data-day="6">
               <td><strong>Sábado</strong></td>
               <td>10:00 am - 12:00 pm</td>
-              <td>Biblioteca</td>
+              <td>Biblioteca (mesas segundo piso)</td>
             </tr>
           </tbody>
         </table>
@@ -2582,112 +2397,140 @@
     })();
   </script>
   <!-- WIDGETS NAVIDEÑOS CLÁSICOS (BLOGSPOT STYLE) -->
-  <!-- Venado Animado Corriendo (Cruza de Izquierda a Derecha) -->
-  <div class="navidad-widget-deer" aria-hidden="true" title="¡Rodolfo al galope!">
-    <svg viewBox="0 0 85 95" width="100%" height="100%" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <g class="deer-character">
-        <!-- Cola con animación -->
-        <path d="M18 58 Q12 55 13 50 Q16 48 20 54 Z" fill="#b45309" class="deer-tail"/>
-        <circle cx="14" cy="50" r="2.5" fill="#fef3c7" class="deer-tail"/>
-        <!-- Patas con animación de galope -->
-        <g class="deer-leg-back-1">
-          <rect x="22" y="68" width="5" height="18" rx="2" fill="#92400e"/>
-          <rect x="22" y="82" width="5" height="4" rx="1" fill="#451a03"/>
-        </g>
-        <g class="deer-leg-back-2">
-          <rect x="31" y="66" width="5" height="20" rx="2" fill="#78350f"/>
-          <rect x="31" y="82" width="5" height="4" rx="1" fill="#451a03"/>
-        </g>
-        <g class="deer-leg-front-1">
-          <rect x="46" y="66" width="5" height="20" rx="2" fill="#78350f"/>
-          <rect x="46" y="82" width="5" height="4" rx="1" fill="#451a03"/>
-        </g>
-        <g class="deer-leg-front-2">
-          <rect x="54" y="68" width="5" height="18" rx="2" fill="#92400e"/>
-          <rect x="54" y="82" width="5" height="4" rx="1" fill="#451a03"/>
-        </g>
-        <!-- Cuerpo -->
-        <ellipse cx="38" cy="60" rx="20" ry="14" fill="#b45309"/>
-        <ellipse cx="38" cy="62" rx="14" ry="9" fill="#d97706"/>
-        <!-- Manchas en el lomo -->
-        <circle cx="30" cy="54" r="1.6" fill="#fef3c7" opacity="0.9"/>
-        <circle cx="36" cy="52" r="1.8" fill="#fef3c7" opacity="0.9"/>
-        <circle cx="43" cy="55" r="1.5" fill="#fef3c7" opacity="0.9"/>
-        <!-- Cuello -->
-        <path d="M46 58 L58 40 L65 44 L54 66 Z" fill="#b45309"/>
-        <!-- Bufanda / Collar rojo navideño con cascabel -->
-        <path d="M51 46 Q58 50 63 43" stroke="#dc2626" stroke-width="4.5" stroke-linecap="round"/>
-        <g class="deer-bell">
-          <circle cx="56" cy="50" r="3.5" fill="#facc15" stroke="#ca8a04" stroke-width="0.8"/>
-          <line x1="56" y1="50" x2="56" y2="52.5" stroke="#713f12" stroke-width="0.8"/>
-        </g>
-        <!-- Cabeza con movimiento de respiración -->
-        <g class="deer-head-group">
-          <!-- Orejas con temblor -->
-          <path d="M48 30 Q40 26 42 22 Q48 24 51 28 Z" fill="#b45309" class="deer-ear-left"/>
-          <path d="M47 28 Q42 25 44 23 Q48 25 49 27 Z" fill="#fbcfe8" class="deer-ear-left"/>
-          <path d="M62 30 Q70 26 68 22 Q62 24 59 28 Z" fill="#b45309" class="deer-ear-right"/>
-          <path d="M63 28 Q68 25 66 23 Q62 25 61 27 Z" fill="#fbcfe8" class="deer-ear-right"/>
-          <!-- Cornamenta (Antlers) -->
-          <!-- Cuerno izquierdo -->
-          <path d="M49 24 Q45 14 43 7 M45 16 Q39 15 37 12 M44 11 Q41 9 40 5" stroke="#78350f" stroke-width="2.4" stroke-linecap="round"/>
-          <!-- Cuerno derecho -->
-          <path d="M59 24 Q63 14 65 7 M61 16 Q67 15 69 12 M63 11 Q66 9 67 5" stroke="#78350f" stroke-width="2.4" stroke-linecap="round"/>
-          <!-- Cabeza base -->
-          <ellipse cx="57" cy="34" rx="10" ry="9" fill="#b45309"/>
-          <!-- Hocico -->
-          <ellipse cx="64" cy="38" rx="8" ry="6" fill="#fde68a"/>
-          <!-- Ojo animado (parpadea) -->
-          <ellipse cx="55" cy="32" rx="2.2" ry="2.8" fill="#1e1b4b" class="deer-eye"/>
-          <circle cx="56" cy="31" r="0.8" fill="#ffffff" class="deer-eye-shine"/>
-          <!-- Nariz Roja Brillante de Rodolfo -->
-          <circle cx="70" cy="36" r="3.8" class="deer-red-nose"/>
-          <ellipse cx="69" cy="34.8" rx="1.2" ry="0.8" fill="#fff" opacity="0.8"/>
-        </g>
-      </g>
+  <!-- Rampa de Nieve en la Esquina Inferior Derecha -->
+  <div class="navidad-widget-rampa" aria-hidden="true" title="¡Rampa de salto nevada!">
+    <svg viewBox="0 0 160 110" width="100%" height="100%" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="snowGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#ffffff"/>
+          <stop offset="45%" stop-color="#e0f2fe"/>
+          <stop offset="100%" stop-color="#93c5fd"/>
+        </linearGradient>
+        <linearGradient id="snowShadow" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.3"/>
+          <stop offset="100%" stop-color="#0284c7" stop-opacity="0.6"/>
+        </linearGradient>
+      </defs>
+      <!-- Base y sombra de nieve -->
+      <path d="M0 108 C40 108 85 98 120 70 C135 56 145 38 152 20 L160 22 L160 110 L0 110 Z" fill="url(#snowShadow)"/>
+      <!-- Cuerpo de la rampa nevada con curva de despegue (ski jump kicker) -->
+      <path d="M0 105 C42 105 82 94 116 66 C131 52 142 34 149 16 L160 18 L160 110 L0 110 Z" fill="url(#snowGrad)"/>
+      <!-- Borde superior / cresta de nieve suave -->
+      <path d="M0 104 C42 104 82 93 116 65 C131 51 142 33 149 15" stroke="#ffffff" stroke-width="4.5" stroke-linecap="round"/>
+      <!-- Pequeño pino nevado en la esquina trasera -->
+      <path d="M138 90 L146 76 L154 90 Z" fill="#047857"/>
+      <path d="M140 78 L146 66 L152 78 Z" fill="#059669"/>
+      <path d="M142 68 L146 58 L150 68 Z" fill="#10b981"/>
+      <path d="M144 58 L146 54 L148 58 Z" fill="#ffffff"/>
+      <ellipse cx="146" cy="91" rx="9" ry="2.5" fill="#f1f5f9"/>
+      <!-- Banderín / Poste de lanzamiento estilo bastón de caramelo -->
+      <line x1="148" y1="16" x2="148" y2="42" stroke="#dc2626" stroke-width="2.6" stroke-linecap="round"/>
+      <line x1="148" y1="20" x2="148" y2="24" stroke="#ffffff" stroke-width="2.6"/>
+      <line x1="148" y1="28" x2="148" y2="32" stroke="#ffffff" stroke-width="2.6"/>
+      <line x1="148" y1="36" x2="148" y2="40" stroke="#ffffff" stroke-width="2.6"/>
+      <polygon points="148,16 138,20 148,24" fill="#facc15"/>
+      <!-- Destellos y polvo de nieve en el aire -->
+      <circle cx="150" cy="11" r="2.2" fill="#ffffff" class="ramp-sparkle"/>
+      <circle cx="156" cy="18" r="1.6" fill="#fde047" class="ramp-sparkle"/>
+      <circle cx="142" cy="22" r="1.8" fill="#ffffff" class="ramp-sparkle"/>
+      <circle cx="132" cy="40" r="1.5" fill="#bae6fd" class="ramp-sparkle"/>
     </svg>
   </div>
 
-  <!-- Árbol de Navidad con Luces Animadas (Esquina Inferior Derecha) -->
-  <div class="navidad-widget-tree" aria-hidden="true" title="¡Feliz Navidad!">
-    <svg viewBox="0 0 80 100" width="100%" height="100%" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <!-- Tronco y base -->
-      <rect x="35" y="78" width="10" height="14" rx="2" fill="#78350f" />
-      <ellipse cx="40" cy="92" rx="14" ry="4" fill="#451a03" opacity="0.6"/>
-      <!-- Regalo navideño -->
-      <rect x="47" y="81" width="13" height="11" rx="2" fill="#dc2626"/>
-      <rect x="52" y="81" width="3" height="11" fill="#facc15"/>
-      <rect x="47" y="85" width="13" height="3" fill="#facc15"/>
-      <!-- Pino Capa 3 (Inferior) -->
-      <path d="M12 78 C20 74 32 76 40 76 C48 76 60 74 68 78 L58 56 L62 56 L40 34 L18 56 L22 56 Z" fill="#065f46" />
-      <path d="M15 78 Q28 66 40 70 Q52 66 65 78 L58 56 L22 56 Z" fill="#047857"/>
-      <!-- Nieve y ramas capa 3 -->
-      <path d="M14 78 Q22 75 26 77 Q34 74 40 76 Q46 74 54 77 Q58 75 66 78 Q60 82 54 80 Q48 82 40 80 Q32 82 26 80 Q20 82 14 78 Z" fill="#f1f5f9" opacity="0.85"/>
-      <!-- Pino Capa 2 (Media) -->
-      <path d="M20 58 C26 55 34 57 40 57 C46 57 54 55 60 58 L52 38 L55 38 L40 20 L25 38 L28 38 Z" fill="#059669" />
-      <path d="M22 58 Q31 49 40 52 Q49 49 58 58 L52 38 L28 38 Z" fill="#10b981"/>
-      <!-- Nieve capa 2 -->
-      <path d="M21 58 Q28 56 32 57 Q36 55 40 57 Q44 55 48 57 Q52 56 59 58 Q54 61 48 59 Q40 61 32 59 Q26 61 21 58 Z" fill="#f1f5f9" opacity="0.85"/>
-      <!-- Pino Capa 1 (Superior) -->
-      <path d="M28 40 C32 38 36 39 40 39 C44 39 48 38 52 40 L40 16 Z" fill="#10b981" />
-      <!-- Guirnalda dorada -->
-      <path d="M28 38 Q35 44 50 36" stroke="#facc15" stroke-width="2" stroke-linecap="round" stroke-dasharray="2 3"/>
-      <path d="M22 56 Q33 65 57 54" stroke="#facc15" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="2 3"/>
-      <path d="M16 75 Q32 87 64 73" stroke="#facc15" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="2 4"/>
-      <!-- Bombillos Navideños Parpadeantes (estilo Blogspot) -->
-      <circle cx="34" cy="30" r="2.8" class="xmas-bulb bulb-red" />
-      <circle cx="46" cy="32" r="2.8" class="xmas-bulb bulb-gold" />
-      <circle cx="26" cy="48" r="3.2" class="xmas-bulb bulb-blue" />
-      <circle cx="38" cy="46" r="3" class="xmas-bulb bulb-magenta" />
-      <circle cx="52" cy="48" r="3.2" class="xmas-bulb bulb-lime" />
-      <circle cx="20" cy="68" r="3.5" class="xmas-bulb bulb-gold" />
-      <circle cx="32" cy="66" r="3.2" class="xmas-bulb bulb-red" />
-      <circle cx="44" cy="65" r="3.5" class="xmas-bulb bulb-blue" />
-      <circle cx="58" cy="67" r="3.2" class="xmas-bulb bulb-magenta" />
-      <!-- Estrella Superior Brillante -->
-      <g class="xmas-star">
-        <polygon points="40,8 43,15 50,15 44,19 46,26 40,22 34,26 36,19 30,15 37,15" fill="#facc15" stroke="#eab308" stroke-width="0.8"/>
-        <circle cx="40" cy="17" r="2" fill="#fff" opacity="0.8"/>
+  <!-- Papá Noel en Trineo con Rodolfo (Cruza y Salta en Curva por la Rampa) -->
+  <div class="navidad-widget-santa" aria-hidden="true" title="¡Papá Noel al vuelo en su trineo!">
+    <svg viewBox="0 0 155 85" width="100%" height="100%" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Estela mágica y nieve detrás del trineo -->
+      <g>
+        <polygon points="4,62 6,65 9,65 6.5,67 7.5,70 5,68 2.5,70 3.5,67 1,65 4,65" fill="#fde047" class="trail-star"/>
+        <polygon points="10,50 11.5,52 14,52 12,53.5 13,56 11,54.5 9,56 10,53.5 8,52 10.5,52" fill="#fde047" class="trail-star" style="animation-delay: 0.2s;"/>
+        <circle cx="3" cy="58" r="2" fill="#ffffff" opacity="0.8" class="trail-puff"/>
+        <circle cx="7" cy="54" r="1.6" fill="#e0f2fe" opacity="0.7" class="trail-puff" style="animation-delay: 0.3s;"/>
+      </g>
+
+      <!-- Patines / Cuchillas del trineo (Doradas con voluta) -->
+      <g>
+        <path d="M8 68 C20 68 76 68 84 68 C92 68 96 62 94 54 C92 50 88 51 86 54 C88 59 86 63 80 63 L14 63 C10 63 8 60 9 56" stroke="#facc15" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+        <line x1="28" y1="63" x2="30" y2="52" stroke="#ca8a04" stroke-width="2.2"/>
+        <line x1="68" y1="63" x2="66" y2="52" stroke="#ca8a04" stroke-width="2.2"/>
+      </g>
+
+      <!-- Saco de regalos en la parte trasera del trineo -->
+      <g>
+        <path d="M18 48 C14 38 18 28 28 26 C38 24 44 30 42 44 Z" fill="#15803d"/>
+        <rect x="20" y="20" width="9" height="9" rx="1.5" fill="#f59e0b"/>
+        <rect x="23.5" y="20" width="2" height="9" fill="#ef4444"/>
+        <rect x="20" y="23.5" width="9" height="2" fill="#ef4444"/>
+        <rect x="30" y="16" width="8" height="11" rx="1.5" fill="#3b82f6"/>
+        <rect x="30" y="20" width="8" height="2" fill="#facc15"/>
+      </g>
+
+      <!-- Cuerpo del Trineo Rojo y Dorado -->
+      <g>
+        <path d="M16 42 C14 50 18 56 26 56 L72 56 C80 56 86 50 84 42 C82 36 76 34 70 36 L30 36 C22 36 17 38 16 42 Z" fill="#dc2626"/>
+        <path d="M15 40 C22 35 72 35 84 41" stroke="#fde047" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+        <circle cx="50" cy="46" r="3" fill="#facc15"/>
+      </g>
+
+      <!-- Papá Noel (Santa Claus) sentado en el trineo -->
+      <g id="santaCharacter">
+        <!-- Cuerpo y abrigo rojo -->
+        <path d="M46 48 C46 36 54 32 64 32 C72 32 76 38 74 48 Z" fill="#ef4444"/>
+        <ellipse cx="60" cy="48" rx="12" ry="3.5" fill="#ffffff"/>
+        <!-- Cinturón negro con hebilla dorada -->
+        <rect x="50" y="42" width="22" height="4.5" fill="#18181b"/>
+        <rect x="58" y="41" width="6" height="6.5" rx="1" fill="#facc15"/>
+        <!-- Barba blanca tupida -->
+        <path d="M54 28 C50 36 54 44 64 44 C72 44 76 36 72 28 Z" fill="#ffffff" filter="drop-shadow(0 1px 2px rgba(0,0,0,0.15))"/>
+        <!-- Cara sonriente -->
+        <circle cx="63" cy="24" r="6.5" fill="#fecaca"/>
+        <!-- Mejillas sonrosadas -->
+        <circle cx="59" cy="26" r="1.6" fill="#f87171" opacity="0.75"/>
+        <circle cx="67" cy="26" r="1.6" fill="#f87171" opacity="0.75"/>
+        <!-- Bigote blanco y nariz -->
+        <path d="M58 29 Q63 32 68 29 Q63 27 58 29 Z" fill="#ffffff"/>
+        <circle cx="63" cy="25" r="1.8" fill="#f87171"/>
+        <!-- Ojos alegres -->
+        <path d="M59 23 Q61 21 62 23 M64 23 Q65 21 67 23" stroke="#1f2937" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+        <!-- Gorro navideño con pompón animado -->
+        <ellipse cx="63" cy="19" rx="8" ry="2.6" fill="#ffffff"/>
+        <path d="M56 18 Q62 10 74 12 Q78 15 76 20 Z" fill="#dc2626"/>
+        <circle cx="77" cy="20" r="3.2" fill="#ffffff" class="santa-pompom"/>
+        <!-- Brazo izquierdo sujetando riendas -->
+        <path d="M68 36 L74 38" stroke="#dc2626" stroke-width="4.5" stroke-linecap="round"/>
+        <circle cx="75" cy="38" r="2.5" fill="#16a34a"/>
+        <!-- Brazo derecho saludando alegremente (animado) -->
+        <path d="M52 36 Q46 26 48 20" stroke="#dc2626" stroke-width="4.5" stroke-linecap="round" class="santa-waving-arm"/>
+        <circle cx="48" cy="19" r="2.8" fill="#16a34a" class="santa-waving-arm"/>
+      </g>
+
+      <!-- Riendas doradas -->
+      <path d="M74 38 Q96 42 133 36" stroke="#facc15" stroke-width="1.4" fill="none" stroke-dasharray="3 1.5"/>
+
+      <!-- Rodolfo el Reno en el frente (Trotando/Galopando) -->
+      <g id="reindeerCharacter">
+        <!-- Patas traseras -->
+        <path d="M110 46 L98 58 L94 57" stroke="#92400e" stroke-width="2.6" stroke-linecap="round" fill="none" class="reindeer-leg-back"/>
+        <!-- Cuerpo -->
+        <ellipse cx="120" cy="42" rx="14" ry="9" fill="#92400e"/>
+        <!-- Patas delanteras -->
+        <path d="M130 46 L142 58 L146 57" stroke="#78350f" stroke-width="2.6" stroke-linecap="round" fill="none" class="reindeer-leg-front"/>
+        <!-- Cuello y pecho -->
+        <path d="M128 44 C132 38 135 28 138 24 L144 28 C140 35 135 44 130 48 Z" fill="#92400e"/>
+        <!-- Collar rojo con cascabel dorado -->
+        <path d="M132 34 Q135 38 138 35" stroke="#dc2626" stroke-width="2.4" stroke-linecap="round"/>
+        <circle cx="135" cy="37" r="2.5" fill="#facc15"/>
+        <!-- Cabeza y hocico -->
+        <ellipse cx="142" cy="23" rx="7" ry="5.5" fill="#a16207"/>
+        <ellipse cx="147" cy="24" rx="4.5" ry="3.5" fill="#fef08a"/>
+        <circle cx="141" cy="21" r="1.2" fill="#1e1b4b"/>
+        <!-- Oreja -->
+        <path d="M137 20 Q133 16 135 14 Q138 16 138 19 Z" fill="#92400e"/>
+        <!-- Cornamenta (Astas) -->
+        <path d="M138 17 Q137 8 132 4 M135 10 Q130 8 128 10 M140 17 Q144 8 149 3 M142 10 Q147 9 149 12" stroke="#78350f" stroke-width="1.8" stroke-linecap="round"/>
+        <!-- Nariz Roja Brillante de Rodolfo -->
+        <circle cx="151" cy="24" r="3.2" class="santa-red-nose"/>
+        <ellipse cx="150" cy="23" rx="1" ry="0.6" fill="#ffffff" opacity="0.8"/>
       </g>
     </svg>
   </div>
