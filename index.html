@@ -2533,14 +2533,37 @@
       <!-- Riendas doradas -->
       <path d="M74 38 Q96 42 133 36" stroke="#facc15" stroke-width="1.4" fill="none" stroke-dasharray="3 1.5"/>
 
-      <!-- Rodolfo el Reno en el frente (Trotando/Galopando) -->
+      <!-- Rodolfo el Reno en el frente (Trotando/Galopando con 4 patas) -->
       <g id="reindeerCharacter">
-        <!-- Patas traseras -->
-        <path d="M110 46 L98 58 L94 57" stroke="#92400e" stroke-width="2.6" stroke-linecap="round" fill="none" class="reindeer-leg-back"/>
-        <!-- Cuerpo -->
+        <!-- Pata trasera lejana (detrás del cuerpo) -->
+        <g class="reindeer-leg-back-far">
+          <path d="M114 45 L106 54 L98 62" stroke="#6b2f0a" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+          <circle cx="97" cy="62.5" r="1.6" fill="#361502"/>
+        </g>
+        <!-- Pata delantera lejana (detrás del cuerpo) -->
+        <g class="reindeer-leg-front-far">
+          <path d="M125 45 L133 53 L138 62" stroke="#6b2f0a" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+          <circle cx="138.5" cy="62.5" r="1.6" fill="#361502"/>
+        </g>
+
+        <!-- Cola del reno -->
+        <path d="M107 39 Q102 36 103 33 Q106 34 108 38 Z" fill="#92400e" class="reindeer-tail"/>
+        <circle cx="104" cy="34" r="1.4" fill="#fef3c7"/>
+
+        <!-- Cuerpo del reno -->
         <ellipse cx="120" cy="42" rx="14" ry="9" fill="#92400e"/>
-        <!-- Patas delanteras -->
-        <path d="M130 46 L142 58 L146 57" stroke="#78350f" stroke-width="2.6" stroke-linecap="round" fill="none" class="reindeer-leg-front"/>
+        <ellipse cx="121" cy="44" rx="10" ry="5.5" fill="#a16207" opacity="0.6"/>
+
+        <!-- Pata trasera cercana (frente) -->
+        <g class="reindeer-leg-back-near">
+          <path d="M109 46 L99 55 L92 63" stroke="#92400e" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+          <circle cx="91" cy="63.5" r="1.8" fill="#451a03"/>
+        </g>
+        <!-- Pata delantera cercana (frente) -->
+        <g class="reindeer-leg-front-near">
+          <path d="M131 46 L141 53 L147 62" stroke="#92400e" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+          <circle cx="147.5" cy="62.5" r="1.8" fill="#451a03"/>
+        </g>
         <!-- Cuello y pecho -->
         <path d="M128 44 C132 38 135 28 138 24 L144 28 C140 35 135 44 130 48 Z" fill="#92400e"/>
         <!-- Collar rojo con cascabel dorado -->
