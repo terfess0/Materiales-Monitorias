@@ -999,21 +999,47 @@
       100% { transform: translateY(-3px) scale(1.05); }
     }
 
-    .reindeer-leg-front {
-      transform-origin: 132px 46px;
-      animation: legStrideFront 0.35s ease-in-out infinite alternate;
+    .reindeer-leg-front-near {
+      transform-origin: 131px 46px;
+      animation: legGallopFN 0.36s ease-in-out infinite alternate;
     }
-    .reindeer-leg-back {
-      transform-origin: 110px 46px;
-      animation: legStrideBack 0.35s ease-in-out infinite alternate;
+    .reindeer-leg-front-far {
+      transform-origin: 125px 45px;
+      animation: legGallopFF 0.36s ease-in-out infinite alternate;
     }
-    @keyframes legStrideFront {
-      0% { transform: rotate(-18deg); }
-      100% { transform: rotate(18deg); }
+    .reindeer-leg-back-near {
+      transform-origin: 109px 46px;
+      animation: legGallopBN 0.36s ease-in-out infinite alternate;
     }
-    @keyframes legStrideBack {
+    .reindeer-leg-back-far {
+      transform-origin: 114px 45px;
+      animation: legGallopBF 0.36s ease-in-out infinite alternate;
+    }
+
+    @keyframes legGallopFN {
+      0% { transform: rotate(-24deg); }
+      100% { transform: rotate(20deg); }
+    }
+    @keyframes legGallopFF {
       0% { transform: rotate(18deg); }
-      100% { transform: rotate(-18deg); }
+      100% { transform: rotate(-24deg); }
+    }
+    @keyframes legGallopBN {
+      0% { transform: rotate(22deg); }
+      100% { transform: rotate(-20deg); }
+    }
+    @keyframes legGallopBF {
+      0% { transform: rotate(-18deg); }
+      100% { transform: rotate(24deg); }
+    }
+
+    .reindeer-tail {
+      transform-origin: 107px 38px;
+      animation: reindeerTailWiggle 0.32s ease-in-out infinite alternate;
+    }
+    @keyframes reindeerTailWiggle {
+      0% { transform: rotate(-10deg); }
+      100% { transform: rotate(16deg); }
     }
 
     .santa-red-nose {
