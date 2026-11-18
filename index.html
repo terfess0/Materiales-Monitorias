@@ -894,6 +894,505 @@
       aspect-ratio: 9 / 16;
     }
 
+    /* ==========================================================================
+       Simulador Práctico: Validador de Paréntesis con Pilas (Estilo Sobrio)
+       ========================================================================== */
+    .stack-sim-section {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 24px;
+      margin-bottom: 36px;
+    }
+
+    .stack-sim-header {
+      margin-bottom: 20px;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 14px;
+    }
+
+    .stack-sim-tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #00594e;
+      background: #e6f4f1;
+      padding: 3px 8px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+
+    .stack-sim-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin: 0 0 6px 0;
+    }
+
+    .stack-sim-desc {
+      font-size: 0.88rem;
+      color: #475569;
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    .stack-sim-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      align-items: stretch;
+    }
+
+    @media (max-width: 960px) {
+      .stack-sim-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Paneles Sobrios */
+    .stack-sim-card {
+      background: #fafafa;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .stack-sim-card-header {
+      background: #f1f5f9;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .stack-sim-card-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #334155;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin: 0;
+    }
+
+    .stack-sim-card-body {
+      padding: 16px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Controles de Entrada */
+    .stack-sim-input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .stack-sim-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #475569;
+    }
+
+    .stack-sim-presets {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .stack-sim-preset-btn {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.75rem;
+      padding: 4px 8px;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      color: #334155;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .stack-sim-preset-btn:hover {
+      background: #00594e;
+      color: #ffffff;
+      border-color: #00594e;
+    }
+
+    .stack-sim-input-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .stack-sim-input {
+      flex: 1;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.95rem;
+      padding: 8px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      background: #ffffff;
+      color: #0f172a;
+      letter-spacing: 0.02em;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .stack-sim-input:focus {
+      border-color: #00594e;
+      box-shadow: 0 0 0 2px rgba(0, 89, 78, 0.15);
+    }
+
+    /* Cadena Evaluada y Pila */
+    .stack-sim-expr-wrap {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+      padding: 10px 12px;
+    }
+
+    .stack-sim-char-stream {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      align-items: center;
+      min-height: 38px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    .sim-char-cell {
+      width: 26px;
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #64748b;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 3px;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .sim-char-cell.bracket {
+      color: #0f172a;
+      font-weight: 700;
+      background: #f1f5f9;
+    }
+
+    /* Pulso sobrio del algoritmo al evaluar */
+    @keyframes simPulseBorder {
+      0% {
+        box-shadow: 0 0 0 0 rgba(0, 89, 78, 0.45);
+        border-color: #00594e;
+      }
+      50% {
+        box-shadow: 0 0 0 4px rgba(0, 89, 78, 0.18);
+        border-color: #00594e;
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(0, 89, 78, 0);
+        border-color: #00594e;
+      }
+    }
+
+    .sim-char-cell.active-eval {
+      background: #e6f4f1;
+      color: #00594e;
+      border-color: #00594e;
+      font-weight: 800;
+      animation: simPulseBorder 1.2s infinite ease-in-out;
+      transform: translateY(-2px);
+    }
+
+    .sim-char-cell.matched-ok {
+      background: #ecfdf5;
+      color: #047857;
+      border-color: #a7f3d0;
+    }
+
+    .sim-char-cell.error-char {
+      background: #fef2f2;
+      color: #dc2626;
+      border-color: #f87171;
+    }
+
+    /* Pila Gráfica LIFO */
+    .stack-sim-state-container {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    @media (max-width: 500px) {
+      .stack-sim-state-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .stack-bucket-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .stack-bucket-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #64748b;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .stack-bucket {
+      width: 100%;
+      height: 180px;
+      border-left: 2px solid #00594e;
+      border-right: 2px solid #00594e;
+      border-bottom: 3px solid #00594e;
+      border-radius: 0 0 4px 4px;
+      background: #ffffff;
+      padding: 6px;
+      display: flex;
+      flex-direction: column-reverse;
+      gap: 5px;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    .stack-empty-hint {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 0.72rem;
+      color: #94a3b8;
+      font-style: italic;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    .stack-item-node {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #00594e;
+      background: #e6f4f1;
+      border: 1px solid #a7d9d0;
+      border-radius: 3px;
+      text-align: center;
+      padding: 5px 0;
+      transition: all 0.2s ease;
+    }
+
+    .stack-item-node.top-element {
+      border-color: #00594e;
+      background: #00594e;
+      color: #ffffff;
+    }
+
+    /* Bitácora de Registro */
+    .stack-log-panel {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      font-size: 0.8rem;
+      color: #334155;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    .stack-log-header {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: #94a3b8;
+      margin-bottom: 6px;
+      letter-spacing: 0.04em;
+    }
+
+    .stack-log-status {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #0f172a;
+      margin-bottom: 8px;
+    }
+
+    .stack-log-history {
+      flex: 1;
+      max-height: 100px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      border-top: 1px solid #f1f5f9;
+      padding-top: 6px;
+    }
+
+    .stack-log-entry {
+      font-size: 0.75rem;
+      color: #64748b;
+      line-height: 1.4;
+    }
+
+    .stack-log-entry.push {
+      color: #00594e;
+    }
+
+    .stack-log-entry.pop {
+      color: #2563eb;
+    }
+
+    .stack-log-entry.error {
+      color: #dc2626;
+      font-weight: 600;
+    }
+
+    /* Veredicto */
+    .stack-verdict-box {
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: #ffffff;
+    }
+
+    .stack-verdict-badge {
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border: 1px solid transparent;
+    }
+
+    .stack-verdict-badge.idle {
+      background: #f1f5f9;
+      color: #64748b;
+      border-color: #cbd5e1;
+    }
+
+    .stack-verdict-badge.success {
+      background: #ecfdf5;
+      color: #047857;
+      border-color: #a7f3d0;
+    }
+
+    .stack-verdict-badge.failed {
+      background: #fef2f2;
+      color: #dc2626;
+      border-color: #f87171;
+    }
+
+    /* Columna Derecha: Código C++ */
+    .stack-code-controls {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .sim-ctrl-btn {
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 6px 11px;
+      border-radius: 4px;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      color: #334155;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+    }
+
+    .sim-ctrl-btn:hover {
+      background: #f8fafc;
+      border-color: #94a3b8;
+    }
+
+    .sim-ctrl-btn.primary {
+      background: #00594e;
+      color: #ffffff;
+      border-color: #00594e;
+    }
+
+    .sim-ctrl-btn.primary:hover {
+      background: #00453c;
+    }
+
+    .stack-code-viewport {
+      background: #0f172a;
+      color: #e2e8f0;
+      border-radius: 4px;
+      padding: 12px 0;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.78rem;
+      line-height: 1.55;
+      overflow-x: auto;
+    }
+
+    .code-line {
+      display: flex;
+      padding: 1px 12px;
+      transition: background-color 0.15s ease, border-left-color 0.15s ease;
+      border-left: 3px solid transparent;
+      white-space: pre;
+    }
+
+    .code-line-num {
+      width: 24px;
+      color: #475569;
+      user-select: none;
+      text-align: right;
+      padding-right: 12px;
+      font-size: 0.72rem;
+    }
+
+    .code-line-text {
+      flex: 1;
+    }
+
+    /* Resaltado de Sintaxis Sobrio */
+    .cpp-kwd { color: #f472b6; font-weight: 600; }
+    .cpp-type { color: #38bdf8; }
+    .cpp-str { color: #34d399; }
+    .cpp-chr { color: #facc15; }
+    .cpp-com { color: #64748b; font-style: italic; }
+
+    /* Pulso activo en la línea de código C++ */
+    .code-line.active-line {
+      background: rgba(0, 89, 78, 0.4);
+      border-left-color: #2dd4bf;
+    }
+
+    .code-line.active-line .code-line-text {
+      color: #ffffff;
+      font-weight: 600;
+    }
+
     /* Widgets Navideños: Rampa de Nieve y Papá Noel en Trineo */
     .navidad-widget-rampa {
       position: fixed;
@@ -1382,7 +1881,97 @@
           <button type="button" class="carousel-nav-btn prev" aria-label="Infografía anterior" onclick="scrollCarousel('infografiasTrack', -1)">&lsaquo;</button>
           
           <div class="carousel-track" id="infografiasTrack">
-            <!-- Item 1: infografia-funciones-basicas-pilas.png (17 Nov 2026) -->
+            <!-- Item 1: Infografía_ Invertir una Cola con Pila Auxiliar.png (18 Nov 2026 11:36) -->
+            <article class="carousel-item" data-full-img="./images/Infograf%C3%ADa_%20Invertir%20una%20Cola%20con%20Pila%20Auxiliar.png"
+              data-img-title="Infografía: Invertir una Cola con una Pila Auxiliar en C++" title="Toca para ampliar y explorar con zoom">
+              <div class="carousel-item-img-wrap">
+                <img src="./images/Infograf%C3%ADa_%20Invertir%20una%20Cola%20con%20Pila%20Auxiliar.png" alt="Infografía de Invertir una Cola con una Pila Auxiliar en C++" loading="lazy">
+                <span class="carousel-item-badge">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    <line x1="11" y1="8" x2="11" y2="14"></line>
+                    <line x1="8" y1="11" x2="14" y2="11"></line>
+                  </svg>
+                  Toca para ampliar
+                </span>
+              </div>
+              <div class="carousel-item-info">
+                <div class="carousel-item-date-text">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                  </svg>
+                  18 de noviembre de 2026
+                </div>
+                <h3 class="carousel-item-title">Infografía - Invertir una Cola con Pila Auxiliar</h3>
+                <p class="carousel-item-subtitle">Algoritmo O(N) que aprovecha la propiedad LIFO de la pila para revertir el orden FIFO de la cola</p>
+              </div>
+            </article>
+
+            <!-- Item 2: infografia-funcion-estavacia-cola.png (18 Nov 2026 06:40) -->
+            <article class="carousel-item" data-full-img="./images/infografia-funcion-estavacia-cola.png"
+              data-img-title="Infografía: Función estaVacia() en Pilas y Colas (LIFO / FIFO)" title="Toca para ampliar y explorar con zoom">
+              <div class="carousel-item-img-wrap">
+                <img src="./images/infografia-funcion-estavacia-cola.png" alt="Infografía de Función estaVacia() con Listas Enlazadas en C++" loading="lazy">
+                <span class="carousel-item-badge">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    <line x1="11" y1="8" x2="11" y2="14"></line>
+                    <line x1="8" y1="11" x2="14" y2="11"></line>
+                  </svg>
+                  Toca para ampliar
+                </span>
+              </div>
+              <div class="carousel-item-info">
+                <div class="carousel-item-date-text">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                  </svg>
+                  18 de noviembre de 2026
+                </div>
+                <h3 class="carousel-item-title">Infografía - ¿Está vacía? (estaVacia)</h3>
+                <p class="carousel-item-subtitle">Función guardia O(1) con listas enlazadas: comprobación de puntero tope/frente == nullptr</p>
+              </div>
+            </article>
+
+            <!-- Item 2: infografia-desencolar-en-una-cola.png (18 Nov 2026 06:33) -->
+            <article class="carousel-item" data-full-img="./images/infografia-desencolar-en-una-cola.png"
+              data-img-title="Infografía: Desencolar en una Cola (FIFO) con Listas Enlazadas" title="Toca para ampliar y explorar con zoom">
+              <div class="carousel-item-img-wrap">
+                <img src="./images/infografia-desencolar-en-una-cola.png" alt="Infografía de Función desencolar() en Cola FIFO con Listas Enlazadas" loading="lazy">
+                <span class="carousel-item-badge">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    <line x1="11" y1="8" x2="11" y2="14"></line>
+                    <line x1="8" y1="11" x2="14" y2="11"></line>
+                  </svg>
+                  Toca para ampliar
+                </span>
+              </div>
+              <div class="carousel-item-info">
+                <div class="carousel-item-date-text">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                  </svg>
+                  18 de noviembre de 2026
+                </div>
+                <h3 class="carousel-item-title">Infografía - Desencolar en una Cola (FIFO)</h3>
+                <p class="carousel-item-subtitle">Operación desencolar() O(1) con listas enlazadas, avance de frente, delete aux y caso de un solo dato</p>
+              </div>
+            </article>
+
+            <!-- Item 3: infografia-funciones-basicas-pilas.png (17 Nov 2026) -->
             <article class="carousel-item" data-full-img="./images/infografia-funciones-basicas-pilas.png"
               data-img-title="Infografía: Funciones Básicas de una Pila con Nodos en C++" title="Toca para ampliar y explorar con zoom">
               <div class="carousel-item-img-wrap">
@@ -1844,6 +2433,148 @@
         </div>
       </div>
     </section>
+
+    <!-- Sección de Ejercicio Práctico Interactivo: Validador de Paréntesis con Pilas -->
+    <section id="ejercicioPracticoPilas" class="stack-sim-section">
+      <div class="stack-sim-header">
+        <span class="stack-sim-tag">Ejercicio Práctico Interactivo • Guía 05</span>
+        <h2 class="stack-sim-title">Validador de Expresiones y Paréntesis con Pilas (LIFO)</h2>
+        <p class="stack-sim-desc">
+          Verifica en tiempo real si los signos de apertura y cierre <code style="font-family: monospace; color: #00594e;">( ) [ ] { }</code> están balanceados. Sigue paso a paso cómo el algoritmo en C++ evalúa cada carácter, apila o desapila según las reglas y valida el resultado.
+        </p>
+      </div>
+
+      <div class="stack-sim-grid">
+        <!-- Columna Izquierda: Entrada de Expresión y Estado de la Pila -->
+        <div class="stack-sim-card">
+          <div class="stack-sim-card-header">
+            <h3 class="stack-sim-card-title">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="4 17 10 11 4 5"></polyline>
+                <line x1="12" y1="19" x2="20" y2="19"></line>
+              </svg>
+              Entrada y Evaluación de la Expresión
+            </h3>
+            <span style="font-size: 0.72rem; color: #64748b;">std::stack&lt;char&gt;</span>
+          </div>
+
+          <div class="stack-sim-card-body">
+            <!-- Selector de Expresiones Predefinidas -->
+            <div class="stack-sim-input-group">
+              <span class="stack-sim-label">Cargar expresión de prueba:</span>
+              <div class="stack-sim-presets">
+                <button type="button" class="stack-sim-preset-btn" onclick="stackSimLoadPreset('(1 + 2) * [3 + {4 / 2}]')">(1+2)*[3+{4/2}]</button>
+                <button type="button" class="stack-sim-preset-btn" onclick="stackSimLoadPreset('{[a + b] * (c - d)}')">{[a+b]*(c-d)}</button>
+                <button type="button" class="stack-sim-preset-btn" onclick="stackSimLoadPreset('(1 + 2) - [1 * (3 + 4]')">(1+2)-[1*(3+4]</button>
+                <button type="button" class="stack-sim-preset-btn" onclick="stackSimLoadPreset('((a + b) * [c - d]')">((a+b)*[c-d]</button>
+                <button type="button" class="stack-sim-preset-btn" onclick="stackSimLoadPreset('[1 + 2)) * 3')">[1+2))*3</button>
+              </div>
+            </div>
+
+            <!-- Campo de Entrada Personalizado -->
+            <div class="stack-sim-input-group">
+              <label for="stackSimInput" class="stack-sim-label">Expresión a validar:</label>
+              <div class="stack-sim-input-row">
+                <input type="text" id="stackSimInput" class="stack-sim-input" value="(1 + 2) - [1 * (3 + 4)]" placeholder="Ingresa una expresión con ( ) [ ] { }">
+                <button type="button" class="sim-ctrl-btn" onclick="stackSimReset()" title="Restablecer estado">↺ Limpiar</button>
+              </div>
+            </div>
+
+            <!-- Tira de Caracteres con Resaltado y Pulso -->
+            <div class="stack-sim-expr-wrap">
+              <span class="stack-sim-label" style="display: block; margin-bottom: 6px;">Lectura del flujo de caracteres:</span>
+              <div id="stackSimCharStream" class="stack-sim-char-stream">
+                <!-- Se llena dinámicamente con las casillas de cada carácter -->
+              </div>
+            </div>
+
+            <!-- Visualización Gráfica de la Pila LIFO y Registro -->
+            <div class="stack-sim-state-container">
+              <!-- Cubeta de la Pila -->
+              <div class="stack-bucket-wrap">
+                <span class="stack-bucket-label">Pila (Tope &uarr;)</span>
+                <div id="stackSimBucket" class="stack-bucket">
+                  <span id="stackSimEmptyHint" class="stack-empty-hint">pila vacía</span>
+                </div>
+              </div>
+
+              <!-- Bitácora y Explicación del Paso -->
+              <div class="stack-log-panel">
+                <span class="stack-log-header">Explicación del Paso Actual</span>
+                <div id="stackSimStatusText" class="stack-log-status">Listo para evaluar. Presiona "Ejecutar" o "Paso a paso".</div>
+                <span class="stack-log-header" style="margin-top: 4px;">Historial de Operaciones</span>
+                <ul id="stackSimLogHistory" class="stack-log-history">
+                  <li class="stack-log-entry">// Pila inicializada vacía</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Veredicto Final -->
+            <div class="stack-verdict-box">
+              <div style="font-size: 0.82rem; color: #475569;">
+                <strong>Resultado:</strong> <span id="stackSimVerdictDetail">En espera de análisis</span>
+              </div>
+              <div id="stackSimVerdictBadge" class="stack-verdict-badge idle">Pendiente</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Columna Derecha: Código C++ y Controlador de Ejecución -->
+        <div class="stack-sim-card">
+          <div class="stack-sim-card-header">
+            <h3 class="stack-sim-card-title">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="16 18 22 12 16 6"></polyline>
+                <polyline points="8 6 2 12 8 18"></polyline>
+              </svg>
+              Algoritmo en C++ (std::stack)
+            </h3>
+            <div class="stack-code-controls">
+              <button type="button" id="btnSimPlay" class="sim-ctrl-btn primary" onclick="stackSimTogglePlay()">
+                ▶ Ejecutar
+              </button>
+              <button type="button" id="btnSimStep" class="sim-ctrl-btn" onclick="stackSimStep()">
+                Paso a Paso &rarr;
+              </button>
+              <button type="button" class="sim-ctrl-btn" onclick="stackSimReset()">
+                ↺ Reiniciar
+              </button>
+            </div>
+          </div>
+
+          <div class="stack-sim-card-body" style="padding: 0; background: #0f172a;">
+            <div class="stack-code-viewport" id="stackSimCodeBlock">
+              <div class="code-line" id="simLine1"><span class="code-line-num">1</span><span class="code-line-text"><span class="cpp-type">bool</span> <span style="color:#67e8f9;">estaBalanceado</span>(<span class="cpp-kwd">const</span> <span class="cpp-type">string</span>& expr) {</span></div>
+              <div class="code-line" id="simLine2"><span class="code-line-num">2</span><span class="code-line-text">    <span class="cpp-type">stack</span>&lt;<span class="cpp-type">char</span>&gt; pila;</span></div>
+              <div class="code-line" id="simLine3"><span class="code-line-num">3</span><span class="code-line-text">    <span class="cpp-kwd">for</span> (<span class="cpp-type">char</span> c : expr) {</span></div>
+              <div class="code-line" id="simLine4"><span class="code-line-num">4</span><span class="code-line-text">        <span class="cpp-kwd">if</span> (c == <span class="cpp-chr">'('</span> || c == <span class="cpp-chr">'['</span> || c == <span class="cpp-chr">'{'</span>) {</span></div>
+              <div class="code-line" id="simLine5"><span class="code-line-num">5</span><span class="code-line-text">            pila.push(c); <span class="cpp-com">// Apilar signo de apertura</span></span></div>
+              <div class="code-line" id="simLine6"><span class="code-line-num">6</span><span class="code-line-text">        }</span></div>
+              <div class="code-line" id="simLine7"><span class="code-line-num">7</span><span class="code-line-text">        <span class="cpp-kwd">else if</span> (c == <span class="cpp-chr">')'</span> || c == <span class="cpp-chr">']'</span> || c == <span class="cpp-chr">'}'</span>) {</span></div>
+              <div class="code-line" id="simLine8"><span class="code-line-num">8</span><span class="code-line-text">            <span class="cpp-kwd">if</span> (pila.empty()) <span class="cpp-kwd">return false</span>; <span class="cpp-com">// Cierre sin apertura previa</span></span></div>
+              <div class="code-line" id="simLine9"><span class="code-line-num">9</span><span class="code-line-text">            <span class="cpp-type">char</span> tope = pila.top();</span></div>
+              <div class="code-line" id="simLine10"><span class="code-line-num">10</span><span class="code-line-text">            pila.pop();</span></div>
+              <div class="code-line" id="simLine11"><span class="code-line-num">11</span><span class="code-line-text">            <span class="cpp-kwd">if</span> ((c == <span class="cpp-chr">')'</span> && tope != <span class="cpp-chr">'('</span>) ||</span></div>
+              <div class="code-line" id="simLine12"><span class="code-line-num">12</span><span class="code-line-text">                (c == <span class="cpp-chr">']'</span> && tope != <span class="cpp-chr">'['</span>) ||</span></div>
+              <div class="code-line" id="simLine13"><span class="code-line-num">13</span><span class="code-line-text">                (c == <span class="cpp-chr">'}'</span> && tope != <span class="cpp-chr">'{'</span>)) {</span></div>
+              <div class="code-line" id="simLine14"><span class="code-line-num">14</span><span class="code-line-text">                <span class="cpp-kwd">return false</span>; <span class="cpp-com">// Signos no coinciden</span></span></div>
+              <div class="code-line" id="simLine15"><span class="code-line-num">15</span><span class="code-line-text">            }</span></div>
+              <div class="code-line" id="simLine16"><span class="code-line-num">16</span><span class="code-line-text">        }</span></div>
+              <div class="code-line" id="simLine17"><span class="code-line-num">17</span><span class="code-line-text">    }</span></div>
+              <div class="code-line" id="simLine18"><span class="code-line-num">18</span><span class="code-line-text">    <span class="cpp-kwd">return</span> pila.empty(); <span class="cpp-com">// Válido solo si la pila quedó vacía</span></span></div>
+              <div class="code-line" id="simLine19"><span class="code-line-num">19</span><span class="code-line-text">}</span></div>
+            </div>
+            <div style="padding: 10px 14px; background: #1e293b; border-top: 1px solid #334155; display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 0.72rem; color: #94a3b8;">Complejidad: <strong>O(N)</strong> tiempo • <strong>O(N)</strong> espacio</span>
+              <a href="./guia_5_pilas_colas.html" class="guide-btn-secondary" style="padding: 4px 10px; font-size: 0.75rem; border-color: #475569; color: #e2e8f0; background: #0f172a;" target="_blank">
+                Ver Guía 05 &rarr;
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section id="horarios">
       <div class="section-header-actions">
         <h2>Horarios de Monitorías Académicas</h2>
@@ -2550,6 +3281,372 @@
           closeLightbox();
         }
       });
+    })();
+
+    // ==========================================================================
+    // 7. Lógica del Simulador Interactivo: Validador de Paréntesis con Pilas
+    // ==========================================================================
+    (function initStackSimulator() {
+      let currentExpr = '';
+      let steps = [];
+      let currentStepIndex = -1;
+      let isPlaying = false;
+      let playTimer = null;
+
+      const inputEl = document.getElementById('stackSimInput');
+      const charStreamEl = document.getElementById('stackSimCharStream');
+      const bucketEl = document.getElementById('stackSimBucket');
+      const emptyHintEl = document.getElementById('stackSimEmptyHint');
+      const statusTextEl = document.getElementById('stackSimStatusText');
+      const logHistoryEl = document.getElementById('stackSimLogHistory');
+      const verdictDetailEl = document.getElementById('stackSimVerdictDetail');
+      const verdictBadgeEl = document.getElementById('stackSimVerdictBadge');
+      const btnPlay = document.getElementById('btnSimPlay');
+      const btnStep = document.getElementById('btnSimStep');
+
+      if (!inputEl || !charStreamEl || !bucketEl) return;
+
+      const matchingPairs = {
+        ')': '(',
+        ']': '[',
+        '}': '{'
+      };
+
+      // Compilar todos los pasos que el algoritmo en C++ ejecutará
+      function buildExecutionTrace(expr) {
+        const trace = [];
+        const stack = [];
+
+        trace.push({
+          type: 'INIT',
+          charIndex: -1,
+          stackSnapshot: [],
+          activeLine: 2,
+          log: '// Pila std::stack<char> inicializada vacía',
+          status: 'Inicio del algoritmo. Pila vacía.',
+          verdict: 'PENDING'
+        });
+
+        for (let i = 0; i < expr.length; i++) {
+          const ch = expr[i];
+
+          if (ch === '(' || ch === '[' || ch === '{') {
+            trace.push({
+              type: 'CHECK_OPEN',
+              charIndex: i,
+              char: ch,
+              stackSnapshot: [...stack],
+              activeLine: 4,
+              log: `Evaluando '${ch}' -> Es signo de apertura.`,
+              status: `Carácter '${ch}' en pos ${i}: signo de apertura detectado.`,
+              verdict: 'PENDING'
+            });
+
+            stack.push(ch);
+
+            trace.push({
+              type: 'PUSH',
+              charIndex: i,
+              char: ch,
+              stackSnapshot: [...stack],
+              activeLine: 5,
+              log: `pila.push('${ch}') -> Elemento insertado en el tope.`,
+              status: `Apilando '${ch}' en la cima. Total en pila: ${stack.length}`,
+              verdict: 'PENDING'
+            });
+
+          } else if (ch === ')' || ch === ']' || ch === '}') {
+            trace.push({
+              type: 'CHECK_CLOSE',
+              charIndex: i,
+              char: ch,
+              stackSnapshot: [...stack],
+              activeLine: 7,
+              log: `Evaluando '${ch}' -> Es signo de cierre.`,
+              status: `Carácter '${ch}' en pos ${i}: signo de cierre detectado.`,
+              verdict: 'PENDING'
+            });
+
+            if (stack.length === 0) {
+              trace.push({
+                type: 'ERROR_EMPTY',
+                charIndex: i,
+                char: ch,
+                stackSnapshot: [],
+                activeLine: 8,
+                log: `ERROR: pila.empty() es true al encontrar '${ch}'. Cierre huérfano.`,
+                status: `¡Desbalanceado! Se encontró '${ch}' pero la pila está vacía (sin apertura correspondiente).`,
+                verdict: 'FAIL',
+                failReason: `Cierre '${ch}' sin apertura previa (pila vacía)`
+              });
+              return trace;
+            }
+
+            const expectedOpen = matchingPairs[ch];
+            const actualTop = stack[stack.length - 1];
+
+            trace.push({
+              type: 'PEEK_TOP',
+              charIndex: i,
+              char: ch,
+              topChar: actualTop,
+              stackSnapshot: [...stack],
+              activeLine: 9,
+              log: `char tope = pila.top() -> '${actualTop}'`,
+              status: `Consultando el tope: '${actualTop}'. Se espera '${expectedOpen}' para emparejar con '${ch}'.`,
+              verdict: 'PENDING'
+            });
+
+            stack.pop();
+
+            trace.push({
+              type: 'POP',
+              charIndex: i,
+              char: ch,
+              topChar: actualTop,
+              stackSnapshot: [...stack],
+              activeLine: 10,
+              log: `pila.pop() -> Se extrae '${actualTop}' del tope`,
+              status: `Desapilando '${actualTop}'. Elementos restantes en pila: ${stack.length}`,
+              verdict: 'PENDING'
+            });
+
+            if (actualTop !== expectedOpen) {
+              trace.push({
+                type: 'ERROR_MISMATCH',
+                charIndex: i,
+                char: ch,
+                topChar: actualTop,
+                stackSnapshot: [...stack],
+                activeLine: 14,
+                log: `ERROR: Coincidencia fallida. Tope era '${actualTop}', pero se cerró con '${ch}'.`,
+                status: `¡Desbalanceado! El tope '${actualTop}' no concuerda con el cierre '${ch}'.`,
+                verdict: 'FAIL',
+                failReason: `Signos incompatibles: '${actualTop}' cerrado con '${ch}'`
+              });
+              return trace;
+            } else {
+              trace.push({
+                type: 'MATCH_OK',
+                charIndex: i,
+                char: ch,
+                topChar: actualTop,
+                stackSnapshot: [...stack],
+                activeLine: 16,
+                log: `MATCH OK: Par '${actualTop}' ... '${ch}' emparejado y verificado correctamente.`,
+                status: `¡Pareja correcta! '${actualTop}' se cancela con '${ch}'.`,
+                verdict: 'PENDING'
+              });
+            }
+          }
+        }
+
+        // Fin del for: verificar si la pila quedó vacía
+        trace.push({
+          type: 'CHECK_FINAL',
+          charIndex: -1,
+          stackSnapshot: [...stack],
+          activeLine: 18,
+          log: `return pila.empty() -> ${stack.length === 0 ? 'true (0 elementos)' : `false (${stack.length} elementos sin cerrar)`}`,
+          status: stack.length === 0
+            ? 'Fin del recorrido: la pila quedó completamente vacía. ¡Expresión balanceada!'
+            : `Fin del recorrido: quedaron ${stack.length} elemento(s) ('${stack.join("', '")}') sin cerrar.`,
+          verdict: stack.length === 0 ? 'SUCCESS' : 'FAIL',
+          failReason: stack.length === 0 ? null : `Faltaron signos de cierre para: ${stack.join(', ')}`
+        });
+
+        return trace;
+      }
+
+      function renderCharStream(expr) {
+        charStreamEl.innerHTML = '';
+        for (let i = 0; i < expr.length; i++) {
+          const ch = expr[i];
+          const span = document.createElement('span');
+          span.className = 'sim-char-cell';
+          if ('()[]{}'.includes(ch)) {
+            span.classList.add('bracket');
+          }
+          span.textContent = ch === ' ' ? '␣' : ch;
+          span.dataset.index = i;
+          span.title = `Índice ${i}: '${ch}'`;
+          charStreamEl.appendChild(span);
+        }
+      }
+
+      function highlightActiveLine(lineNum) {
+        for (let i = 1; i <= 19; i++) {
+          const lineEl = document.getElementById(`simLine${i}`);
+          if (lineEl) {
+            lineEl.classList.toggle('active-line', i === lineNum);
+          }
+        }
+      }
+
+      function updateStackBucket(snapshot) {
+        // Limpiar elementos previos (excepto la pista de pila vacía)
+        const oldNodes = bucketEl.querySelectorAll('.stack-item-node');
+        oldNodes.forEach(node => node.remove());
+
+        if (snapshot.length === 0) {
+          if (emptyHintEl) emptyHintEl.style.display = 'block';
+          return;
+        }
+
+        if (emptyHintEl) emptyHintEl.style.display = 'none';
+
+        snapshot.forEach((item, idx) => {
+          const div = document.createElement('div');
+          div.className = 'stack-item-node';
+          if (idx === snapshot.length - 1) {
+            div.classList.add('top-element');
+            div.textContent = `${item}  [tope]`;
+          } else {
+            div.textContent = item;
+          }
+          bucketEl.appendChild(div);
+        });
+      }
+
+      function renderStep(index) {
+        if (index < 0 || index >= steps.length) return;
+        const step = steps[index];
+
+        // 1. Resaltar línea de código
+        highlightActiveLine(step.activeLine);
+
+        // 2. Resaltar caracteres en la tira
+        const cells = charStreamEl.querySelectorAll('.sim-char-cell');
+        cells.forEach((cell, idx) => {
+          cell.classList.remove('active-eval');
+          if (step.charIndex === idx) {
+            cell.classList.add('active-eval');
+          }
+          if (step.type === 'ERROR_MISMATCH' || step.type === 'ERROR_EMPTY') {
+            if (step.charIndex === idx) cell.classList.add('error-char');
+          } else if (step.type === 'MATCH_OK') {
+            if (step.charIndex === idx) cell.classList.add('matched-ok');
+          }
+        });
+
+        // 3. Actualizar la cubeta de la pila
+        updateStackBucket(step.stackSnapshot);
+
+        // 4. Actualizar textos de estado y bitácora
+        statusTextEl.textContent = step.status;
+
+        const logItem = document.createElement('li');
+        logItem.className = 'stack-log-entry';
+        if (step.type === 'PUSH') logItem.classList.add('push');
+        else if (step.type === 'POP' || step.type === 'MATCH_OK') logItem.classList.add('pop');
+        else if (step.verdict === 'FAIL') logItem.classList.add('error');
+        logItem.textContent = `[Paso ${index + 1}] ${step.log}`;
+        logHistoryEl.appendChild(logItem);
+        logHistoryEl.scrollTop = logHistoryEl.scrollHeight;
+
+        // 5. Veredicto
+        if (step.verdict === 'SUCCESS') {
+          verdictBadgeEl.className = 'stack-verdict-badge success';
+          verdictBadgeEl.textContent = 'Balanceada OK';
+          verdictDetailEl.innerHTML = '<span style="color: #047857; font-weight:600;">Todos los signos se abrieron y cerraron en el orden correcto.</span>';
+        } else if (step.verdict === 'FAIL') {
+          verdictBadgeEl.className = 'stack-verdict-badge failed';
+          verdictBadgeEl.textContent = 'Desbalanceada';
+          verdictDetailEl.innerHTML = `<span style="color: #dc2626; font-weight:600;">Error: ${step.failReason}</span>`;
+        } else {
+          verdictBadgeEl.className = 'stack-verdict-badge idle';
+          verdictBadgeEl.textContent = `Evaluando (${index + 1}/${steps.length})`;
+          verdictDetailEl.textContent = 'En proceso de validación...';
+        }
+      }
+
+      function stopPlaying() {
+        isPlaying = false;
+        if (playTimer) {
+          clearTimeout(playTimer);
+          playTimer = null;
+        }
+        if (btnPlay) {
+          btnPlay.innerHTML = '▶ Ejecutar';
+          btnPlay.classList.add('primary');
+        }
+      }
+
+      window.stackSimReset = function() {
+        stopPlaying();
+        currentExpr = inputEl.value;
+        steps = buildExecutionTrace(currentExpr);
+        currentStepIndex = -1;
+
+        renderCharStream(currentExpr);
+        highlightActiveLine(null);
+        updateStackBucket([]);
+
+        logHistoryEl.innerHTML = '<li class="stack-log-entry">// Pila inicializada vacía</li>';
+        statusTextEl.textContent = 'Listo para evaluar. Presiona "Ejecutar" o "Paso a paso".';
+        verdictBadgeEl.className = 'stack-verdict-badge idle';
+        verdictBadgeEl.textContent = 'Pendiente';
+        verdictDetailEl.textContent = 'En espera de análisis';
+
+        const cells = charStreamEl.querySelectorAll('.sim-char-cell');
+        cells.forEach(c => c.classList.remove('active-eval', 'matched-ok', 'error-char'));
+      };
+
+      window.stackSimLoadPreset = function(presetExpr) {
+        inputEl.value = presetExpr;
+        window.stackSimReset();
+      };
+
+      window.stackSimStep = function() {
+        if (steps.length === 0 || currentStepIndex >= steps.length - 1) {
+          window.stackSimReset();
+        }
+
+        currentStepIndex++;
+        renderStep(currentStepIndex);
+
+        if (currentStepIndex >= steps.length - 1) {
+          stopPlaying();
+        }
+      };
+
+      window.stackSimTogglePlay = function() {
+        if (isPlaying) {
+          stopPlaying();
+          return;
+        }
+
+        if (steps.length === 0 || currentStepIndex >= steps.length - 1) {
+          window.stackSimReset();
+        }
+
+        isPlaying = true;
+        if (btnPlay) {
+          btnPlay.innerHTML = '⏸ Pausar';
+          btnPlay.classList.remove('primary');
+        }
+
+        function autoLoop() {
+          if (!isPlaying) return;
+          if (currentStepIndex < steps.length - 1) {
+            currentStepIndex++;
+            renderStep(currentStepIndex);
+            playTimer = setTimeout(autoLoop, 650);
+          } else {
+            stopPlaying();
+          }
+        }
+
+        autoLoop();
+      };
+
+      // Escuchar cambios en el input de texto
+      inputEl.addEventListener('input', () => {
+        window.stackSimReset();
+      });
+
+      // Inicialización automática
+      window.stackSimReset();
     })();
   </script>
   <!-- WIDGETS NAVIDEÑOS CLÁSICOS (BLOGSPOT STYLE) -->
